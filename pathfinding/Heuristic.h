@@ -1,10 +1,3 @@
-/*
- * Heuristic.h
- *
- *  Created on: Aug 26, 2018
- *      Author: zhivko
- */
-
 #ifndef PATHFINDING_HEURISTIC_H_
 #define PATHFINDING_HEURISTIC_H_
 
@@ -23,14 +16,13 @@ struct Point;
 
 using HeuristicFunction = std::function<int32_t(const Point &, const Point &)>;
 
-class Heuristic
-{
-	public:
-		static int32_t manhattan(const Point & source, const Point & target);
-		static int32_t diagonal(const Point & source, const Point & target);
-		static int32_t euclidean(const Point & source, const Point & target);
+class Heuristic {
+public:
+  static int32_t manhattan(const Point &source, const Point &target);
+  static int32_t diagonal(const Point &source, const Point &target);
+  static int32_t euclidean(const Point &source, const Point &target);
 
-		static Point getDelta(const Point & source, const Point & target);
+  static Point getDelta(const Point &source, const Point &target);
 };
 
 #endif /* PATHFINDING_HEURISTIC_H_ */

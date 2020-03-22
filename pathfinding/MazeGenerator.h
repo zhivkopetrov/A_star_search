@@ -1,10 +1,3 @@
-/*
- * MazeGenerator.h
- *
- *  Created on: Aug 26, 2018
- *      Author: zhivko
- */
-
 #ifndef PATHFINDING_MAZEGENERATOR_H_
 #define PATHFINDING_MAZEGENERATOR_H_
 
@@ -18,58 +11,48 @@
 
 //Own components headers
 #include "AStar.h"
+#include "utils/drawing/Point.h"
 
 //Forward declarations
 
+class MazeGenerator {
+public:
+  MazeGenerator() = default;
+  ~MazeGenerator() = default;
 
-class MazeGenerator
-{
-	public:
-		MazeGenerator();
+  int32_t init(const int32_t mazeWidth, const int32_t mazeHeight,
+               const bool isDiagonalMovementEnabled,
+               HeuristicFunction heuristic);
 
-		~MazeGenerator() = default;
+  inline void setStartNodePos(const Point &startNodePos) {
+    _startNodePos = startNodePos;
+  }
 
-		int32_t init(const int32_t     mazeWidth,
-					 const int32_t     mazeHeight,
-					 const bool        isDiagonalMovementEnabled,
-					 HeuristicFunction heuristic);
+  inline void setEndNodePos(const Point &endNodePos) {
+    _endNodePos = endNodePos;
+  }
 
-		inline void setStartNodePos(const Point & startNodePos)
-		{
-		    _startNodePos = startNodePos;
-		}
+  inline Point getEndNodePos() const {
+    return _endNodePos;
+  }
 
-        inline void setEndNodePos(const Point & endNodePos)
-        {
-            _endNodePos = endNodePos;
-        }
+  std::vector<Point> findPath();
 
-        inline Point getEndNodePos() const
-        {
-            return _endNodePos;
-        }
+  inline void addCollision(const Point &position) {
+    _walls.emplace_back(position);
+  }
 
-		std::vector<Point> findPath();
+  void removeCollision(const Point &position);
 
-		inline void addCollision(const Point & position)
-		{
-		    _walls.emplace_back(position);
-		}
+  void clearCollisions();
 
-		void removeCollision(const Point & position);
+private:
+  AStar _aStar;
 
-		void clearCollisions();
+  Point _startNodePos;
+  Point _endNodePos;
 
-	private:
-		AStar			   _aStar;
-
-		const Point        _POS_UNDEFINED{10000, 10000};
-
-		Point              _startNodePos;
-		Point              _endNodePos;
-
-		std::vector<Point> _walls;
+  std::vector<Point> _walls;
 };
-
 
 #endif /* PATHFINDING_MAZEGENERATOR_H_ */

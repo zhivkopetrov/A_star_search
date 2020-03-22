@@ -1,10 +1,3 @@
-/*
- * Game.h
- *
- *  Created on: 7 Feb 2018
- *      Author: Zhivko Petrov
- */
-
 #ifndef GAME_H_
 #define GAME_H_
 
@@ -14,58 +7,59 @@
 #include <cstdint>
 
 //Other libraries headers
+#include <SDL2/SDL_events.h>
 
 //Own components headers
 #include "GameProxyInterface.hpp"
-#include "DebugConsole.h"
 #include "gameentities/GridContainer.h"
+#include "gameentities/animators/PathAnimator.h"
+#include "gameentities/animators/GeneralTextAnimator.h"
 #include "pathfinding/MazeGenerator.h"
-
-#include "sdl/Renderer.h"
+#include "managers/ManagerHandler.h"
+#include "utils/DebugConsole.h"
 
 //Forward declarations
-union SDL_Event;
 
+class Game: GameProxyInterface {
+public:
+  Game();
+  virtual ~Game() = default;
 
-class Game : GameProxyInterface
-{
-    public:
-        Game();
-        virtual ~Game() = default;
+  int32_t init(const bool isDiagonalMovementAllowed);
 
-        int32_t init(const bool isDiagonalMovementAllowed);
+  void deinit();
 
-        void deinit();
+  inline void start() {
+    mainLoop();
+  }
 
-        inline void start()
-        {
-            mainLoop();
-        }
+private:
+  void mainLoop();
 
-    private:
-        void mainLoop();
+  void updateWorldState();
 
-        void updateWorldState(const int32_t elapsedTime);
+  void drawWorld();
 
-        void drawWorld();
+  bool handleUserEvent(SDL_Event &e);
 
-        bool handleUserEvent(SDL_Event & e);
+  void evaluateAStar();
 
-        void evaluateAStar();
+  virtual void onNodeChanged(const NodeType nodeType, const int32_t nodeX,
+                             const int32_t nodeY) override final;
 
-        virtual void onNodeChanged(const NodeType nodeType,
-                                   const int32_t  nodeX,
-                                   const int32_t  nodeY) override final;
+  ManagerHandler _managerHandler;
 
-        Renderer                  _renderer;
+  MazeGenerator _generator;
 
-        MazeGenerator 			  _generator;
+  DebugConsole _debugConsole;
 
-        DebugConsole              _debugConsole;
+  GridContainer _gridContainer;
 
-        GridContainer             _gridContainer;
+  PathAnimator _pathAnimator;
 
-        Text					  _noPathText;
+  GeneralTextAnimator _generalTextAnimator;
+
+  SDL_Event _inputEvent;
 };
 
 #endif /* GAME_H_ */

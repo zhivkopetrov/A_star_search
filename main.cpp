@@ -1,17 +1,7 @@
-/*
- * main.cpp
- *
- *  Created on: 6 Feb 2018
- *      Author: Zhivko Petrov
- */
-
-
 //C system headers
-
 //C++ system headers
 #include <cstdint>
 #include <cstdlib>
-#include <cstdio>
 #include <cstring>
 
 //Other libraries headers
@@ -19,49 +9,40 @@
 
 //Own components headers
 #include "Game.h"
+#include "utils/Log.h"
 
+int32_t main(int32_t argc, char *args[]) {
+  int32_t err = EXIT_SUCCESS;
+  Game game;
 
-int32_t main(int32_t argc, char * args[])
-{
-    int32_t err = EXIT_SUCCESS;
-
-    bool isDiagonalMovementAllowed = false;
-    if(1 < argc)
-    {
-        if(0 == strcmp(args[1], "true"))
-        {
-            isDiagonalMovementAllowed = true;
-        }
+  bool isDiagonalMovementAllowed = false;
+  if (1 < argc) {
+    if (0 == strcmp(args[1], "true")) {
+      isDiagonalMovementAllowed = true;
     }
+  }
 
-    Game game;
+  if (EXIT_SUCCESS != SDLLoader::init()) {
+    LOGERR("Error in SDLLoader::init() -> Terminating ...");
 
-    if(EXIT_SUCCESS != SDLLoader::init())
-    {
-        fprintf(stderr, "Error in SDLLoader::init() -> Terminating ...\n");
+    err = EXIT_FAILURE;
+  }
 
-        err = EXIT_FAILURE;
+  if (EXIT_SUCCESS == err) {
+    if (EXIT_SUCCESS != game.init(isDiagonalMovementAllowed)) {
+      LOGERR("game.init() failed");
+
+      err = EXIT_FAILURE;
+    } else {
+      game.start();
     }
+  }
 
-    if(EXIT_SUCCESS == err)
-    {
-        if(EXIT_SUCCESS != game.init(isDiagonalMovementAllowed))
-        {
-            fprintf(stderr, "game.init() failed\n");
+  game.deinit();
 
-            err = EXIT_FAILURE;
-        }
-        else
-        {
-            game.start();
-        }
-    }
+  //close SDL libraries
+  SDLLoader::deinit();
 
-    game.deinit();
-
-    //close SDL libraries
-    SDLLoader::deinit();
-
-    return err;
+  return err;
 }
 
