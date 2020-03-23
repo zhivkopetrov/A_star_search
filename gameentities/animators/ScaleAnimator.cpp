@@ -42,7 +42,7 @@ void ScaleAnimator::draw() {
 void ScaleAnimator::setTargetPos(const Point &pos) {
   _endPos = pos;
   //adjust start X, because the image is smaller than the tile
-  _endPos.x += START_POS_X_OFFSET;
+  _endPos.x += BatmanDimensions::START_POS_X_OFFSET;
   calculateAnimInternals();
 }
 
@@ -141,8 +141,7 @@ void ScaleAnimator::calculateAnimInternals() {
 
   const int32_t DELTA_X = _endPos.x - START_X;
   const int32_t DELTA_Y = _endPos.y - START_Y;
-  _remainingSteps = std::max(std::abs(DELTA_X), std::abs(DELTA_Y))
-      / ANIM_STEP_DISTANCE;
+  _remainingSteps = TOTAL_ANIM_STEPS;
 
   _xOffset = DELTA_X / _remainingSteps;
   _yOffset = DELTA_Y / _remainingSteps;

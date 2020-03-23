@@ -9,13 +9,13 @@
 //Other libraries headers
 
 //Own components headers
+#include "common/CommonDefines.h"
 #include "gameentities/GridContainer.h"
 #include "utils/LimitValues.hpp"
 #include "utils/Log.h"
 
 PathAnimator::PathAnimator()
-    : _gridInterface(nullptr), _pathTimerId(INIT_INT32_VALUE),
-      _isActive(false) {
+    : _gridInterface(nullptr), _pathTimerId(INIT_INT32_VALUE), _isActive(false) {
 
 }
 
@@ -38,6 +38,11 @@ int32_t PathAnimator::init(GridContainerProxyInterface *gridInterface,
 
 void PathAnimator::loadPath(std::vector<Point> &path) {
   _pathToAnimate.swap(path);
+
+  const Point initialNodePos = _pathToAnimate.back();
+  _batmanImg.setPosition(
+      _gridInterface->getNodeCoordinates(initialNodePos.x, initialNodePos.y));
+  _batmanImg.moveRight(BatmanDimensions::START_POS_X_OFFSET);
 
   //remove the last node since it's the start position
   _pathToAnimate.pop_back();
@@ -68,7 +73,7 @@ void PathAnimator::onTimeout(const int32_t timerId) {
 }
 
 void PathAnimator::processAnim() {
-  const Point & currPos = _pathToAnimate.back();
+  const Point &currPos = _pathToAnimate.back();
   _gridInterface->addAStarPathNode(currPos.x, currPos.y);
   _pathToAnimate.pop_back();
 }

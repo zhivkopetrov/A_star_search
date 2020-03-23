@@ -66,7 +66,10 @@ enum {
   SMALL_BATMAN_WIDTH = 32,
   SMALL_BATMAN_HEIGHT = 55,
   BIG_BATMAN_WIDTH = 340,
-  BIG_BATMAN_HEIGHT = 590
+  BIG_BATMAN_HEIGHT = 590,
+
+  //adjust start X, because the image is smaller than the tile
+  START_POS_X_OFFSET = 12
 };
 } //namespace BatmanDimensions
 

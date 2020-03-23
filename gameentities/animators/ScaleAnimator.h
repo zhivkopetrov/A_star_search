@@ -36,8 +36,7 @@ public:
 
 private:
   enum InternalDefines {
-    START_POS_X_OFFSET = 12,
-    ANIM_STEP_DISTANCE = 6
+    TOTAL_ANIM_STEPS = 100
   };
 
   virtual void onTimeout(const int32_t timerId) override final;
