@@ -10,7 +10,7 @@
 #include <SDL2/SDL_events.h>
 
 //Own components headers
-#include "GameProxyInterface.hpp"
+#include "proxies/GameProxyInterface.hpp"
 
 GridContainer::GridContainer()
     : _gameInterface(nullptr), _pathNodeRsrcId(0), _wallNodeRsrcId(0),
@@ -43,8 +43,9 @@ int32_t GridContainer::init(GameProxyInterface *gameInterface,
 
   for (int32_t i = 0; i < GRID_HEIGHT; ++i) {
     for (int32_t j = 0; j < GRID_WIDTH; ++j) {
-      _pathNodes[i][j].setPosition(((j * LINE_OFFSET) + TILE_OFFSET),
-                                  ((i * LINE_OFFSET) + TILE_OFFSET));
+      _pathNodes[i][j].create(pathNodeRsrcId);
+      _pathNodes[i][j].setPosition( ( (j * LINE_OFFSET) + TILE_OFFSET),
+          ( (i * LINE_OFFSET) + TILE_OFFSET));
     }
   }
 
@@ -114,11 +115,6 @@ void GridContainer::clearGridFromAStarPathNodes() {
   }
 }
 
-void GridContainer::addAStarPathNode(const int32_t nodeX, const int32_t nodeY) {
-  _pathNodes[nodeY][nodeX].setTextureId(_pathNodeRsrcId);
-  _pathNodes[nodeY][nodeX].show();
-}
-
 void GridContainer::addCollision(const int32_t nodeX, const int32_t nodeY) {
   _pathNodes[nodeY][nodeX].setTextureId(_wallNodeRsrcId);
   _pathNodes[nodeY][nodeX].show();
@@ -157,6 +153,16 @@ void GridContainer::addEndNode(const int32_t nodeX, const int32_t nodeY) {
   _pathNodes[nodeY][nodeX].show();
 }
 
+Point GridContainer::getNodeCoordinates(const int32_t nodeX,
+                                        const int32_t nodeY) const {
+  return _pathNodes[nodeY][nodeX].getPosition();
+}
+
+void GridContainer::addAStarPathNode(const int32_t nodeX, const int32_t nodeY) {
+  _pathNodes[nodeY][nodeX].setTextureId(_pathNodeRsrcId);
+  _pathNodes[nodeY][nodeX].show();
+}
+
 void GridContainer::onWallAdd() {
   int32_t nodeX = 0;
   int32_t nodeY = 0;
@@ -176,7 +182,6 @@ void GridContainer::onWallRemove() {
     _gameInterface->onNodeChanged(NodeType::WALL_REMOVE, nodeX, nodeY);
   }
 }
-
 
 void GridContainer::onStartNodeEntered() {
   int32_t nodeX = 0;

@@ -9,6 +9,7 @@
 //Other libraries headers
 
 //Own components headers
+#include "proxies/GridContainerProxyInterface.hpp"
 #include "utils/drawing/DrawParams.h"
 #include "utils/drawing/Image.h"
 
@@ -21,11 +22,11 @@ union SDL_Event;
 #define GRID_WIDTH 32
 #define GRID_HEIGHT 18
 
-class GridContainer {
+class GridContainer: public GridContainerProxyInterface {
 public:
   GridContainer();
 
-  ~GridContainer() = default;
+  virtual ~GridContainer() = default;
 
   int32_t init(GameProxyInterface *gameInterface,
                const uint8_t vericalLineRsrcId,
@@ -34,9 +35,7 @@ public:
                const uint8_t pathNodeRsrcId, const uint8_t wallNodeRsrcId);
 
   enum {
-    LINE_OFFSET = 60,
-    TILE_DIMENSION = 55,
-    TILE_OFFSET = 5,
+    LINE_OFFSET = 60, TILE_DIMENSION = 55, TILE_OFFSET = 5,
 
     HORIZONTAL_LINE_COUNT = 18, VERTICAL_LINE_COUNT = 32
   };
@@ -49,8 +48,6 @@ public:
 
   void clearGridFromAStarPathNodes();
 
-  void addAStarPathNode(const int32_t nodeX, const int32_t nodeY);
-
   void addCollision(const int32_t nodeX, const int32_t nodeY);
 
   void removeCollision(const int32_t nodeX, const int32_t nodeY);
@@ -59,7 +56,13 @@ public:
 
   void addEndNode(const int32_t nodeX, const int32_t nodeY);
 
+  virtual Point getNodeCoordinates(const int32_t nodeX,
+                                   const int32_t nodeY) const override final;
+
 private:
+  virtual void addAStarPathNode(const int32_t nodeX, const int32_t nodeY)
+      override final;
+
   void onWallAdd();
 
   void onWallRemove();

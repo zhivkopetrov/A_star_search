@@ -114,6 +114,14 @@ public:
     return _maxFrames;
   }
 
+  inline int32_t getMonitorWidth() const {
+    return _MONITOR_WIDTH;
+  }
+
+  inline int32_t getMonitorHeight() const {
+    return _MONITOR_HEIGHT;
+  }
+
 private:
   //Hide renderer implementation under user defined renderer class.
   //On later stages renderer internal implementation could be switched

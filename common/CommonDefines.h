@@ -20,6 +20,8 @@ enum : uint8_t {
   END_NODE,
   WALL,
   A_STAR_PATH,
+  BATMAN_BIG,
+  BATMAN_SMALL,
   FPS_TEXT,
   NO_AVAILABLE_PATH_TEXT,
 
@@ -54,9 +56,19 @@ enum {
 
 namespace Timers {
 enum {
-  PATH_TIMER_ID
+  PATH_TIMER_ID,
+  SCALE_TIMER_ID
 };
-}
+} //namespace Timers
+
+namespace BatmanDimensions {
+enum {
+  SMALL_BATMAN_WIDTH = 32,
+  SMALL_BATMAN_HEIGHT = 55,
+  BIG_BATMAN_WIDTH = 340,
+  BIG_BATMAN_HEIGHT = 590
+};
+} //namespace BatmanDimensions
 
 #endif /* COMMON_COMMONDEFINES_H_ */
 

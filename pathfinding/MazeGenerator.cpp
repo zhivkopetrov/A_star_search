@@ -11,13 +11,15 @@
 //Own components headers
 #include "utils/Log.h"
 
+MazeGenerator::MazeGenerator()
+    : _startNodePos(Point::UNDEFINED), _endNodePos(Point::UNDEFINED) {
+
+}
+
 int32_t MazeGenerator::init(const int32_t mazeWidth, const int32_t mazeHeight,
                             const bool isDiagonalMovementEnabled,
                             HeuristicFunction heuristic) {
   int32_t err = EXIT_SUCCESS;
-
-  _startNodePos = Point::UNDEFINED;
-  _endNodePos = Point::UNDEFINED;
 
   if (EXIT_SUCCESS != _aStar.init(mazeWidth, mazeHeight,
           isDiagonalMovementEnabled, heuristic, &_walls)) {
@@ -34,18 +36,5 @@ void MazeGenerator::removeCollision(const Point &position) {
   if (it != _walls.end()) {
     _walls.erase(it);
   }
-}
-
-void MazeGenerator::clearCollisions() {
-  _walls.clear();
-}
-
-std::vector<Point> MazeGenerator::findPath() {
-  if ( (_startNodePos != Point::UNDEFINED) &&
-      (_endNodePos != Point::UNDEFINED)) {
-    return _aStar.findPath(_startNodePos, _endNodePos);
-  }
-
-  return std::vector<Point>();
 }
 

@@ -4,7 +4,6 @@
 //C system headers
 
 //C++ system headers
-#include <set>
 #include <vector>
 
 //Other libraries headers
@@ -17,12 +16,14 @@
 
 class MazeGenerator {
 public:
-  MazeGenerator() = default;
+  MazeGenerator();
   ~MazeGenerator() = default;
 
   int32_t init(const int32_t mazeWidth, const int32_t mazeHeight,
                const bool isDiagonalMovementEnabled,
                HeuristicFunction heuristic);
+
+  void removeCollision(const Point &position);
 
   inline void setStartNodePos(const Point &startNodePos) {
     _startNodePos = startNodePos;
@@ -36,15 +37,22 @@ public:
     return _endNodePos;
   }
 
-  std::vector<Point> findPath();
-
   inline void addCollision(const Point &position) {
     _walls.emplace_back(position);
   }
 
-  void removeCollision(const Point &position);
+  inline bool isReadyToEvaluate() const {
+    return (_startNodePos != Point::UNDEFINED) &&
+                                            (_endNodePos != Point::UNDEFINED);
+  }
 
-  void clearCollisions();
+  inline std::vector<Point> findPath() {
+    return _aStar.findPath(_startNodePos, _endNodePos);
+  }
+
+  inline void clearCollisions() {
+    _walls.clear();
+  }
 
 private:
   AStar _aStar;

@@ -96,13 +96,12 @@ void Renderer::finishFrame() {
 
   //do the actual drawing of all stored images for THIS FRAME
   for (uint32_t i = 0; i < USED_SIZE; ++i) {
-    renderQuad.x = _widgets[i].pos.x;
-    renderQuad.y = _widgets[i].pos.y;
-
     sourceQuad = gRsrcMgr->getTextureFrameRect(_widgets[i].rsrcId);
 
-    renderQuad.w = sourceQuad.w;
-    renderQuad.h = sourceQuad.h;
+    renderQuad.x = _widgets[i].pos.x;
+    renderQuad.y = _widgets[i].pos.y;
+    renderQuad.w = _widgets[i].width;
+    renderQuad.h = _widgets[i].height;
 
     if (EXIT_SUCCESS != SDL_RenderCopy(_sdlRenderer,
             gRsrcMgr->getTexture(_widgets[i].rsrcId), &sourceQuad,

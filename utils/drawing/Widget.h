@@ -70,6 +70,14 @@ public:
     _drawParams.pos.y = y;
   }
 
+  inline void setWidth(const int32_t width) {
+    _drawParams.width = width;
+  }
+
+  inline void setHeight(const int32_t height) {
+    _drawParams.height = height;
+  }
+
   /** @brief used to move widget vertically.
    *
    *  @param const int32_t - Y coordinate offset
@@ -128,6 +136,14 @@ public:
    * */
   inline int32_t getY() const {
     return _drawParams.pos.y;
+  }
+
+  inline int32_t getWidth() const {
+    return _drawParams.width;
+  }
+
+  inline int32_t getHeight() const {
+    return _drawParams.height;
   }
 
   /** @brief used for making a copy of the current Widget DrawParams

@@ -9,9 +9,10 @@
 //Other libraries headers
 
 //Own components headers
-#include "GameProxyInterface.hpp"
 #include "GridContainer.h"
+#include "proxies/GameProxyInterface.hpp"
 #include "animators/PathAnimator.h"
+#include "animators/ScaleAnimator.h"
 #include "animators/GeneralTextAnimator.h"
 #include "pathfinding/MazeGenerator.h"
 
@@ -41,6 +42,8 @@ private:
   GridContainer _gridContainer;
 
   PathAnimator _pathAnimator;
+
+  ScaleAnimator _scaleAnimator;
 
   GeneralTextAnimator _generalTextAnimator;
 };

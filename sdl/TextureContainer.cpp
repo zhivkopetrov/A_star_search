@@ -125,9 +125,11 @@ int32_t TextureContainer::loadTextures(const int32_t windowWidth,
       "../assets/horizontal_line.png", Textures::HORIZONTAL_LINE }, {
       "../assets/start.png", Textures::START_NODE }, { "../assets/end.png",
       Textures::END_NODE }, { "../assets/wall.png", Textures::WALL }, {
-      "../assets/path.png", Textures::A_STAR_PATH } };
+      "../assets/path.png", Textures::A_STAR_PATH }, {
+      "../assets/batman_big.png", Textures::BATMAN_BIG }, {
+      "../assets/batman_small.png", Textures::BATMAN_SMALL } };
 
-  for (uint8_t i = Textures::VERTICAL_LINE; i <= Textures::A_STAR_PATH; ++i) {
+  for (uint8_t i = Textures::VERTICAL_LINE; i <= Textures::BATMAN_SMALL; ++i) {
     if ( EXIT_SUCCESS != loadSingleTexture(assets[i].first, assets[i].second)) {
       LOGERR("Error in loadSingleTexture()");
 
@@ -181,5 +183,15 @@ void TextureContainer::populateTextureFrameRects(const int32_t windowWidth,
     _textureFrameRects[i].w = TILE_DIMENSIONS;
     _textureFrameRects[i].h = TILE_DIMENSIONS;
   }
+
+  _textureFrameRects[Textures::BATMAN_BIG].w =
+      BatmanDimensions::BIG_BATMAN_WIDTH;
+  _textureFrameRects[Textures::BATMAN_BIG].h =
+      BatmanDimensions::BIG_BATMAN_HEIGHT;
+
+  _textureFrameRects[Textures::BATMAN_SMALL].w =
+      BatmanDimensions::SMALL_BATMAN_WIDTH;
+  _textureFrameRects[Textures::BATMAN_SMALL].h =
+      BatmanDimensions::SMALL_BATMAN_HEIGHT;
 }
 

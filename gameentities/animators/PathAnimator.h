@@ -10,39 +10,43 @@
 //Other libraries headers
 
 //Own components headers
+#include "gameentities/proxies/PathAnimatorProxyInterface.hpp"
 #include "utils/drawing/Point.h"
+#include "utils/drawing/Image.h"
 #include "utils/time/TimerClient.h"
 
 //Forward declarations
-class GridContainer;
+class GridContainerProxyInterface;
 
-class PathAnimator : public TimerClient {
+class PathAnimator: public TimerClient,
+                    public PathAnimatorProxyInterface {
 public:
   PathAnimator();
   ~PathAnimator() = default;
 
-  int32_t init(GridContainer *gridContainer, const int32_t pathTimerId);
+  int32_t init(GridContainerProxyInterface *gridInterface,
+               const uint8_t batmanRsrcId, const int32_t pathTimerId);
 
-  void startAnimation(std::vector<Point> &path);
-
-  void update(const int32_t elapsedTime);
+  void loadPath(std::vector<Point> &path);
 
   void draw();
 
-  inline bool isAnimActive() const {
+  inline bool isActive() const {
     return _isActive;
   }
 
 private:
+  virtual void onScaleAnimFinished() override final;
+
   virtual void onTimeout(const int32_t timerId) override final;
 
   void processAnim();
 
-  GridContainer *_gridContainer;
+  GridContainerProxyInterface *_gridInterface;
 
   std::vector<Point> _pathToAnimate;
 
-  Point _batmanPos;
+  Image _batmanImg;
 
   int32_t _pathTimerId;
 
