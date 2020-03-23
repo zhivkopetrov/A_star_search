@@ -8,12 +8,12 @@
 #include "sdl/SDLLoader.h"
 
 //Own components headers
-#include "Game.h"
+#include "Engine.h"
 #include "utils/Log.h"
 
 int32_t main(int32_t argc, char *args[]) {
   int32_t err = EXIT_SUCCESS;
-  Game game;
+  Engine engine;
 
   bool isDiagonalMovementAllowed = false;
   if (1 < argc) {
@@ -29,16 +29,16 @@ int32_t main(int32_t argc, char *args[]) {
   }
 
   if (EXIT_SUCCESS == err) {
-    if (EXIT_SUCCESS != game.init(isDiagonalMovementAllowed)) {
-      LOGERR("game.init() failed");
+    if (EXIT_SUCCESS != engine.init(isDiagonalMovementAllowed)) {
+      LOGERR("engine.init() failed");
 
       err = EXIT_FAILURE;
     } else {
-      game.start();
+      engine.start();
     }
   }
 
-  game.deinit();
+  engine.deinit();
 
   //close SDL libraries
   SDLLoader::deinit();

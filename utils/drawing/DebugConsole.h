@@ -1,5 +1,5 @@
-#ifndef UTILS_DEBUGCONSOLE_H_
-#define UTILS_DEBUGCONSOLE_H_
+#ifndef UTILS_DRAWING_DEBUGCONSOLE_H_
+#define UTILS_DRAWING_DEBUGCONSOLE_H_
 
 //C system headers
 
@@ -47,5 +47,5 @@ private:
   bool _isActive;
 };
 
-#endif /* UTILS_DEBUGCONSOLE_H_ */
+#endif /* UTILS_DRAWING_DEBUGCONSOLE_H_ */
 
