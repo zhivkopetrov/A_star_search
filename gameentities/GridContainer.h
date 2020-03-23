@@ -9,6 +9,7 @@
 //Other libraries headers
 
 //Own components headers
+#include "common/CommonDefines.h"
 #include "proxies/GridContainerProxyInterface.hpp"
 #include "utils/drawing/DrawParams.h"
 #include "utils/drawing/Image.h"
@@ -17,10 +18,6 @@
 class GameProxyInterface;
 struct Point;
 union SDL_Event;
-
-#define TOTAL_LINES_COUNT 50
-#define GRID_WIDTH 32
-#define GRID_HEIGHT 18
 
 class GridContainer: public GridContainerProxyInterface {
 public:
@@ -33,12 +30,6 @@ public:
                const uint8_t horizontalLineRsrcId,
                const uint8_t startNodeRsrcId, const uint8_t endNodeRsrcId,
                const uint8_t pathNodeRsrcId, const uint8_t wallNodeRsrcId);
-
-  enum {
-    LINE_OFFSET = 60, TILE_DIMENSION = 55, TILE_OFFSET = 5,
-
-    HORIZONTAL_LINE_COUNT = 18, VERTICAL_LINE_COUNT = 32
-  };
 
   void draw();
 
@@ -74,6 +65,10 @@ private:
   //returns false if event has not selected any node
   bool getSelectedNode(int32_t *nodeX, int32_t *nodeY);
 
+  enum InternalDefines {
+    TOTAL_LINES_COUNT = 50
+  };
+
   GameProxyInterface *_gameInterface;
 
   uint8_t _pathNodeRsrcId;
@@ -82,7 +77,7 @@ private:
   uint8_t _endNodeRsrcId;
 
   Image _gridLines[TOTAL_LINES_COUNT];
-  Image _pathNodes[GRID_HEIGHT][GRID_WIDTH];
+  Image _pathNodes[Grid::GRID_HEIGHT][Grid::GRID_WIDTH];
 };
 
 #endif /* GAMEENTITIES_GRIDCONTAINER_H_ */

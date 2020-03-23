@@ -32,8 +32,8 @@ int32_t Game::init(const bool isDiagonalMovementAllowed) {
       heuristic = Heuristic::diagonal;
     }
 
-    if (EXIT_SUCCESS != _generator.init(GRID_WIDTH,
-    GRID_HEIGHT, isDiagonalMovementAllowed, heuristic)) {
+    if (EXIT_SUCCESS != _generator.init(Grid::GRID_WIDTH, Grid::GRID_HEIGHT,
+            isDiagonalMovementAllowed, heuristic)) {
       LOGERR("Error, _generator.init() failed");
       err = EXIT_FAILURE;
     }
@@ -86,7 +86,7 @@ void Game::handleUserEvent(SDL_Event &e) {
   _gridContainer.handleUserEvent(e);
 
   if (e.type == SDL_KEYUP && e.key.keysym.sym == SDLK_SPACE) {
-    if (_generator.isReadyToEvaluate()) {
+    if (_generator.isReadyToEvaluate() && !_scaleAnimator.isActive()) {
       evaluateAStar();
     }
   }

@@ -43,6 +43,17 @@ enum {
 };
 } //namespace FontSize
 
+namespace Grid {
+enum {
+  GRID_HEIGHT = 18,
+  GRID_WIDTH = 32,
+
+  TILE_DIMENSION = 55,
+  LINE_OFFSET = 5,
+  TILE_OFFSET = LINE_OFFSET + TILE_DIMENSION
+};
+} //namespace Grid
+
 namespace Movement {
 enum {
   //simulate Pythagoras theorem distance by using 10 for the

@@ -15,7 +15,8 @@
 #include "utils/Log.h"
 
 PathAnimator::PathAnimator()
-    : _gridInterface(nullptr), _pathTimerId(INIT_INT32_VALUE), _isActive(false) {
+    : _gridInterface(nullptr), _animStep(0), _offsetX(0), _offsetY(0),
+      _pathTimerId(INIT_INT32_VALUE), _isActive(false) {
 
 }
 
@@ -54,17 +55,17 @@ void PathAnimator::draw() {
 
 void PathAnimator::onScaleAnimFinished() {
   _isActive = true;
-  startTimer(100, _pathTimerId, TimerType::PULSE);
+  _animStep = ANIM_MOVES;
+  loadNextOffsets();
+  startTimer(20, _pathTimerId, TimerType::PULSE);
 }
 
 void PathAnimator::onTimeout(const int32_t timerId) {
   if (_pathTimerId == timerId) {
-    //we are not interested in end node
-    if (1 < _pathToAnimate.size()) {
+    if (!_pathToAnimate.empty()) {
       processAnim();
     } else {
       stopTimer(timerId);
-      _pathToAnimate.clear();
       _isActive = false;
     }
   } else {
@@ -73,7 +74,39 @@ void PathAnimator::onTimeout(const int32_t timerId) {
 }
 
 void PathAnimator::processAnim() {
-  const Point &currPos = _pathToAnimate.back();
-  _gridInterface->addAStarPathNode(currPos.x, currPos.y);
-  _pathToAnimate.pop_back();
+  --_animStep;
+  moveImage();
+
+  if (0 == _animStep) {
+    const Point &currPos = _pathToAnimate.back();
+    //we are not interested in end node
+    if (1 < _pathToAnimate.size()) {
+      _gridInterface->addAStarPathNode(currPos.x, currPos.y);
+    }
+    _pathToAnimate.pop_back();
+
+    _animStep = ANIM_MOVES;
+    loadNextOffsets();
+  }
 }
+
+void PathAnimator::loadNextOffsets() {
+  const Point END_NODE_POS = _pathToAnimate.back();
+  const Point END_BATMAN_POS = _gridInterface->getNodeCoordinates(
+      END_NODE_POS.x, END_NODE_POS.y);
+  _offsetX = (END_BATMAN_POS.x + BatmanDimensions::START_POS_X_OFFSET
+      - _batmanImg.getX())
+             / ANIM_MOVES;
+  _offsetY = (END_BATMAN_POS.y - _batmanImg.getY()) / ANIM_MOVES;
+}
+
+void PathAnimator::moveImage() {
+  if (_offsetX) {
+    _batmanImg.setX(_batmanImg.getX() + _offsetX);
+  }
+
+  if (_offsetY) {
+    _batmanImg.setY(_batmanImg.getY() + _offsetY);
+  }
+}
+

@@ -42,11 +42,24 @@ private:
 
   void processAnim();
 
+  void moveImage();
+
+  void loadNextOffsets();
+
+  enum InternalDefines {
+    ANIM_MOVES = 10
+  };
+
   GridContainerProxyInterface *_gridInterface;
 
   std::vector<Point> _pathToAnimate;
 
   Image _batmanImg;
+
+  int32_t _animStep;
+
+  int32_t _offsetX;
+  int32_t _offsetY;
 
   int32_t _pathTimerId;
 

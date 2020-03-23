@@ -31,21 +31,22 @@ int32_t GridContainer::init(GameProxyInterface *gameInterface,
   _startNodeRsrcId = startNodeRsrcId;
   _endNodeRsrcId = endNodeRsrcId;
 
-  for (int32_t i = 0; i < HORIZONTAL_LINE_COUNT; ++i) {
+  for (int32_t i = 0; i < Grid::GRID_HEIGHT; ++i) {
     _gridLines[i].create(horizontalLineRsrcId);
-    _gridLines[i].setPosition(0, i * LINE_OFFSET);
+    _gridLines[i].setPosition(0, i * Grid::TILE_OFFSET);
   }
 
-  for (int32_t i = 0; i < VERTICAL_LINE_COUNT; ++i) {
-    _gridLines[i + HORIZONTAL_LINE_COUNT].create(vericalLineRsrcId);
-    _gridLines[i + HORIZONTAL_LINE_COUNT].setPosition(i * LINE_OFFSET, 0);
+  for (int32_t i = 0; i < Grid::GRID_WIDTH; ++i) {
+    _gridLines[i + Grid::GRID_HEIGHT].create(vericalLineRsrcId);
+    _gridLines[i + Grid::GRID_HEIGHT].setPosition(i * Grid::TILE_OFFSET, 0);
   }
 
-  for (int32_t i = 0; i < GRID_HEIGHT; ++i) {
-    for (int32_t j = 0; j < GRID_WIDTH; ++j) {
+  for (int32_t i = 0; i < Grid::GRID_HEIGHT; ++i) {
+    for (int32_t j = 0; j < Grid::GRID_WIDTH; ++j) {
       _pathNodes[i][j].create(pathNodeRsrcId);
-      _pathNodes[i][j].setPosition( ( (j * LINE_OFFSET) + TILE_OFFSET),
-          ( (i * LINE_OFFSET) + TILE_OFFSET));
+      _pathNodes[i][j].setPosition(
+          ( (j * Grid::TILE_OFFSET) + Grid::LINE_OFFSET),
+          ( (i * Grid::TILE_OFFSET) + Grid::LINE_OFFSET));
     }
   }
 
@@ -59,8 +60,8 @@ void GridContainer::draw() {
     _gridLines[i].draw();
   }
 
-  for (int32_t i = 0; i < GRID_HEIGHT; ++i) {
-    for (int32_t j = 0; j < GRID_WIDTH; ++j) {
+  for (int32_t i = 0; i < Grid::GRID_HEIGHT; ++i) {
+    for (int32_t j = 0; j < Grid::GRID_WIDTH; ++j) {
       _pathNodes[i][j].draw();
     }
   }
@@ -85,6 +86,10 @@ void GridContainer::handleUserEvent(SDL_Event &e) {
       onEndNodeEntered();
       break;
 
+    case SDLK_c:
+      clearGrid();
+      break;
+
     default:
       break;
     }
@@ -98,16 +103,17 @@ void GridContainer::handleUserEvent(SDL_Event &e) {
 }
 
 void GridContainer::clearGrid() {
-  for (int32_t i = 0; i < GRID_HEIGHT; ++i) {
-    for (int32_t j = 0; j < GRID_WIDTH; ++j) {
+  for (int32_t i = 0; i < Grid::GRID_HEIGHT; ++i) {
+    for (int32_t j = 0; j < Grid::GRID_WIDTH; ++j) {
+      _pathNodes[i][j].setTextureId(_pathNodeRsrcId);
       _pathNodes[i][j].hide();
     }
   }
 }
 
 void GridContainer::clearGridFromAStarPathNodes() {
-  for (int32_t i = 0; i < GRID_HEIGHT; ++i) {
-    for (int32_t j = 0; j < GRID_WIDTH; ++j) {
+  for (int32_t i = 0; i < Grid::GRID_HEIGHT; ++i) {
+    for (int32_t j = 0; j < Grid::GRID_WIDTH; ++j) {
       if (_pathNodeRsrcId == _pathNodes[i][j].getRsrcId()) {
         _pathNodes[i][j].hide();
       }
@@ -126,8 +132,8 @@ void GridContainer::removeCollision(const int32_t nodeX, const int32_t nodeY) {
 
 void GridContainer::addStartNode(const int32_t nodeX, const int32_t nodeY) {
   //first clear the old start node, if any
-  for (int32_t i = 0; i < GRID_HEIGHT; ++i) {
-    for (int32_t j = 0; j < GRID_WIDTH; ++j) {
+  for (int32_t i = 0; i < Grid::GRID_HEIGHT; ++i) {
+    for (int32_t j = 0; j < Grid::GRID_WIDTH; ++j) {
       if (_startNodeRsrcId == _pathNodes[i][j].getRsrcId()) {
         _pathNodes[i][j].hide();
         break;
@@ -141,8 +147,8 @@ void GridContainer::addStartNode(const int32_t nodeX, const int32_t nodeY) {
 
 void GridContainer::addEndNode(const int32_t nodeX, const int32_t nodeY) {
   //first clear the old start node, if any
-  for (int32_t i = 0; i < GRID_HEIGHT; ++i) {
-    for (int32_t j = 0; j < GRID_WIDTH; ++j) {
+  for (int32_t i = 0; i < Grid::GRID_HEIGHT; ++i) {
+    for (int32_t j = 0; j < Grid::GRID_WIDTH; ++j) {
       if (_endNodeRsrcId == _pathNodes[i][j].getRsrcId()) {
         _pathNodes[i][j].hide();
       }
@@ -207,13 +213,13 @@ bool GridContainer::getSelectedNode(int32_t *nodeX, int32_t *nodeY) {
   SDL_GetMouseState(&mousePos.x, &mousePos.y);
 
   SDL_Rect currBoundaryRect;
-  currBoundaryRect.w = TILE_DIMENSION;
-  currBoundaryRect.h = TILE_DIMENSION;
+  currBoundaryRect.w = Grid::TILE_DIMENSION;
+  currBoundaryRect.h = Grid::TILE_DIMENSION;
 
   Point currNodePos;
 
-  for (int32_t i = 0; i < GRID_HEIGHT; ++i) {
-    for (int32_t j = 0; j < GRID_WIDTH; ++j) {
+  for (int32_t i = 0; i < Grid::GRID_HEIGHT; ++i) {
+    for (int32_t j = 0; j < Grid::GRID_WIDTH; ++j) {
       currNodePos = _pathNodes[i][j].getPosition();
       currBoundaryRect.x = currNodePos.x;
       currBoundaryRect.y = currNodePos.y;
