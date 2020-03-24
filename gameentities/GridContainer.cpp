@@ -107,6 +107,11 @@ void GridContainer::clearGrid() {
   }
 }
 
+void GridContainer::addAStarPathNode(const Point& nodePos) {
+  _pathNodes[nodePos.y][nodePos.x].setTextureId(_pathNodeRsrcId);
+  _pathNodes[nodePos.y][nodePos.x].show();
+}
+
 void GridContainer::clearGridFromAStarPathNodes() {
   for (int32_t i = 0; i < Grid::GRID_HEIGHT; ++i) {
     for (int32_t j = 0; j < Grid::GRID_WIDTH; ++j) {
@@ -117,16 +122,16 @@ void GridContainer::clearGridFromAStarPathNodes() {
   }
 }
 
-void GridContainer::addCollision(const int32_t nodeX, const int32_t nodeY) {
-  _pathNodes[nodeY][nodeX].setTextureId(_wallNodeRsrcId);
-  _pathNodes[nodeY][nodeX].show();
+void GridContainer::addCollision(const Point &nodePos) {
+  _pathNodes[nodePos.y][nodePos.x].setTextureId(_wallNodeRsrcId);
+  _pathNodes[nodePos.y][nodePos.x].show();
 }
 
-void GridContainer::removeCollision(const int32_t nodeX, const int32_t nodeY) {
-  _pathNodes[nodeY][nodeX].hide();
+void GridContainer::removeCollision(const Point &nodePos) {
+  _pathNodes[nodePos.y][nodePos.x].hide();
 }
 
-void GridContainer::addStartNode(const int32_t nodeX, const int32_t nodeY) {
+void GridContainer::addStartNode(const Point &nodePos) {
   //first clear the old start node, if any
   for (int32_t i = 0; i < Grid::GRID_HEIGHT; ++i) {
     for (int32_t j = 0; j < Grid::GRID_WIDTH; ++j) {
@@ -137,11 +142,11 @@ void GridContainer::addStartNode(const int32_t nodeX, const int32_t nodeY) {
     }
   }
 
-  _pathNodes[nodeY][nodeX].setTextureId(_startNodeRsrcId);
-  _pathNodes[nodeY][nodeX].show();
+  _pathNodes[nodePos.y][nodePos.x].setTextureId(_startNodeRsrcId);
+  _pathNodes[nodePos.y][nodePos.x].show();
 }
 
-void GridContainer::addEndNode(const int32_t nodeX, const int32_t nodeY) {
+void GridContainer::addEndNode(const Point &nodePos) {
   //first clear the old start node, if any
   for (int32_t i = 0; i < Grid::GRID_HEIGHT; ++i) {
     for (int32_t j = 0; j < Grid::GRID_WIDTH; ++j) {
@@ -151,59 +156,51 @@ void GridContainer::addEndNode(const int32_t nodeX, const int32_t nodeY) {
     }
   }
 
-  _pathNodes[nodeY][nodeX].setTextureId(_endNodeRsrcId);
-  _pathNodes[nodeY][nodeX].show();
+  _pathNodes[nodePos.y][nodePos.x].setTextureId(_endNodeRsrcId);
+  _pathNodes[nodePos.y][nodePos.x].show();
 }
 
-Point GridContainer::getNodeCoordinates(const int32_t nodeX,
-                                        const int32_t nodeY) const {
-  return _pathNodes[nodeY][nodeX].getPosition();
-}
-
-void GridContainer::addAStarPathNode(const int32_t nodeX, const int32_t nodeY) {
-  _pathNodes[nodeY][nodeX].setTextureId(_pathNodeRsrcId);
-  _pathNodes[nodeY][nodeX].show();
+Point GridContainer::getNodeCoordinates(const Point& nodePos) const {
+  return _pathNodes[nodePos.y][nodePos.x].getPosition();
 }
 
 void GridContainer::onWallAdd() {
-  int32_t nodeX = 0;
-  int32_t nodeY = 0;
-
-  if (getSelectedNode(&nodeX, &nodeY)) {
-    addCollision(nodeX, nodeY);
-    _gameInterface->onNodeChanged(NodeType::WALL_ADD, nodeX, nodeY);
+  Point nodePos;
+  if (getSelectedNode(nodePos)) {
+    clearGridFromAStarPathNodes();
+    addCollision(nodePos);
+    _gameInterface->onNodeChanged(NodeType::WALL_ADD, nodePos);
   }
 }
 
 void GridContainer::onWallRemove() {
-  int32_t nodeX = 0;
-  int32_t nodeY = 0;
-
-  if (getSelectedNode(&nodeX, &nodeY)) {
-    removeCollision(nodeX, nodeY);
-    _gameInterface->onNodeChanged(NodeType::WALL_REMOVE, nodeX, nodeY);
+  Point nodePos;
+  if (getSelectedNode(nodePos)) {
+    clearGridFromAStarPathNodes();
+    removeCollision(nodePos);
+    _gameInterface->onNodeChanged(NodeType::WALL_REMOVE, nodePos);
   }
 }
 
 void GridContainer::onStartNodeEntered() {
-  int32_t nodeX = 0;
-  int32_t nodeY = 0;
-
-  if (getSelectedNode(&nodeX, &nodeY)) {
-    _gameInterface->onNodeChanged(NodeType::START_CHANGE, nodeX, nodeY);
+  Point nodePos;
+  if (getSelectedNode(nodePos)) {
+    clearGridFromAStarPathNodes();
+    addStartNode(nodePos);
+    _gameInterface->onNodeChanged(NodeType::START_CHANGE, nodePos);
   }
 }
 
 void GridContainer::onEndNodeEntered() {
-  int32_t nodeX = 0;
-  int32_t nodeY = 0;
-
-  if (getSelectedNode(&nodeX, &nodeY)) {
-    _gameInterface->onNodeChanged(NodeType::END_CHANGE, nodeX, nodeY);
+  Point nodePos;
+  if (getSelectedNode(nodePos)) {
+    clearGridFromAStarPathNodes();
+    addEndNode(nodePos);
+    _gameInterface->onNodeChanged(NodeType::END_CHANGE, nodePos);
   }
 }
 
-bool GridContainer::getSelectedNode(int32_t *nodeX, int32_t *nodeY) {
+bool GridContainer::getSelectedNode(Point &nodePos) {
   SDL_Point mousePos;
   /* capture mouse position on the screen */
   SDL_GetMouseState(&mousePos.x, &mousePos.y);
@@ -221,8 +218,8 @@ bool GridContainer::getSelectedNode(int32_t *nodeX, int32_t *nodeY) {
       currBoundaryRect.y = currNodePos.y;
 
       if (SDL_PointInRect(&mousePos, &currBoundaryRect)) {
-        *nodeX = j;
-        *nodeY = i;
+        nodePos.x = j;
+        nodePos.y = i;
 
         return true;
       }

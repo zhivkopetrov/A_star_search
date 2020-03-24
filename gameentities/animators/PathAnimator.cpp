@@ -35,10 +35,8 @@ int32_t PathAnimator::init(
 
 void PathAnimator::loadPath(std::vector<Point> &path) {
   _pathToAnimate.swap(path);
-
-  const Point initialNodePos = _pathToAnimate.back();
   _batmanImg.setPosition(
-      _gridInterface->getNodeCoordinates(initialNodePos.x, initialNodePos.y));
+      _gridInterface->getNodeCoordinates(_pathToAnimate.back()));
   _batmanImg.moveRight(BatmanDimensions::START_POS_X_OFFSET);
 
   //remove the last node since it's the start position
@@ -78,7 +76,7 @@ void PathAnimator::processAnim() {
     const Point &currPos = _pathToAnimate.back();
     //we are not interested in end node
     if (1 < _pathToAnimate.size()) {
-      _gridInterface->addAStarPathNode(currPos.x, currPos.y);
+      _gridInterface->addAStarPathNode(currPos);
     }
     _pathToAnimate.pop_back();
 
@@ -88,9 +86,8 @@ void PathAnimator::processAnim() {
 }
 
 void PathAnimator::loadNextOffsets() {
-  const Point END_NODE_POS = _pathToAnimate.back();
   const Point END_BATMAN_POS = _gridInterface->getNodeCoordinates(
-      END_NODE_POS.x, END_NODE_POS.y);
+      _pathToAnimate.back());
   _offsetX = (END_BATMAN_POS.x + BatmanDimensions::START_POS_X_OFFSET
       - _batmanImg.getX())
              / ANIM_MOVES;

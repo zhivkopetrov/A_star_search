@@ -9,6 +9,7 @@
 //Other libraries headers
 
 //Own components headers
+#include "utils/drawing/Point.h"
 
 //Forward declarations
 
@@ -21,8 +22,7 @@ public:
   GameProxyInterface() = default;
   virtual ~GameProxyInterface() = default;
 
-  virtual void onNodeChanged(const NodeType nodeType, const int32_t nodeX,
-                             const int32_t nodeY) = 0;
+  virtual void onNodeChanged(const NodeType nodeType, const Point &nodePos) = 0;
 
   virtual void onAnimFinished() = 0;
 };

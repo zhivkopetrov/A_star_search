@@ -30,3 +30,4 @@ TODOs:
 - implement a better API for polling if there is collision on the walls
 - when animation is finished all "non-preset" walls should be removed
 - move the "isDiagonalMovement allowed to an option"
+- Implement a "popping up" menu (in the upper right corner). It will have the ticks "isDiagonalMovementAllowed" to a checkbox and up-down arrows for levels (predefined walls)

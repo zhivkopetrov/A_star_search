@@ -25,19 +25,19 @@ public:
                const bool isDiagonalMovementEnabled,
                HeuristicFunction heuristic, const std::vector<Point> *walls);
 
-  std::vector<Point> findPath(const Point &source, const Point &target);
+  std::vector<Point> findPath(const Point &source, const Point &target) const;
 
 private:
   enum InternalDefines {
-    DIAGONAL_MOVEMENTS = 8,
-    NON_DIAGONAL_MOVEMENTS = 4,
+    DIAGONAL_MOVEMENTS = 8, NON_DIAGONAL_MOVEMENTS = 4,
   };
 
-  bool detectCollision(const Point &position);
+  bool detectCollision(const Point &position) const;
 
-  Node* findNodeOnList(const std::set<Node*> &nodes, const Point &position);
+  Node* findNodeOnList(const std::set<Node*> &nodes,
+                       const Point &position) const;
 
-  void releaseNodes(std::set<Node*> &nodes);
+  void releaseNodes(std::set<Node*> &nodes) const;
 
   HeuristicFunction _heuristic;
   std::vector<Point> _moveDirections;

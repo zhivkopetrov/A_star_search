@@ -37,22 +37,20 @@ public:
 
   void clearGrid();
 
-  void clearGridFromAStarPathNodes();
-
-  void addCollision(const int32_t nodeX, const int32_t nodeY);
-
-  void removeCollision(const int32_t nodeX, const int32_t nodeY);
-
-  void addStartNode(const int32_t nodeX, const int32_t nodeY);
-
-  void addEndNode(const int32_t nodeX, const int32_t nodeY);
-
-  virtual Point getNodeCoordinates(const int32_t nodeX,
-                                   const int32_t nodeY) const override final;
+  virtual Point getNodeCoordinates(const Point& nodePos) const override final;
 
 private:
-  virtual void addAStarPathNode(const int32_t nodeX, const int32_t nodeY)
-      override final;
+  virtual void addAStarPathNode(const Point& nodePos) override final;
+
+  void clearGridFromAStarPathNodes();
+
+  void addCollision(const Point &nodePos);
+
+  void removeCollision(const Point &nodePos);
+
+  void addStartNode(const Point &nodePos);
+
+  void addEndNode(const Point &nodePos);
 
   void onWallAdd();
 
@@ -63,7 +61,7 @@ private:
   void onEndNodeEntered();
 
   //returns false if event has not selected any node
-  bool getSelectedNode(int32_t *nodeX, int32_t *nodeY);
+  bool getSelectedNode(Point &nodePos);
 
   enum InternalDefines {
     TOTAL_LINES_COUNT = Grid::GRID_HEIGHT + Grid::GRID_WIDTH

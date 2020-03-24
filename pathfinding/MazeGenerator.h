@@ -48,7 +48,7 @@ public:
                                             (_endNodePos != Point::UNDEFINED);
   }
 
-  inline std::vector<Point> findPath() {
+  inline std::vector<Point> findPath() const {
     return _aStar.findPath(_startNodePos, _endNodePos);
   }
 

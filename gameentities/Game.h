@@ -16,7 +16,7 @@
 
 //Forward declarations
 
-class Game : private GameProxyInterface {
+class Game: private GameProxyInterface {
 public:
   Game() = default;
   virtual ~Game() = default;
@@ -32,8 +32,8 @@ public:
 private:
   void evaluateAStar();
 
-  virtual void onNodeChanged(const NodeType nodeType, const int32_t nodeX,
-                             const int32_t nodeY) override final;
+  virtual void onNodeChanged(const NodeType nodeType, const Point &nodePosY)
+      override final;
 
   virtual void onAnimFinished() override final;
 

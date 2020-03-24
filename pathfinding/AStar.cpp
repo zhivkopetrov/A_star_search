@@ -46,7 +46,8 @@ int32_t AStar::init(const int32_t mazeWidth, const int32_t mazeHeight,
   return err;
 }
 
-std::vector<Point> AStar::findPath(const Point &source, const Point &target) {
+std::vector<Point> AStar::findPath(const Point &source,
+                                   const Point &target) const {
   std::vector<Point> path;
   if (detectCollision(source) || detectCollision(target)) {
     LOGERR("Error, source or target are out of bounds");
@@ -114,7 +115,7 @@ std::vector<Point> AStar::findPath(const Point &source, const Point &target) {
 }
 
 Node* AStar::findNodeOnList(const std::set<Node*> &nodes,
-                            const Point &position) {
+                            const Point &position) const {
   for (auto node : nodes) {
     if (node->position == position) {
       return node;
@@ -123,14 +124,14 @@ Node* AStar::findNodeOnList(const std::set<Node*> &nodes,
   return nullptr;
 }
 
-void AStar::releaseNodes(std::set<Node*> &nodes) {
+void AStar::releaseNodes(std::set<Node*> &nodes) const {
   for (auto it = nodes.begin(); it != nodes.end();) {
     delete *it;
     it = nodes.erase(it);
   }
 }
 
-bool AStar::detectCollision(const Point &position) {
+bool AStar::detectCollision(const Point &position) const {
   if (position.x < 0 || position.x >= _mazeWidth
       || position.y < 0
       || position.y >= _mazeHeight

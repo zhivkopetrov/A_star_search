@@ -18,10 +18,9 @@ public:
   GridContainerProxyInterface() = default;
   virtual ~GridContainerProxyInterface() = default;
 
-  virtual void addAStarPathNode(const int32_t nodeX, const int32_t nodeY) = 0;
+  virtual void addAStarPathNode(const Point& nodePos) = 0;
 
-  virtual Point getNodeCoordinates(const int32_t nodeX,
-                                   const int32_t nodeY) const = 0;
+  virtual Point getNodeCoordinates(const Point& nodePos) const = 0;
 };
 
 #endif /* GAMEENTITIES_PROXIES_GRIDCONTAINERPROXYINTERFACE_HPP_ */

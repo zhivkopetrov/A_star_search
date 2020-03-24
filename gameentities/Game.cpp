@@ -82,37 +82,24 @@ void Game::handleUserEvent(const SDL_Event &e) {
   _gridContainer.handleUserEvent(e);
 }
 
-void Game::onNodeChanged(const NodeType nodeType, const int32_t nodeX,
-                         const int32_t nodeY) {
+void Game::onNodeChanged(const NodeType nodeType, const Point &nodePos) {
   switch (nodeType) {
   case NodeType::WALL_ADD:
-    _generator.addCollision( { nodeX, nodeY });
-
-    _gridContainer.clearGridFromAStarPathNodes();
-    _gridContainer.addCollision(nodeX, nodeY);
+    _generator.addCollision(nodePos);
     break;
 
   case NodeType::WALL_REMOVE:
-    _generator.removeCollision( { nodeX, nodeY });
-
-    _gridContainer.clearGridFromAStarPathNodes();
-    _gridContainer.removeCollision(nodeX, nodeY);
+    _generator.removeCollision(nodePos);
     break;
 
   case NodeType::START_CHANGE:
     _animHandler.perform(AnimEvent::SET_SCALE_AMIM_TARGET,
-        _gridContainer.getNodeCoordinates(nodeX, nodeY));
-    _generator.setStartNodePos( { nodeX, nodeY });
-
-    _gridContainer.clearGridFromAStarPathNodes();
-    _gridContainer.addStartNode(nodeX, nodeY);
+        _gridContainer.getNodeCoordinates(nodePos));
+    _generator.setStartNodePos(nodePos);
     break;
 
   case NodeType::END_CHANGE:
-    _generator.setEndNodePos( { nodeX, nodeY });
-
-    _gridContainer.clearGridFromAStarPathNodes();
-    _gridContainer.addEndNode(nodeX, nodeY);
+    _generator.setEndNodePos(nodePos);
     break;
 
   default:
