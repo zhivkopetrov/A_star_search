@@ -7,7 +7,6 @@
 #include <cstdint>
 
 //Other libraries headers
-#include <SDL2/SDL_events.h>
 
 //Own components headers
 #include "managers/ManagerHandler.h"
@@ -36,15 +35,13 @@ private:
 
   void drawWorld();
 
-  bool handleUserEvent(SDL_Event &e);
+  bool handleUserEvent(SDL_Event& e);
 
   ManagerHandler _managerHandler;
 
   Game _game;
 
   DebugConsole _debugConsole;
-
-  SDL_Event _inputEvent;
 };
 
 #endif /* ENGINE_H_ */

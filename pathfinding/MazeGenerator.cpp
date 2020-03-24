@@ -38,3 +38,8 @@ void MazeGenerator::removeCollision(const Point &position) {
   }
 }
 
+void MazeGenerator::clear() {
+  _startNodePos = Point::UNDEFINED;
+  _endNodePos = Point::UNDEFINED;
+}
+

@@ -53,6 +53,7 @@ private:
   PathAnimatorProxyInterface *_pathAnimInterface;
 
   Point _endPos;
+  Point _origStartPos;
 
   int32_t _imgOrigWidth;
   int32_t _imgOrigHeight;

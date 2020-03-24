@@ -67,7 +67,7 @@ void GridContainer::draw() {
   }
 }
 
-void GridContainer::handleUserEvent(SDL_Event &e) {
+void GridContainer::handleUserEvent(const SDL_Event &e) {
   if (e.type == SDL_KEYUP) {
     switch (e.key.keysym.sym) {
     case SDLK_s:
@@ -84,10 +84,6 @@ void GridContainer::handleUserEvent(SDL_Event &e) {
 
     case SDLK_e:
       onEndNodeEntered();
-      break;
-
-    case SDLK_c:
-      clearGrid();
       break;
 
     default:

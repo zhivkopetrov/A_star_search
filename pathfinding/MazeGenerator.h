@@ -25,6 +25,8 @@ public:
 
   void removeCollision(const Point &position);
 
+  void clear();
+
   inline void setStartNodePos(const Point &startNodePos) {
     _startNodePos = startNodePos;
   }

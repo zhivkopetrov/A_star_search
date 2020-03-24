@@ -30,7 +30,7 @@ int32_t DebugConsole::init() {
   return EXIT_SUCCESS;
 }
 
-void DebugConsole::handleEvent(SDL_Event &e) {
+void DebugConsole::handleEvent(const SDL_Event &e) {
   if (SDL_KEYUP != e.type) {
     return;
   }

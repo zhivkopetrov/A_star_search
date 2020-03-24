@@ -40,24 +40,8 @@ int32_t Game::init(const bool isDiagonalMovementAllowed) {
   }
 
   if (EXIT_SUCCESS == err) {
-    if (EXIT_SUCCESS != _generalTextAnimator.init()) {
-      LOGERR("Error, _generalTextAnimator.init() failed");
-      err = EXIT_FAILURE;
-    }
-  }
-
-  if (EXIT_SUCCESS == err) {
-    if (EXIT_SUCCESS != _pathAnimator.init(&_gridContainer,
-            Textures::BATMAN_SMALL, Timers::PATH_TIMER_ID)) {
-      LOGERR("Error, _pathAnimator.init() failed");
-      err = EXIT_FAILURE;
-    }
-  }
-
-  if (EXIT_SUCCESS == err) {
-    if (EXIT_SUCCESS != _scaleAnimator.init(&_pathAnimator,
-            Textures::BATMAN_BIG, Timers::SCALE_TIMER_ID)) {
-      LOGERR("Error, _pathAnimator.init() failed");
+    if (EXIT_SUCCESS != _animHandler.init(&_gridContainer)) {
+      LOGERR("Error, _animHandler.init() failed");
       err = EXIT_FAILURE;
     }
   }
@@ -66,30 +50,38 @@ int32_t Game::init(const bool isDiagonalMovementAllowed) {
 }
 
 void Game::deinit() {
-
+//#warning when hit space key if not possible solution is found - show the big batman and in the speech bubble say - "no solution found"
+//#warning if a solution is found - again show the big batman and in the speech bubble say - "Let's roll out" and begin the shrink animation
+//#warning I need to implement another animator that does the above two things
 }
 
 void Game::draw() {
   _gridContainer.draw();
-  _generalTextAnimator.draw();
-
-  if (_pathAnimator.isActive()) {
-    _pathAnimator.draw();
-  }
-
-  if (_scaleAnimator.isActive()) {
-    _scaleAnimator.draw();
-  }
+  _animHandler.draw();
 }
 
-void Game::handleUserEvent(SDL_Event &e) {
-  _gridContainer.handleUserEvent(e);
+void Game::handleUserEvent(const SDL_Event &e) {
+  if (_animHandler.isActive()) {
+    return;
+  }
 
-  if (e.type == SDL_KEYUP && e.key.keysym.sym == SDLK_SPACE) {
-    if (_generator.isReadyToEvaluate() && !_scaleAnimator.isActive()) {
-      evaluateAStar();
+  if (e.type == SDL_KEYUP) {
+    switch (e.key.keysym.sym) {
+
+    case SDLK_SPACE:
+      if (_generator.isReadyToEvaluate()) {
+        evaluateAStar();
+      }
+      break;
+
+    case SDLK_c:
+      _generator.clear();
+      _gridContainer.clearGrid();
+      break;
     }
   }
+
+  _gridContainer.handleUserEvent(e);
 }
 
 void Game::onNodeChanged(const NodeType nodeType, const int32_t nodeX,
@@ -110,7 +102,7 @@ void Game::onNodeChanged(const NodeType nodeType, const int32_t nodeX,
     break;
 
   case NodeType::START_CHANGE:
-    _scaleAnimator.setTargetPos(
+    _animHandler.perform(AnimEvent::SET_SCALE_AMIM_TARGET,
         _gridContainer.getNodeCoordinates(nodeX, nodeY));
     _generator.setStartNodePos( { nodeX, nodeY });
 
@@ -135,15 +127,14 @@ void Game::onNodeChanged(const NodeType nodeType, const int32_t nodeX,
 
 void Game::evaluateAStar() {
   // This method returns vector of coordinates from target to source.
+  // the data will be moved, so it's not const
   std::vector<Point> path = _generator.findPath();
 
   if ( (path.front() != _generator.getEndNodePos())) {
-    _generalTextAnimator.showNoPathText();
+    _animHandler.perform(AnimEvent::START_NO_PATH_ANIM);
   } else {
-    _generalTextAnimator.hideNoPathText();
-
-    _pathAnimator.loadPath(path);
-    _scaleAnimator.startAnim();
+    _animHandler.perform(AnimEvent::LOAD_ANIM_PATH, &path);
+    _animHandler.perform(AnimEvent::START_PATH_ANIM);
   }
 }
 

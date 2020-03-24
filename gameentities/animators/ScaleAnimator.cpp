@@ -32,6 +32,12 @@ int32_t ScaleAnimator::init(PathAnimatorProxyInterface *pathAnimInterface,
   _imgOrigWidth = _batman.getWidth();
   _imgOrigHeight = _batman.getHeight();
   _scaleTimerId = scaleTimerId;
+
+  const int32_t MONITOR_WIDTH = gDrawMgr->getMonitorWidth();
+  const int32_t MONITOR_HEIGHT = gDrawMgr->getMonitorHeight();
+  _origStartPos.x = (MONITOR_WIDTH - BatmanDimensions::BIG_BATMAN_WIDTH) / 2;
+  _origStartPos.y = (MONITOR_HEIGHT - BatmanDimensions::BIG_BATMAN_HEIGHT) / 2;
+
   return EXIT_SUCCESS;
 }
 
@@ -43,11 +49,11 @@ void ScaleAnimator::setTargetPos(const Point &pos) {
   _endPos = pos;
   //adjust start X, because the image is smaller than the tile
   _endPos.x += BatmanDimensions::START_POS_X_OFFSET;
-  calculateAnimInternals();
 }
 
 void ScaleAnimator::startAnim() {
   _isActive = true;
+  calculateAnimInternals();
 
   startTimer(20, _scaleTimerId, TimerType::PULSE);
 }
@@ -68,8 +74,11 @@ void ScaleAnimator::processAnim() {
   if (0 == _remainingSteps) {
     _isActive = false;
     stopTimer(_scaleTimerId);
+
+    //restore original pos and dimensions if the anim is going to be replayed
     _batman.setWidth(_imgOrigWidth);
     _batman.setHeight(_imgOrigHeight);
+    _batman.setPosition(_origStartPos);
     _pathAnimInterface->onScaleAnimFinished();
   }
 }
@@ -131,16 +140,10 @@ void ScaleAnimator::scaleImage() {
 }
 
 void ScaleAnimator::calculateAnimInternals() {
-  const int32_t MONITOR_WIDTH = gDrawMgr->getMonitorWidth();
-  const int32_t MONITOR_HEIGHT = gDrawMgr->getMonitorHeight();
-  const int32_t START_X = (MONITOR_WIDTH - BatmanDimensions::BIG_BATMAN_WIDTH)
-      / 2;
-  const int32_t START_Y = (MONITOR_HEIGHT - BatmanDimensions::BIG_BATMAN_HEIGHT)
-      / 2;
-  _batman.setPosition(START_X, START_Y);
+  _batman.setPosition(_origStartPos);
 
-  const int32_t DELTA_X = _endPos.x - START_X;
-  const int32_t DELTA_Y = _endPos.y - START_Y;
+  const int32_t DELTA_X = _endPos.x - _origStartPos.x;
+  const int32_t DELTA_Y = _endPos.y - _origStartPos.y;
   _remainingSteps = TOTAL_ANIM_STEPS;
 
   _xOffset = DELTA_X / _remainingSteps;

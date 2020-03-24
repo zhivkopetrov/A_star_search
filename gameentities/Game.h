@@ -11,9 +11,7 @@
 //Own components headers
 #include "GridContainer.h"
 #include "proxies/GameProxyInterface.hpp"
-#include "animators/PathAnimator.h"
-#include "animators/ScaleAnimator.h"
-#include "animators/GeneralTextAnimator.h"
+#include "animators/AnimatorHandler.h"
 #include "pathfinding/MazeGenerator.h"
 
 //Forward declarations
@@ -29,7 +27,7 @@ public:
 
   void draw();
 
-  void handleUserEvent(SDL_Event &e);
+  void handleUserEvent(const SDL_Event &e);
 
 private:
   void evaluateAStar();
@@ -41,11 +39,7 @@ private:
 
   GridContainer _gridContainer;
 
-  PathAnimator _pathAnimator;
-
-  ScaleAnimator _scaleAnimator;
-
-  GeneralTextAnimator _generalTextAnimator;
+  AnimatorHandler _animHandler;
 };
 
 #endif /* GAME_GAMEENTITIES_H_ */

@@ -18,7 +18,6 @@
 
 int32_t Engine::init(const bool isDiagonalMovementAllowed) {
   int32_t err = EXIT_SUCCESS;
-  memset(&_inputEvent, 0, sizeof (_inputEvent));
 
   //initialise monitor to FullHD
   constexpr int32_t MONITOR_WIDTH = 1920;
@@ -65,12 +64,14 @@ void Engine::deinit() {
 void Engine::mainLoop() {
   Time fpsTime;
   uint32_t fpsDelay = 0;
+  SDL_Event event;
+  memset(&event, 0, sizeof (event));
 
   while (true) {
     //begin measure the new frame elapsed time
     fpsTime.getElapsed();
 
-    if (handleUserEvent(_inputEvent)) {
+    if (handleUserEvent(event)) {
       break;
     }
 
@@ -79,15 +80,14 @@ void Engine::mainLoop() {
 
     fpsDelay = static_cast<uint32_t>(fpsTime.getElapsed().toMicroseconds());
 
-    if(_debugConsole.isActive()) {
+    if (_debugConsole.isActive()) {
       _debugConsole.update(fpsDelay);
     }
 
-    const uint32_t MAX_MICROSECONDS_PER_FRAME =
-                           MICROSECOND / gDrawMgr->getMaxFrameRate();
+    const uint32_t MAX_MICROSECONDS_PER_FRAME = MICROSECOND
+        / gDrawMgr->getMaxFrameRate();
     MAX_MICROSECONDS_PER_FRAME < fpsDelay ?
-            fpsDelay = 0 :
-            fpsDelay = MAX_MICROSECONDS_PER_FRAME - fpsDelay;
+        fpsDelay = 0 : fpsDelay = MAX_MICROSECONDS_PER_FRAME - fpsDelay;
 
     //Sleep the logic thread if max FPS is reached.
     //No need to struggle the CPU.

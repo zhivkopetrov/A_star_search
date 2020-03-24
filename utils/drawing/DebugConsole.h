@@ -23,7 +23,7 @@ public:
 
   /** @ brief used to toggle active/inactive status of the debug console
    * */
-  void handleEvent(SDL_Event &e);
+  void handleEvent(const SDL_Event &e);
 
   void update(const uint32_t elapsedTime);
 

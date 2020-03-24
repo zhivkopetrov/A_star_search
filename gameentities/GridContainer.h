@@ -33,7 +33,7 @@ public:
 
   void draw();
 
-  void handleUserEvent(SDL_Event &e);
+  void handleUserEvent(const SDL_Event &e);
 
   void clearGrid();
 
