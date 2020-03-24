@@ -45,10 +45,10 @@ enum {
 
 namespace Grid {
 enum {
-  GRID_HEIGHT = 18,
-  GRID_WIDTH = 32,
+  GRID_HEIGHT = 9,
+  GRID_WIDTH = 20,
 
-  TILE_DIMENSION = 55,
+  TILE_DIMENSION = 115,
   LINE_OFFSET = 5,
   TILE_OFFSET = LINE_OFFSET + TILE_DIMENSION
 };
@@ -74,13 +74,13 @@ enum {
 
 namespace BatmanDimensions {
 enum {
-  SMALL_BATMAN_WIDTH = 32,
-  SMALL_BATMAN_HEIGHT = 55,
+  SMALL_BATMAN_WIDTH = 66,
+  SMALL_BATMAN_HEIGHT = 115,
   BIG_BATMAN_WIDTH = 340,
   BIG_BATMAN_HEIGHT = 590,
 
   //adjust start X, because the image is smaller than the tile
-  START_POS_X_OFFSET = 12
+  START_POS_X_OFFSET = (Grid::TILE_DIMENSION - SMALL_BATMAN_WIDTH) / 2
 };
 } //namespace BatmanDimensions
 

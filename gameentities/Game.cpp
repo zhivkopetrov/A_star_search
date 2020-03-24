@@ -40,7 +40,7 @@ int32_t Game::init(const bool isDiagonalMovementAllowed) {
   }
 
   if (EXIT_SUCCESS == err) {
-    if (EXIT_SUCCESS != _animHandler.init(&_gridContainer)) {
+    if (EXIT_SUCCESS != _animHandler.init(this, &_gridContainer)) {
       LOGERR("Error, _animHandler.init() failed");
       err = EXIT_FAILURE;
     }
@@ -50,9 +50,7 @@ int32_t Game::init(const bool isDiagonalMovementAllowed) {
 }
 
 void Game::deinit() {
-//#warning when hit space key if not possible solution is found - show the big batman and in the speech bubble say - "no solution found"
-//#warning if a solution is found - again show the big batman and in the speech bubble say - "Let's roll out" and begin the shrink animation
-//#warning I need to implement another animator that does the above two things
+
 }
 
 void Game::draw() {
@@ -136,5 +134,10 @@ void Game::evaluateAStar() {
     _animHandler.perform(AnimEvent::LOAD_ANIM_PATH, &path);
     _animHandler.perform(AnimEvent::START_PATH_ANIM);
   }
+}
+
+void Game::onAnimFinished() {
+  _generator.clear();
+  _gridContainer.clearGrid();
 }
 

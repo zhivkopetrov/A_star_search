@@ -35,6 +35,8 @@ private:
   virtual void onNodeChanged(const NodeType nodeType, const int32_t nodeX,
                              const int32_t nodeY) override final;
 
+  virtual void onAnimFinished() override final;
+
   MazeGenerator _generator;
 
   GridContainer _gridContainer;

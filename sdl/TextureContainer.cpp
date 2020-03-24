@@ -124,8 +124,8 @@ int32_t TextureContainer::loadTextures(const int32_t windowWidth,
       "../assets/vertical_line.png", Textures::VERTICAL_LINE }, {
       "../assets/horizontal_line.png", Textures::HORIZONTAL_LINE }, {
       "../assets/start.png", Textures::START_NODE }, { "../assets/end.png",
-      Textures::END_NODE }, { "../assets/wall.png", Textures::WALL }, {
-      "../assets/path.png", Textures::A_STAR_PATH }, {
+      Textures::END_NODE }, { "../assets/water.png", Textures::WALL }, {
+      "../assets/batman_symbol.png", Textures::A_STAR_PATH }, {
       "../assets/batman_big.png", Textures::BATMAN_BIG }, {
       "../assets/batman_small.png", Textures::BATMAN_SMALL } };
 
@@ -171,17 +171,15 @@ void TextureContainer::populateTextureFrameRects(const int32_t windowWidth,
     _textureFrameRects[i].y = 0;
   }
 
-  _textureFrameRects[Textures::VERTICAL_LINE].w = 5;
+  _textureFrameRects[Textures::VERTICAL_LINE].w = Grid::LINE_OFFSET;
   _textureFrameRects[Textures::VERTICAL_LINE].h = windowHeight;
 
   _textureFrameRects[Textures::HORIZONTAL_LINE].w = windowWidth;
-  _textureFrameRects[Textures::HORIZONTAL_LINE].h = 5;
-
-  constexpr int32_t TILE_DIMENSIONS = 55;
+  _textureFrameRects[Textures::HORIZONTAL_LINE].h = Grid::LINE_OFFSET;
 
   for (int32_t i = Textures::START_NODE; i <= Textures::A_STAR_PATH; ++i) {
-    _textureFrameRects[i].w = TILE_DIMENSIONS;
-    _textureFrameRects[i].h = TILE_DIMENSIONS;
+    _textureFrameRects[i].w = Grid::TILE_DIMENSION;
+    _textureFrameRects[i].h = Grid::TILE_DIMENSION;
   }
 
   _textureFrameRects[Textures::BATMAN_BIG].w =

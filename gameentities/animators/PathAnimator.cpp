@@ -9,32 +9,28 @@
 //Other libraries headers
 
 //Own components headers
+#include "gameentities/proxies/AnimatorHandlerProxyInterface.hpp"
 #include "common/CommonDefines.h"
 #include "gameentities/GridContainer.h"
 #include "utils/LimitValues.hpp"
 #include "utils/Log.h"
 
 PathAnimator::PathAnimator()
-    : _gridInterface(nullptr), _animStep(0), _offsetX(0), _offsetY(0),
-      _pathTimerId(INIT_INT32_VALUE), _isActive(false) {
+    : _animatorHandlerInterface(nullptr), _gridInterface(nullptr), _animStep(0),
+      _offsetX(0), _offsetY(0), _pathTimerId(INIT_INT32_VALUE), _isActive(false) {
 
 }
 
-int32_t PathAnimator::init(GridContainerProxyInterface *gridInterface,
-                           const uint8_t batmanRsrcId,
-                           const int32_t pathTimerId) {
-  int32_t err = EXIT_SUCCESS;
+int32_t PathAnimator::init(
+    AnimatorHandlerProxyInterface *animatorHandlerInterface,
+    GridContainerProxyInterface *gridInterface, const uint8_t batmanRsrcId,
+    const int32_t pathTimerId) {
+  _animatorHandlerInterface = animatorHandlerInterface;
+  _gridInterface = gridInterface;
   _pathTimerId = pathTimerId;
   _batmanImg.create(batmanRsrcId);
 
-  if (nullptr != gridInterface) {
-    _gridInterface = gridInterface;
-  } else {
-    LOGERR("Error, nullptr provided for GridContainer inteface");
-    err = EXIT_FAILURE;
-  }
-
-  return err;
+  return EXIT_SUCCESS;
 }
 
 void PathAnimator::loadPath(std::vector<Point> &path) {
@@ -67,6 +63,7 @@ void PathAnimator::onTimeout(const int32_t timerId) {
     } else {
       stopTimer(timerId);
       _isActive = false;
+      _animatorHandlerInterface->onAnimFinished();
     }
   } else {
     LOGERR("Received unknown timerId: %d", timerId);

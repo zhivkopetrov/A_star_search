@@ -17,6 +17,7 @@
 
 //Forward declarations
 class GridContainerProxyInterface;
+class AnimatorHandlerProxyInterface;
 
 class PathAnimator: public TimerClient,
                     public PathAnimatorProxyInterface {
@@ -24,7 +25,8 @@ public:
   PathAnimator();
   ~PathAnimator() = default;
 
-  int32_t init(GridContainerProxyInterface *gridInterface,
+  int32_t init(AnimatorHandlerProxyInterface *animatorHandlerInterface,
+               GridContainerProxyInterface *gridInterface,
                const uint8_t batmanRsrcId, const int32_t pathTimerId);
 
   void loadPath(std::vector<Point> &path);
@@ -50,6 +52,7 @@ private:
     ANIM_MOVES = 10
   };
 
+  AnimatorHandlerProxyInterface *_animatorHandlerInterface;
   GridContainerProxyInterface *_gridInterface;
 
   std::vector<Point> _pathToAnimate;

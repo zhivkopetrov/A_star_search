@@ -55,7 +55,7 @@ int32_t Texture::loadFromText(const char *text,
                               int32_t *outTextHeight) {
   freeTexture(outTexture);
 
-  SDL_Surface *loadedSurface = TTF_RenderText_Solid(font, text, color);
+  SDL_Surface *loadedSurface = TTF_RenderText_Blended(font, text, color);
 
   if (loadedSurface == nullptr) {
     LOGERR("Unable to load image! SDL_image Error: %s", IMG_GetError());

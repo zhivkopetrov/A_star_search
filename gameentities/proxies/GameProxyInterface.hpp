@@ -23,6 +23,8 @@ public:
 
   virtual void onNodeChanged(const NodeType nodeType, const int32_t nodeX,
                              const int32_t nodeY) = 0;
+
+  virtual void onAnimFinished() = 0;
 };
 
 #endif /* GAMEENTITIES_PROXIES_GAMEPROXYINTERFACE_HPP_ */

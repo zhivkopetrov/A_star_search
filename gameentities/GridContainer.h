@@ -66,7 +66,7 @@ private:
   bool getSelectedNode(int32_t *nodeX, int32_t *nodeY);
 
   enum InternalDefines {
-    TOTAL_LINES_COUNT = 50
+    TOTAL_LINES_COUNT = Grid::GRID_HEIGHT + Grid::GRID_WIDTH
   };
 
   GameProxyInterface *_gameInterface;

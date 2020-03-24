@@ -22,3 +22,11 @@ cmake;
 
 NOTE: the binary takes argument - "isDiagonalMovementAllowed";
 Run with "./game true" to allowed diagonal movements in the grid;
+
+TODOs:
+- when hit space key if not possible solution is found - show the big batman and in the speech bubble say - "no solution found"
+- if a solution is found - again show the big batman and in the speech bubble say - "Let's roll out" and begin the shrink animation
+- implement an "obstacle loader" that uses the "UP" and "DOWN" arrow keys to load a preset of obstacle levels (level with no obstacles, and 2 more)
+- implement a better API for polling if there is collision on the walls
+- when animation is finished all "non-preset" walls should be removed
+- move the "isDiagonalMovement allowed to an option"

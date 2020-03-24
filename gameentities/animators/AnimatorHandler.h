@@ -13,8 +13,11 @@
 #include "PathAnimator.h"
 #include "ScaleAnimator.h"
 #include "GeneralTextAnimator.h"
+#include "gameentities/proxies/AnimatorHandlerProxyInterface.hpp"
 
 //Forward declarations
+class GameProxyInterface;
+class GridContainerProxyInterface;
 
 enum class AnimEvent {
   SET_SCALE_AMIM_TARGET,
@@ -23,12 +26,13 @@ enum class AnimEvent {
   START_NO_PATH_ANIM
 };
 
-class AnimatorHandler {
+class AnimatorHandler : public AnimatorHandlerProxyInterface {
 public:
-  AnimatorHandler() = default;
-  ~AnimatorHandler() = default;
+  AnimatorHandler();
+  virtual ~AnimatorHandler() = default;
 
-  int32_t init(GridContainerProxyInterface *gridInterface);
+  int32_t init(GameProxyInterface *gameInterface,
+               GridContainerProxyInterface *gridInterface);
 
   void draw();
 
@@ -37,6 +41,8 @@ public:
   void perform(const AnimEvent event, const std::any & args = std::any{});
 
 private:
+  virtual void onAnimFinished() override final;
+
   void performSetScaleAnimTarget(const std::any & args);
   void performLoadAnimPath(const std::any & args);
 
@@ -45,6 +51,8 @@ private:
   ScaleAnimator _scaleAnimator;
 
   GeneralTextAnimator _generalTextAnimator;
+
+  GameProxyInterface *_gameInterface;
 };
 
 #endif /* GAMEENTITIES_ANIMATORS_ANIMATORHANDLER_H_ */

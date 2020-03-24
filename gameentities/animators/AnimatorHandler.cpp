@@ -9,12 +9,19 @@
 //Other libraries headers
 
 //Own components headers
+#include "gameentities/proxies/GameProxyInterface.hpp"
 #include "common/CommonDefines.h"
 #include "utils/drawing/Point.h"
 #include "utils/Log.h"
 
-int32_t AnimatorHandler::init(GridContainerProxyInterface *gridInterface) {
+AnimatorHandler::AnimatorHandler() : _gameInterface(nullptr) {
+
+}
+
+int32_t AnimatorHandler::init(GameProxyInterface *gameInterface,
+                              GridContainerProxyInterface *gridInterface) {
   int32_t err = EXIT_SUCCESS;
+  _gameInterface = gameInterface;
 
   if (EXIT_SUCCESS != _generalTextAnimator.init()) {
     LOGERR("Error, _generalTextAnimator.init() failed");
@@ -22,7 +29,7 @@ int32_t AnimatorHandler::init(GridContainerProxyInterface *gridInterface) {
   }
 
   if (EXIT_SUCCESS == err) {
-    if (EXIT_SUCCESS != _pathAnimator.init(gridInterface,
+    if (EXIT_SUCCESS != _pathAnimator.init(this, gridInterface,
             Textures::BATMAN_SMALL, Timers::PATH_TIMER_ID)) {
       LOGERR("Error, _pathAnimator.init() failed");
       err = EXIT_FAILURE;
@@ -100,6 +107,10 @@ void AnimatorHandler::performLoadAnimPath(const std::any & args) {
   catch (const std::bad_any_cast& e) {
     LOGERR("any_cast throwed: %s\n", e.what());
   }
+}
+
+void AnimatorHandler::onAnimFinished() {
+  _gameInterface->onAnimFinished();
 }
 
 
