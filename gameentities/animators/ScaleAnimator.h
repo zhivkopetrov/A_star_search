@@ -13,22 +13,30 @@
 #include "utils/time/TimerClient.h"
 
 //Forward declarations
-class PathAnimatorProxyInterface;
+class AnimatorHandlerProxyInterface;
+
+enum class ScaleAnimType {
+  UNKNOWN,
+  UPSCALE,
+  DOWNSCALE
+};
 
 class ScaleAnimator : public TimerClient {
 public:
   ScaleAnimator();
   ~ScaleAnimator() = default;
 
-  int32_t init(PathAnimatorProxyInterface *pathAnimInterface,
+  int32_t init(AnimatorHandlerProxyInterface *animatorHandlerInterface,
+               const Point &startBatmanPos,
                const uint8_t batmanRsrcId,
                const int32_t scaleTimerId);
 
   void draw();
 
-  void setTargetPos(const Point& pos);
+  void setStartTargetPos(const Point& pos);
+  void setEndTargetPos(const Point& pos);
 
-  void startAnim();
+  void activateAnim(const ScaleAnimType type);
 
   inline bool isActive() const {
     return _isActive;
@@ -50,13 +58,11 @@ private:
 
   Image _batman;
 
-  PathAnimatorProxyInterface *_pathAnimInterface;
+  AnimatorHandlerProxyInterface * _animatorHandlerInterface;
 
+  Point _startPos;
   Point _endPos;
-  Point _origStartPos;
-
-  int32_t _imgOrigWidth;
-  int32_t _imgOrigHeight;
+  Point _origBatmanPos;
 
   int32_t _remainingSteps;
   int32_t _xOffset;
@@ -70,6 +76,8 @@ private:
   int32_t _remainderScaleY;
 
   int32_t _scaleTimerId;
+
+  ScaleAnimType _currAnimType;
 
   bool _isActive;
 };

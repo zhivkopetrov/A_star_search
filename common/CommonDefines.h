@@ -22,6 +22,8 @@ enum : uint8_t {
   A_STAR_PATH,
   BATMAN_BIG,
   BATMAN_SMALL,
+  WIN_DIALOG,
+  LOSE_DIALOG,
   FPS_TEXT,
   NO_AVAILABLE_PATH_TEXT,
 
@@ -46,7 +48,7 @@ enum {
 namespace Grid {
 enum {
   GRID_HEIGHT = 9,
-  GRID_WIDTH = 20,
+  GRID_WIDTH = 16,
 
   TILE_DIMENSION = 115,
   LINE_OFFSET = 5,
@@ -68,7 +70,8 @@ enum {
 namespace Timers {
 enum {
   PATH_TIMER_ID,
-  SCALE_TIMER_ID
+  SCALE_TIMER_ID,
+  SPEECH_WAIT_TIMER_ID
 };
 } //namespace Timers
 
@@ -81,6 +84,15 @@ enum {
 
   //adjust start X, because the image is smaller than the tile
   START_POS_X_OFFSET = (Grid::TILE_DIMENSION - SMALL_BATMAN_WIDTH) / 2
+};
+} //namespace BatmanDimensions
+
+namespace SpeechDimensions {
+enum {
+  WIN_DIALOG_WIDTH = 600,
+  WIN_DIALOG_HEIGHT = 440,
+  LOSE_DIALOG_WIDTH = 600,
+  LOSE_DIALOG_HEIGHT = 400
 };
 } //namespace BatmanDimensions
 

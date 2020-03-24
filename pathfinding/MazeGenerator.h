@@ -23,24 +23,18 @@ public:
                const bool isDiagonalMovementEnabled,
                HeuristicFunction heuristic);
 
-  void removeCollision(const Point &position);
+  void setStartNodePos(const Point &startNodePos);
+
+  void setEndNodePos(const Point &endNodePos);
+
+  void addCollision(const Point &position);
+
+  void removeNode(const Point &position);
 
   void clear();
 
-  inline void setStartNodePos(const Point &startNodePos) {
-    _startNodePos = startNodePos;
-  }
-
-  inline void setEndNodePos(const Point &endNodePos) {
-    _endNodePos = endNodePos;
-  }
-
   inline Point getEndNodePos() const {
     return _endNodePos;
-  }
-
-  inline void addCollision(const Point &position) {
-    _walls.emplace_back(position);
   }
 
   inline bool isReadyToEvaluate() const {

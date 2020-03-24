@@ -12,7 +12,7 @@
 //Own components headers
 #include "PathAnimator.h"
 #include "ScaleAnimator.h"
-#include "GeneralTextAnimator.h"
+#include "SpeechAnimator.h"
 #include "gameentities/proxies/AnimatorHandlerProxyInterface.hpp"
 
 //Forward declarations
@@ -20,13 +20,14 @@ class GameProxyInterface;
 class GridContainerProxyInterface;
 
 enum class AnimEvent {
-  SET_SCALE_AMIM_TARGET,
+  SET_SCALE_AMIM_START_TARGET,
+  SET_SCALE_AMIM_END_TARGET,
   LOAD_ANIM_PATH,
   START_PATH_ANIM,
   START_NO_PATH_ANIM
 };
 
-class AnimatorHandler : public AnimatorHandlerProxyInterface {
+class AnimatorHandler: public AnimatorHandlerProxyInterface {
 public:
   AnimatorHandler();
   virtual ~AnimatorHandler() = default;
@@ -38,19 +39,24 @@ public:
 
   bool isActive() const;
 
-  void perform(const AnimEvent event, const std::any & args = std::any{});
+  void perform(const AnimEvent event, const std::any &args = std::any { });
 
 private:
-  virtual void onAnimFinished() override final;
+  enum class ScaleAnimTargetType {
+    START_TARGET, END_TARGET
+  };
 
-  void performSetScaleAnimTarget(const std::any & args);
-  void performLoadAnimPath(const std::any & args);
+  virtual void onAnimFinished(const AnimType type) override final;
+
+  void performSetScaleAnimTarget(const ScaleAnimTargetType type,
+                                 const std::any &args);
+  void performLoadAnimPath(const std::any &args);
 
   PathAnimator _pathAnimator;
 
   ScaleAnimator _scaleAnimator;
 
-  GeneralTextAnimator _generalTextAnimator;
+  SpeechAnimator _speechAnimator;
 
   GameProxyInterface *_gameInterface;
 };

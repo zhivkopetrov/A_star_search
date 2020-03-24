@@ -47,9 +47,8 @@ void PathAnimator::draw() {
   _batmanImg.draw();
 }
 
-void PathAnimator::onScaleAnimFinished() {
+void PathAnimator::activateAnim() {
   _isActive = true;
-  _animStep = ANIM_MOVES;
   loadNextOffsets();
   startTimer(20, _pathTimerId, TimerType::PULSE);
 }
@@ -61,7 +60,7 @@ void PathAnimator::onTimeout(const int32_t timerId) {
     } else {
       stopTimer(timerId);
       _isActive = false;
-      _animatorHandlerInterface->onAnimFinished();
+      _animatorHandlerInterface->onAnimFinished(AnimType::PATH_ANIM);
     }
   } else {
     LOGERR("Received unknown timerId: %d", timerId);
@@ -80,12 +79,14 @@ void PathAnimator::processAnim() {
     }
     _pathToAnimate.pop_back();
 
-    _animStep = ANIM_MOVES;
-    loadNextOffsets();
+    if (!_pathToAnimate.empty()) {
+      loadNextOffsets();
+    }
   }
 }
 
 void PathAnimator::loadNextOffsets() {
+  _animStep = ANIM_MOVES;
   const Point END_BATMAN_POS = _gridInterface->getNodeCoordinates(
       _pathToAnimate.back());
   _offsetX = (END_BATMAN_POS.x + BatmanDimensions::START_POS_X_OFFSET

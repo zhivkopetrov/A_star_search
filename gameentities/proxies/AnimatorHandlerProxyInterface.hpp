@@ -11,12 +11,19 @@
 
 //Forward declarations
 
+enum class AnimType {
+  DOWNSCALE_ANIM,
+  UPSCALE_ANIM,
+  PATH_ANIM,
+  SPEECH_ANIM
+};
+
 class AnimatorHandlerProxyInterface {
 public:
   AnimatorHandlerProxyInterface() = default;
   virtual ~AnimatorHandlerProxyInterface() = default;
 
-  virtual void onAnimFinished() = 0;
+  virtual void onAnimFinished(const AnimType type) = 0;
 };
 
 #endif /* GAMEENTITIES_PROXIES_ANIMATORHANDLERPROXYINTERFACE_HPP_ */

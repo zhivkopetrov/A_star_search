@@ -45,7 +45,7 @@ int32_t MonitorWindow::init(const int32_t displayMode) {
   }
 
   //Create window
-  _window = SDL_CreateWindow("Alpha Gaming", initWindowX, initWindowY,
+  _window = SDL_CreateWindow("Batman", initWindowX, initWindowY,
       _windowRect.w, _windowRect.h, displayMode);
 
   if (nullptr == _window) {

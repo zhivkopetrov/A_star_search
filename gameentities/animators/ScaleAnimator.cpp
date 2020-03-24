@@ -11,32 +11,27 @@
 
 //Own components headers
 #include "common/CommonDefines.h"
-#include "gameentities/proxies/PathAnimatorProxyInterface.hpp"
-#include "managers/DrawMgr.h"
+#include "gameentities/proxies/AnimatorHandlerProxyInterface.hpp"
 #include "utils/LimitValues.hpp"
 #include "utils/Log.h"
 
 ScaleAnimator::ScaleAnimator()
-    : _pathAnimInterface(nullptr), _imgOrigWidth(0), _imgOrigHeight(0),
-      _remainingSteps(0), _xOffset(0), _yOffset(0), _remainderX(0),
-      _remainderY(0), _scaleXOffset(0), _scaleYOffset(0), _remainderScaleX(0),
-      _remainderScaleY(0), _scaleTimerId(INIT_INT32_VALUE), _isActive(false) {
+    : _animatorHandlerInterface(nullptr), _remainingSteps(0), _xOffset(0),
+      _yOffset(0), _remainderX(0), _remainderY(0), _scaleXOffset(0),
+      _scaleYOffset(0), _remainderScaleX(0), _remainderScaleY(0),
+      _scaleTimerId(INIT_INT32_VALUE), _currAnimType(ScaleAnimType::UNKNOWN),
+      _isActive(false) {
 
 }
 
-int32_t ScaleAnimator::init(PathAnimatorProxyInterface *pathAnimInterface,
-                            const uint8_t batmanRsrcId,
-                            const int32_t scaleTimerId) {
-  _pathAnimInterface = pathAnimInterface;
+int32_t ScaleAnimator::init(
+    AnimatorHandlerProxyInterface *animatorHandlerInterface,
+    const Point &startBatmanPos, const uint8_t batmanRsrcId,
+    const int32_t scaleTimerId) {
+  _animatorHandlerInterface = animatorHandlerInterface;
   _batman.create(batmanRsrcId);
-  _imgOrigWidth = _batman.getWidth();
-  _imgOrigHeight = _batman.getHeight();
   _scaleTimerId = scaleTimerId;
-
-  const int32_t MONITOR_WIDTH = gDrawMgr->getMonitorWidth();
-  const int32_t MONITOR_HEIGHT = gDrawMgr->getMonitorHeight();
-  _origStartPos.x = (MONITOR_WIDTH - BatmanDimensions::BIG_BATMAN_WIDTH) / 2;
-  _origStartPos.y = (MONITOR_HEIGHT - BatmanDimensions::BIG_BATMAN_HEIGHT) / 2;
+  _origBatmanPos = startBatmanPos;
 
   return EXIT_SUCCESS;
 }
@@ -45,14 +40,21 @@ void ScaleAnimator::draw() {
   _batman.draw();
 }
 
-void ScaleAnimator::setTargetPos(const Point &pos) {
+void ScaleAnimator::setStartTargetPos(const Point &pos) {
+  _startPos = pos;
+  //adjust start X, because the image is smaller than the tile
+  _startPos.x += BatmanDimensions::START_POS_X_OFFSET;
+}
+
+void ScaleAnimator::setEndTargetPos(const Point &pos) {
   _endPos = pos;
   //adjust start X, because the image is smaller than the tile
   _endPos.x += BatmanDimensions::START_POS_X_OFFSET;
 }
 
-void ScaleAnimator::startAnim() {
+void ScaleAnimator::activateAnim(const ScaleAnimType type) {
   _isActive = true;
+  _currAnimType = type;
   calculateAnimInternals();
 
   startTimer(20, _scaleTimerId, TimerType::PULSE);
@@ -75,11 +77,11 @@ void ScaleAnimator::processAnim() {
     _isActive = false;
     stopTimer(_scaleTimerId);
 
-    //restore original pos and dimensions if the anim is going to be replayed
-    _batman.setWidth(_imgOrigWidth);
-    _batman.setHeight(_imgOrigHeight);
-    _batman.setPosition(_origStartPos);
-    _pathAnimInterface->onScaleAnimFinished();
+    const AnimType animType =
+        (ScaleAnimType::DOWNSCALE == _currAnimType) ?
+            AnimType::DOWNSCALE_ANIM : AnimType::UPSCALE_ANIM;
+    _animatorHandlerInterface->onAnimFinished(animType);
+    _currAnimType = ScaleAnimType::UNKNOWN;
   }
 }
 
@@ -140,25 +142,46 @@ void ScaleAnimator::scaleImage() {
 }
 
 void ScaleAnimator::calculateAnimInternals() {
-  _batman.setPosition(_origStartPos);
 
-  const int32_t DELTA_X = _endPos.x - _origStartPos.x;
-  const int32_t DELTA_Y = _endPos.y - _origStartPos.y;
+  Point sourceMove;
+  Point targetMove;
+  int32_t sourceScaleWidth = 0;
+  int32_t targetScaleWidth = 0;
+  int32_t sourceScaleHeight = 0;
+  int32_t targetScaleHeight = 0;
+  if (ScaleAnimType::DOWNSCALE == _currAnimType) {
+    _batman.setPosition(_origBatmanPos);
+    sourceMove = _origBatmanPos;
+    targetMove = _startPos;
+    sourceScaleWidth = BatmanDimensions::BIG_BATMAN_WIDTH;
+    targetScaleWidth = BatmanDimensions::SMALL_BATMAN_WIDTH;
+    sourceScaleHeight = BatmanDimensions::BIG_BATMAN_HEIGHT;
+    targetScaleHeight = BatmanDimensions::SMALL_BATMAN_HEIGHT;
+  } else if (ScaleAnimType::UPSCALE == _currAnimType) {
+    _batman.setPosition(_endPos);
+    sourceMove = _endPos;
+    targetMove = _origBatmanPos;
+    sourceScaleWidth = BatmanDimensions::SMALL_BATMAN_WIDTH;
+    targetScaleWidth = BatmanDimensions::BIG_BATMAN_WIDTH;
+    sourceScaleHeight = BatmanDimensions::SMALL_BATMAN_HEIGHT;
+    targetScaleHeight = BatmanDimensions::BIG_BATMAN_HEIGHT;
+  }
+
+  const int32_t moveDeltaX = targetMove.x - sourceMove.x;
+  const int32_t moveDeltaY = targetMove.y - sourceMove.y;
+  const int32_t scaleDeltaX = sourceScaleWidth - targetScaleWidth;
+  const int32_t scaleDeltaY = sourceScaleHeight - targetScaleHeight;
+
   _remainingSteps = TOTAL_ANIM_STEPS;
 
-  _xOffset = DELTA_X / _remainingSteps;
-  _yOffset = DELTA_Y / _remainingSteps;
-  _remainderX = DELTA_X - (_xOffset * _remainingSteps);
-  _remainderY = DELTA_Y - (_yOffset * _remainingSteps);
+  _xOffset = moveDeltaX / _remainingSteps;
+  _yOffset = moveDeltaY / _remainingSteps;
+  _remainderX = moveDeltaX - (_xOffset * _remainingSteps);
+  _remainderY = moveDeltaY - (_yOffset * _remainingSteps);
 
-  constexpr int32_t SCALE_DELTA_X = BatmanDimensions::BIG_BATMAN_WIDTH
-      - BatmanDimensions::SMALL_BATMAN_WIDTH;
-  constexpr int32_t SCALE_DELTA_Y = BatmanDimensions::BIG_BATMAN_HEIGHT
-      - BatmanDimensions::SMALL_BATMAN_HEIGHT;
-
-  _scaleXOffset = SCALE_DELTA_X / _remainingSteps;
-  _scaleYOffset = SCALE_DELTA_Y / _remainingSteps;
-  _remainderScaleX = SCALE_DELTA_X - (_scaleXOffset * _remainingSteps);
-  _remainderScaleY = SCALE_DELTA_Y - (_scaleYOffset * _remainingSteps);
+  _scaleXOffset = scaleDeltaX / _remainingSteps;
+  _scaleYOffset = scaleDeltaY / _remainingSteps;
+  _remainderScaleX = scaleDeltaX - (_scaleXOffset * _remainingSteps);
+  _remainderScaleY = scaleDeltaY - (_scaleYOffset * _remainingSteps);
 }
 

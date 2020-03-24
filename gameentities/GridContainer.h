@@ -46,7 +46,7 @@ private:
 
   void addCollision(const Point &nodePos);
 
-  void removeCollision(const Point &nodePos);
+  void removeNode(const Point &nodePos);
 
   void addStartNode(const Point &nodePos);
 

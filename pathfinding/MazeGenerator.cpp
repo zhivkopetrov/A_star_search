@@ -31,7 +31,40 @@ int32_t MazeGenerator::init(const int32_t mazeWidth, const int32_t mazeHeight,
   return err;
 }
 
-void MazeGenerator::removeCollision(const Point &position) {
+void MazeGenerator::setStartNodePos(const Point &startNodePos) {
+  _startNodePos = startNodePos;
+  if (_startNodePos == _endNodePos) {
+    _endNodePos = Point::UNDEFINED;
+  }
+}
+
+void MazeGenerator::setEndNodePos(const Point &endNodePos) {
+  _endNodePos = endNodePos;
+  if (_endNodePos == _startNodePos) {
+    _startNodePos = Point::UNDEFINED;
+  }
+}
+
+void MazeGenerator::addCollision(const Point &position) {
+  _walls.emplace_back(position);
+
+  if (_startNodePos == position) {
+    _startNodePos = Point::UNDEFINED;
+  }
+  if (_endNodePos == position) {
+    _endNodePos = Point::UNDEFINED;
+  }
+}
+
+void MazeGenerator::removeNode(const Point &position) {
+  if (_startNodePos == position) {
+    _startNodePos = Point::UNDEFINED;
+    return;
+  }
+  if (_endNodePos == position) {
+    _endNodePos = Point::UNDEFINED;
+    return;
+  }
   auto it = std::find(_walls.begin(), _walls.end(), position);
   if (it != _walls.end()) {
     _walls.erase(it);

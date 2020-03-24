@@ -17,11 +17,11 @@
 TextureContainer::TextureContainer()
     : _fontSmall(nullptr), _fontBig(nullptr) {
 
-  //set green color for text
+  //set black color for text
   _color.r = 0;
-  _color.g = 255;
+  _color.g = 0;
   _color.b = 0;
-  _color.a = 255;
+  _color.a = 0;
 }
 
 int32_t TextureContainer::init(const int32_t windowWidth,
@@ -94,7 +94,7 @@ int32_t TextureContainer::loadFonts() {
   int32_t err = EXIT_SUCCESS;
 
   //Open the font with font size 30
-  _fontSmall = TTF_OpenFont("../assets/orbitron-medium.otf", 30);
+  _fontSmall = TTF_OpenFont("../assets/orbitron-medium.otf", 50);
   if (nullptr == _fontSmall) {
     LOGERR("Failed to load font! SDL_ttf Error: %s", TTF_GetError());
 
@@ -127,9 +127,11 @@ int32_t TextureContainer::loadTextures(const int32_t windowWidth,
       Textures::END_NODE }, { "../assets/water.png", Textures::WALL }, {
       "../assets/batman_symbol.png", Textures::A_STAR_PATH }, {
       "../assets/batman_big.png", Textures::BATMAN_BIG }, {
-      "../assets/batman_small.png", Textures::BATMAN_SMALL } };
+      "../assets/batman_small.png", Textures::BATMAN_SMALL }, {
+      "../assets/win_dialog.png", Textures::WIN_DIALOG }, {
+      "../assets/lose_dialog.png", Textures::LOSE_DIALOG } };
 
-  for (uint8_t i = Textures::VERTICAL_LINE; i <= Textures::BATMAN_SMALL; ++i) {
+  for (uint8_t i = Textures::VERTICAL_LINE; i <= Textures::LOSE_DIALOG; ++i) {
     if ( EXIT_SUCCESS != loadSingleTexture(assets[i].first, assets[i].second)) {
       LOGERR("Error in loadSingleTexture()");
 
@@ -191,5 +193,15 @@ void TextureContainer::populateTextureFrameRects(const int32_t windowWidth,
       BatmanDimensions::SMALL_BATMAN_WIDTH;
   _textureFrameRects[Textures::BATMAN_SMALL].h =
       BatmanDimensions::SMALL_BATMAN_HEIGHT;
+
+  _textureFrameRects[Textures::WIN_DIALOG].w =
+      SpeechDimensions::WIN_DIALOG_WIDTH;
+  _textureFrameRects[Textures::WIN_DIALOG].h =
+      SpeechDimensions::WIN_DIALOG_HEIGHT;
+
+  _textureFrameRects[Textures::LOSE_DIALOG].w =
+      SpeechDimensions::LOSE_DIALOG_WIDTH;
+  _textureFrameRects[Textures::LOSE_DIALOG].h =
+      SpeechDimensions::LOSE_DIALOG_HEIGHT;
 }
 

@@ -10,7 +10,6 @@
 //Other libraries headers
 
 //Own components headers
-#include "gameentities/proxies/PathAnimatorProxyInterface.hpp"
 #include "utils/drawing/Point.h"
 #include "utils/drawing/Image.h"
 #include "utils/time/TimerClient.h"
@@ -19,8 +18,7 @@
 class GridContainerProxyInterface;
 class AnimatorHandlerProxyInterface;
 
-class PathAnimator: public TimerClient,
-                    public PathAnimatorProxyInterface {
+class PathAnimator: public TimerClient {
 public:
   PathAnimator();
   ~PathAnimator() = default;
@@ -33,13 +31,13 @@ public:
 
   void draw();
 
+  void activateAnim();
+
   inline bool isActive() const {
     return _isActive;
   }
 
 private:
-  virtual void onScaleAnimFinished() override final;
-
   virtual void onTimeout(const int32_t timerId) override final;
 
   void processAnim();

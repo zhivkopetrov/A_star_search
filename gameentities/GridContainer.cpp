@@ -127,7 +127,7 @@ void GridContainer::addCollision(const Point &nodePos) {
   _pathNodes[nodePos.y][nodePos.x].show();
 }
 
-void GridContainer::removeCollision(const Point &nodePos) {
+void GridContainer::removeNode(const Point &nodePos) {
   _pathNodes[nodePos.y][nodePos.x].hide();
 }
 
@@ -177,8 +177,8 @@ void GridContainer::onWallRemove() {
   Point nodePos;
   if (getSelectedNode(nodePos)) {
     clearGridFromAStarPathNodes();
-    removeCollision(nodePos);
-    _gameInterface->onNodeChanged(NodeType::WALL_REMOVE, nodePos);
+    removeNode(nodePos);
+    _gameInterface->onNodeChanged(NodeType::NODE_REMOVE, nodePos);
   }
 }
 

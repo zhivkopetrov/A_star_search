@@ -88,17 +88,19 @@ void Game::onNodeChanged(const NodeType nodeType, const Point &nodePos) {
     _generator.addCollision(nodePos);
     break;
 
-  case NodeType::WALL_REMOVE:
-    _generator.removeCollision(nodePos);
+  case NodeType::NODE_REMOVE:
+    _generator.removeNode(nodePos);
     break;
 
   case NodeType::START_CHANGE:
-    _animHandler.perform(AnimEvent::SET_SCALE_AMIM_TARGET,
+    _animHandler.perform(AnimEvent::SET_SCALE_AMIM_START_TARGET,
         _gridContainer.getNodeCoordinates(nodePos));
     _generator.setStartNodePos(nodePos);
     break;
 
   case NodeType::END_CHANGE:
+    _animHandler.perform(AnimEvent::SET_SCALE_AMIM_END_TARGET,
+        _gridContainer.getNodeCoordinates(nodePos));
     _generator.setEndNodePos(nodePos);
     break;
 
@@ -123,7 +125,7 @@ void Game::evaluateAStar() {
   }
 }
 
-void Game::onAnimFinished() {
+void Game::onEndAnimFinished() {
   _generator.clear();
   _gridContainer.clearGrid();
 }

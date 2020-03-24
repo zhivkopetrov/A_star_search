@@ -35,7 +35,7 @@ private:
   virtual void onNodeChanged(const NodeType nodeType, const Point &nodePosY)
       override final;
 
-  virtual void onAnimFinished() override final;
+  virtual void onEndAnimFinished() override final;
 
   MazeGenerator _generator;
 
