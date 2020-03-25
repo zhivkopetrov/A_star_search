@@ -29,8 +29,9 @@ int32_t Renderer::init() {
      *                      (used for image scaling /pixel interpolation/ )
      * */
     if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1")) {
-      LOGERR("Warning: Linear texture filtering not enabled! "
-          "SDL_SetHint() failed. SDL Error: %s", SDL_GetError());
+      LOGERR(
+          "Warning: Linear texture filtering not enabled! " "SDL_SetHint() failed. SDL Error: %s",
+          SDL_GetError());
 
       err = EXIT_FAILURE;
     }
@@ -96,7 +97,8 @@ void Renderer::finishFrame() {
 
   //do the actual drawing of all stored images for THIS FRAME
   for (uint32_t i = 0; i < USED_SIZE; ++i) {
-    sourceQuad = gRsrcMgr->getTextureFrameRect(_widgets[i].rsrcId);
+    sourceQuad = gRsrcMgr->getTextureFrameRect(_widgets[i].rsrcId,
+        _widgets[i].frameId);
 
     renderQuad.x = _widgets[i].pos.x;
     renderQuad.y = _widgets[i].pos.y;

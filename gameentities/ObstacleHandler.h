@@ -6,20 +6,26 @@
 //C++ system headers
 #include <cstdint>
 #include <vector>
+#include <string>
 
 //Other libraries headers
 
 //Own components headers
 #include "proxies/ObstacleHandlerProxyInterface.hpp"
+#include "proxies/GridContainerProxyInterface.hpp"
 
 //Forward declarations
+union SDL_Event;
 
 class ObstacleHandler: public ObstacleHandlerProxyInterface {
 public:
-  ObstacleHandler() = default;
+  ObstacleHandler();
   virtual ~ObstacleHandler() = default;
 
-  int32_t init();
+  int32_t init(GridContainerProxyInterface *gridInterface,
+               const std::string &levelsFolderPath, const int32_t levelsCount);
+
+  void handleUserEvent(const SDL_Event &e);
 
   inline void addObstacle(const Point &nodePos) {
     _addedObstacles.push_back(nodePos);
@@ -31,15 +37,30 @@ public:
 
   void removeObstacle(const Point &nodePos);
 
-  virtual const std::vector<Point>& getPredefinedObstacles() const
-      override final;
-
 private:
   virtual bool isIntersectingObstacle(const Point &nodePos) const
       override final;
 
+  int32_t loadLevelFromDisk(const std::string &levelsFolderPath,
+                            const int32_t levelId);
+
+  void loadNextLevel();
+  void loadPreviousLevel();
+
+  using LevelObstacles = std::vector<Obstacle>;
+
+  enum ObstacleTypes : uint8_t {
+    UNKNOWN, FIRE, EARTH, ICE, SMOKE
+  };
+
+  GridContainerProxyInterface *_gridInterface;
+
   std::vector<Point> _predefinedObstacles;
   std::vector<Point> _addedObstacles;
+  std::vector<LevelObstacles> _levelsObstacles;
+
+  int32_t _maxLevels;
+  int32_t _currLoadedLevelId;
 };
 
 #endif /* GAMEENTITIES_OBSTACLEHANDLER_H_ */

@@ -18,10 +18,18 @@ int32_t Game::init(const bool isDiagonalMovementAllowed) {
 
   if (EXIT_SUCCESS != _gridContainer.init(this, Textures::VERTICAL_LINE,
           Textures::HORIZONTAL_LINE, Textures::START_NODE, Textures::END_NODE,
-          Textures::A_STAR_PATH, Textures::WALL)) {
+          Textures::A_STAR_PATH, Textures::WALL, Textures::OBSTACLES)) {
     LOGERR("Error in _gridLineContainer.init()");
 
     err = EXIT_FAILURE;
+  }
+
+  if (EXIT_SUCCESS == err) {
+    if (EXIT_SUCCESS != _obstacleHandler.init(&_gridContainer, "../levels/",
+            Grid::OBSTACLE_LEVELS)) {
+      LOGERR("Error, _obstacleHandler.init() failed");
+      err = EXIT_FAILURE;
+    }
   }
 
   if (EXIT_SUCCESS == err) {
@@ -42,13 +50,6 @@ int32_t Game::init(const bool isDiagonalMovementAllowed) {
   if (EXIT_SUCCESS == err) {
     if (EXIT_SUCCESS != _animHandler.init(this, &_gridContainer)) {
       LOGERR("Error, _animHandler.init() failed");
-      err = EXIT_FAILURE;
-    }
-  }
-
-  if (EXIT_SUCCESS == err) {
-    if (EXIT_SUCCESS != _obstacleHandler.init()) {
-      LOGERR("Error, _obstacleHandler.init() failed");
       err = EXIT_FAILURE;
     }
   }
@@ -86,6 +87,7 @@ void Game::handleUserEvent(const SDL_Event &e) {
   }
 
   _gridContainer.handleUserEvent(e);
+  _obstacleHandler.handleUserEvent(e);
 }
 
 void Game::onNodeChanged(const NodeType nodeType, const Point &nodePos) {

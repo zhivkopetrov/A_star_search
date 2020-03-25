@@ -15,7 +15,7 @@
 //Forward declarations
 struct SDL_Texture;
 
-class RsrcMgr : public MgrBase {
+class RsrcMgr: public MgrBase {
 public:
   RsrcMgr(const int32_t monitorWidth, const int32_t monitorHeight);
   virtual ~RsrcMgr() = default;
@@ -59,18 +59,19 @@ public:
   //================== END MgrBase related functions =====================
 
   inline void setText(const char *text, const int32_t fontSize,
-               const uint8_t textureId, int32_t *outTextWidth,
-               int32_t *outTextHeight) {
-    _textureContainer.setText(
-        text, fontSize, textureId, outTextWidth, outTextHeight);
+                      const uint8_t textureId, int32_t *outTextWidth,
+                      int32_t *outTextHeight) {
+    _textureContainer.setText(text, fontSize, textureId, outTextWidth,
+        outTextHeight);
   }
 
   inline SDL_Texture* getTexture(const uint8_t textureId) const {
     return _textureContainer.getTexture(textureId);
   }
 
-  inline SDL_Rect getTextureFrameRect(const uint8_t textureId) const {
-    return _textureContainer.getTextureFrameRect(textureId);
+  inline SDL_Rect getTextureFrameRect(const uint8_t textureId,
+                                      const uint8_t frameId) const {
+    return _textureContainer.getTextureFrameRect(textureId, frameId);
   }
 
 private:

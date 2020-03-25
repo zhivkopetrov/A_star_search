@@ -17,9 +17,12 @@ void Image::create(const uint8_t textureId) {
     return;
   }
 
-  const SDL_Rect frameRect = gRsrcMgr->getTextureFrameRect(textureId);
   _isCreated = true;
   _drawParams.rsrcId = textureId;
+  _drawParams.frameId = 0;
+
+  const SDL_Rect frameRect = gRsrcMgr->getTextureFrameRect(textureId,
+      _drawParams.frameId);
   _drawParams.pos.x = frameRect.x;
   _drawParams.pos.y = frameRect.y;
   _drawParams.width = frameRect.w;

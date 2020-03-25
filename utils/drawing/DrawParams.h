@@ -25,6 +25,9 @@ struct DrawParams {
 
   //unique resource ID of the texture
   uint8_t rsrcId;
+
+  //holds current frame of the texture
+  uint8_t frameId;
 };
 
 #endif /* UTILS_DRAWING_DRAWPARAMS_H_ */

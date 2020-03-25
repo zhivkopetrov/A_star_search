@@ -35,26 +35,28 @@ public:
     return _textures[textureId];
   }
 
-  inline SDL_Rect getTextureFrameRect(const uint8_t textureId) const {
-    return _textureFrameRects[textureId];
+  inline SDL_Rect getTextureFrameRect(const uint8_t textureId,
+                                      const uint8_t frameId) const {
+    return _textureFrameRects[textureId][frameId];
   }
 
 private:
   int32_t loadFonts();
 
-  int32_t loadTextures(const int32_t windowWidth,
-                       const int32_t windowHeight);
+  int32_t loadTextures(const int32_t windowWidth, const int32_t windowHeight);
 
   int32_t loadSingleTexture(const char *filePath, const uint8_t textureId);
 
   void populateTextureFrameRects(const int32_t windowWidth,
                                  const int32_t windowHeight);
 
+  using Frame = std::vector<SDL_Rect>;
+
   //the textures we'll be drawing
   std::vector<SDL_Texture*> _textures;
 
   //individual texture source frame rectangles
-  std::vector<SDL_Rect> _textureFrameRects;
+  std::vector<Frame> _textureFrameRects;
 
   //the global fonts we'll be using
   TTF_Font *_fontSmall;

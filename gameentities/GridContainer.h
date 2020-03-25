@@ -29,7 +29,8 @@ public:
                const uint8_t vericalLineRsrcId,
                const uint8_t horizontalLineRsrcId,
                const uint8_t startNodeRsrcId, const uint8_t endNodeRsrcId,
-               const uint8_t pathNodeRsrcId, const uint8_t wallNodeRsrcId);
+               const uint8_t pathNodeRsrcId, const uint8_t wallNodeRsrcId,
+               const uint8_t predefinedObstacleRsrcId);
 
   void draw();
 
@@ -39,7 +40,7 @@ public:
 
   bool isReadyToEvaluate();
 
-  virtual Point getNodeCoordinates(const Point& nodePos) const override final;
+  virtual Point getNodeCoordinates(const Point &nodePos) const override final;
 
   inline Point getStartNodePos() const {
     return _startNodePos;
@@ -50,7 +51,12 @@ public:
   }
 
 private:
-  virtual void addAStarPathNode(const Point& nodePos) override final;
+  virtual void addPathNode(const Point &nodePos) override final;
+
+  virtual void placePredefinedObstacles(const std::vector<Obstacle> &obstacles)
+      override final;
+  virtual void removePredefinedObstacles(const std::vector<Obstacle> &obstacles)
+      override final;
 
   void addCollision(const Point &nodePos);
 
@@ -83,6 +89,7 @@ private:
   uint8_t _wallNodeRsrcId;
   uint8_t _startNodeRsrcId;
   uint8_t _endNodeRsrcId;
+  uint8_t _predefinedObstacleRsrcId;
 
   Image _gridLines[TOTAL_LINES_COUNT];
   Image _pathNodes[Grid::GRID_HEIGHT][Grid::GRID_WIDTH];

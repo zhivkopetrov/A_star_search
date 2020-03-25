@@ -44,7 +44,7 @@ int32_t SpeechAnimator::init(
 
   //the X value will be dynamically set
   constexpr int32_t SPEECH_OFFSET_Y = 195;
-  _speechText.create(Textures::NO_AVAILABLE_PATH_TEXT,
+  _speechText.create(Textures::NO_PATH_TEXT,
       Point(0, _speechBubble.getY() + SPEECH_OFFSET_Y), "-", FontSize::SMALL);
 
   return EXIT_SUCCESS;

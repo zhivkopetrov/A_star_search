@@ -37,6 +37,10 @@ public:
    * */
   void create(const uint8_t textureId);
 
+  inline void setFrame(const uint8_t frameId) {
+    _drawParams.frameId = frameId;
+  }
+
   /** @brief used to change the underlying textureId
    *
    *  @param const uint8_t - new unique texture ID

@@ -25,6 +25,7 @@ void Text::create(const uint8_t rsrcId, const Point &startPoint,
 
   _isCreated = true;
   _drawParams.rsrcId = rsrcId;
+  _drawParams.frameId = 0;
   _drawParams.pos = startPoint;
   _fontSize = fontSize;
 

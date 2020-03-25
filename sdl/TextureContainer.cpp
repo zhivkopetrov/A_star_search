@@ -86,8 +86,8 @@ void TextureContainer::setText(const char *text, const int32_t fontSize,
     return;
   }
 
-  _textureFrameRects[textureId].w = *outTextWidth;
-  _textureFrameRects[textureId].h = *outTextHeight;
+  _textureFrameRects[textureId][0].w = *outTextWidth;
+  _textureFrameRects[textureId][0].h = *outTextHeight;
 }
 
 int32_t TextureContainer::loadFonts() {
@@ -129,9 +129,10 @@ int32_t TextureContainer::loadTextures(const int32_t windowWidth,
       "../assets/batman_big.png", Textures::BATMAN_BIG }, {
       "../assets/batman_small.png", Textures::BATMAN_SMALL }, {
       "../assets/win_dialog.png", Textures::WIN_DIALOG }, {
-      "../assets/lose_dialog.png", Textures::LOSE_DIALOG } };
+      "../assets/lose_dialog.png", Textures::LOSE_DIALOG }, {
+      "../assets/obstacles.png", Textures::OBSTACLES } };
 
-  for (uint8_t i = Textures::VERTICAL_LINE; i <= Textures::LOSE_DIALOG; ++i) {
+  for (uint8_t i = Textures::VERTICAL_LINE; i <= Textures::OBSTACLES; ++i) {
     if ( EXIT_SUCCESS != loadSingleTexture(assets[i].first, assets[i].second)) {
       LOGERR("Error in loadSingleTexture()");
 
@@ -168,40 +169,49 @@ int32_t TextureContainer::loadSingleTexture(const char *filePath,
 void TextureContainer::populateTextureFrameRects(const int32_t windowWidth,
                                                  const int32_t windowHeight) {
   for (int32_t i = 0; i < Textures::COUNT; ++i) {
-    //and it tart from the beginning of the image
-    _textureFrameRects[i].x = 0;
-    _textureFrameRects[i].y = 0;
+    //most textures have single frame
+    _textureFrameRects[i].resize(1);
+    //start from the beginning of the image
+    _textureFrameRects[i][0].x = 0;
+    _textureFrameRects[i][0].y = 0;
   }
 
-  _textureFrameRects[Textures::VERTICAL_LINE].w = Grid::LINE_OFFSET;
-  _textureFrameRects[Textures::VERTICAL_LINE].h = windowHeight;
+  _textureFrameRects[Textures::OBSTACLES].resize(Grid::OBSTACLES_TYPE_COUNT);
+  for (int32_t i = 0; i < Grid::OBSTACLES_TYPE_COUNT; ++i) {
+    _textureFrameRects[Textures::OBSTACLES][i].x = i * Grid::TILE_DIMENSION;
+    _textureFrameRects[Textures::OBSTACLES][i].w = Grid::TILE_DIMENSION;
+    _textureFrameRects[Textures::OBSTACLES][i].h = Grid::TILE_DIMENSION;
+  }
 
-  _textureFrameRects[Textures::HORIZONTAL_LINE].w = windowWidth;
-  _textureFrameRects[Textures::HORIZONTAL_LINE].h = Grid::LINE_OFFSET;
+  _textureFrameRects[Textures::VERTICAL_LINE][0].w = Grid::LINE_OFFSET;
+  _textureFrameRects[Textures::VERTICAL_LINE][0].h = windowHeight;
+
+  _textureFrameRects[Textures::HORIZONTAL_LINE][0].w = windowWidth;
+  _textureFrameRects[Textures::HORIZONTAL_LINE][0].h = Grid::LINE_OFFSET;
 
   for (int32_t i = Textures::START_NODE; i <= Textures::A_STAR_PATH; ++i) {
-    _textureFrameRects[i].w = Grid::TILE_DIMENSION;
-    _textureFrameRects[i].h = Grid::TILE_DIMENSION;
+    _textureFrameRects[i][0].w = Grid::TILE_DIMENSION;
+    _textureFrameRects[i][0].h = Grid::TILE_DIMENSION;
   }
 
-  _textureFrameRects[Textures::BATMAN_BIG].w =
+  _textureFrameRects[Textures::BATMAN_BIG][0].w =
       BatmanDimensions::BIG_BATMAN_WIDTH;
-  _textureFrameRects[Textures::BATMAN_BIG].h =
+  _textureFrameRects[Textures::BATMAN_BIG][0].h =
       BatmanDimensions::BIG_BATMAN_HEIGHT;
 
-  _textureFrameRects[Textures::BATMAN_SMALL].w =
+  _textureFrameRects[Textures::BATMAN_SMALL][0].w =
       BatmanDimensions::SMALL_BATMAN_WIDTH;
-  _textureFrameRects[Textures::BATMAN_SMALL].h =
+  _textureFrameRects[Textures::BATMAN_SMALL][0].h =
       BatmanDimensions::SMALL_BATMAN_HEIGHT;
 
-  _textureFrameRects[Textures::WIN_DIALOG].w =
+  _textureFrameRects[Textures::WIN_DIALOG][0].w =
       SpeechDimensions::WIN_DIALOG_WIDTH;
-  _textureFrameRects[Textures::WIN_DIALOG].h =
+  _textureFrameRects[Textures::WIN_DIALOG][0].h =
       SpeechDimensions::WIN_DIALOG_HEIGHT;
 
-  _textureFrameRects[Textures::LOSE_DIALOG].w =
+  _textureFrameRects[Textures::LOSE_DIALOG][0].w =
       SpeechDimensions::LOSE_DIALOG_WIDTH;
-  _textureFrameRects[Textures::LOSE_DIALOG].h =
+  _textureFrameRects[Textures::LOSE_DIALOG][0].h =
       SpeechDimensions::LOSE_DIALOG_HEIGHT;
 }
 

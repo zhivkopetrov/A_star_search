@@ -4,7 +4,6 @@
 //C system headers
 
 //C++ system headers
-#include <vector>
 
 //Other libraries headers
 
@@ -19,7 +18,6 @@ public:
   virtual ~ObstacleHandlerProxyInterface() = default;
 
   virtual bool isIntersectingObstacle(const Point &nodePos) const = 0;
-  virtual const std::vector<Point> &getPredefinedObstacles() const = 0;
 };
 
 #endif /* GAMEENTITIES_PROXIES_OBSTACLEHANDLERPROXYINTERFACE_HPP_ */

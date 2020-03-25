@@ -75,7 +75,7 @@ void PathAnimator::processAnim() {
     const Point &currPos = _pathToAnimate.back();
     //we are not interested in end node
     if (1 < _pathToAnimate.size()) {
-      _gridInterface->addAStarPathNode(currPos);
+      _gridInterface->addPathNode(currPos);
     }
     _pathToAnimate.pop_back();
 

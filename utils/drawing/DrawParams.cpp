@@ -11,11 +11,16 @@
 #include "utils/LimitValues.hpp"
 
 DrawParams::DrawParams()
-: pos(Point::UNDEFINED), width(0), height(0), rsrcId(INIT_UINT8_VALUE) {
+    : pos(Point::UNDEFINED), width(0), height(0), rsrcId(INIT_UINT8_VALUE),
+      frameId(0) {
 
 }
 
 void DrawParams::reset() {
-
+  pos = Point::UNDEFINED;
+  width = 0;
+  height = 0;
+  rsrcId = INIT_UINT8_VALUE;
+  frameId = 0;
 }
 
