@@ -72,7 +72,7 @@ void SpeechAnimator::activateAnim(const SpeecAnimType type) {
       _speechBubble.getX() + ( (_speechBubble.getWidth()
           - _speechText.getWidth()) / 2));
 
-  startTimer(5000, _waitTimerId, TimerType::ONESHOT);
+  startTimer(3000, _waitTimerId, TimerType::ONESHOT);
 }
 
 void SpeechAnimator::onTimeout(const int32_t timerId) {

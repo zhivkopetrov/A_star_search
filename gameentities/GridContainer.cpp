@@ -11,9 +11,11 @@
 
 //Own components headers
 #include "proxies/GameProxyInterface.hpp"
+#include "utils/drawing/Rectangle.h"
 
 GridContainer::GridContainer()
-    : _gameInterface(nullptr), _pathNodeRsrcId(0), _wallNodeRsrcId(0),
+    : _gameInterface(nullptr), _startNodePos(Point::UNDEFINED),
+      _endNodePos(Point::UNDEFINED), _pathNodeRsrcId(0), _wallNodeRsrcId(0),
       _startNodeRsrcId(0), _endNodeRsrcId(0) {
 
 }
@@ -99,6 +101,9 @@ void GridContainer::handleUserEvent(const SDL_Event &e) {
 }
 
 void GridContainer::clearGrid() {
+  _startNodePos = Point::UNDEFINED;
+  _endNodePos = Point::UNDEFINED;
+
   for (int32_t i = 0; i < Grid::GRID_HEIGHT; ++i) {
     for (int32_t j = 0; j < Grid::GRID_WIDTH; ++j) {
       _pathNodes[i][j].setTextureId(_pathNodeRsrcId);
@@ -107,22 +112,23 @@ void GridContainer::clearGrid() {
   }
 }
 
-void GridContainer::addAStarPathNode(const Point& nodePos) {
+bool GridContainer::isReadyToEvaluate() {
+  return (Point::UNDEFINED != _startNodePos)
+      && (Point::UNDEFINED != _endNodePos);
+}
+
+void GridContainer::addAStarPathNode(const Point &nodePos) {
   _pathNodes[nodePos.y][nodePos.x].setTextureId(_pathNodeRsrcId);
   _pathNodes[nodePos.y][nodePos.x].show();
 }
 
-void GridContainer::clearGridFromAStarPathNodes() {
-  for (int32_t i = 0; i < Grid::GRID_HEIGHT; ++i) {
-    for (int32_t j = 0; j < Grid::GRID_WIDTH; ++j) {
-      if (_pathNodeRsrcId == _pathNodes[i][j].getRsrcId()) {
-        _pathNodes[i][j].hide();
-      }
-    }
-  }
-}
-
 void GridContainer::addCollision(const Point &nodePos) {
+  if (_startNodePos == nodePos) {
+    _startNodePos = Point::UNDEFINED;
+  } else if (_endNodePos == nodePos) {
+    _endNodePos = Point::UNDEFINED;
+  }
+
   _pathNodes[nodePos.y][nodePos.x].setTextureId(_wallNodeRsrcId);
   _pathNodes[nodePos.y][nodePos.x].show();
 }
@@ -133,41 +139,39 @@ void GridContainer::removeNode(const Point &nodePos) {
 
 void GridContainer::addStartNode(const Point &nodePos) {
   //first clear the old start node, if any
-  for (int32_t i = 0; i < Grid::GRID_HEIGHT; ++i) {
-    for (int32_t j = 0; j < Grid::GRID_WIDTH; ++j) {
-      if (_startNodeRsrcId == _pathNodes[i][j].getRsrcId()) {
-        _pathNodes[i][j].hide();
-        break;
-      }
-    }
+  if (Point::UNDEFINED != _startNodePos) {
+    _pathNodes[_startNodePos.y][_startNodePos.x].hide();
+  }
+  if (_endNodePos == nodePos) {
+    _endNodePos = Point::UNDEFINED;
   }
 
+  _startNodePos = nodePos;
   _pathNodes[nodePos.y][nodePos.x].setTextureId(_startNodeRsrcId);
   _pathNodes[nodePos.y][nodePos.x].show();
 }
 
 void GridContainer::addEndNode(const Point &nodePos) {
   //first clear the old start node, if any
-  for (int32_t i = 0; i < Grid::GRID_HEIGHT; ++i) {
-    for (int32_t j = 0; j < Grid::GRID_WIDTH; ++j) {
-      if (_endNodeRsrcId == _pathNodes[i][j].getRsrcId()) {
-        _pathNodes[i][j].hide();
-      }
-    }
+  if (Point::UNDEFINED != _endNodePos) {
+    _pathNodes[_endNodePos.y][_endNodePos.x].hide();
+  }
+  if (_startNodePos == nodePos) {
+    _startNodePos = Point::UNDEFINED;
   }
 
+  _endNodePos = nodePos;
   _pathNodes[nodePos.y][nodePos.x].setTextureId(_endNodeRsrcId);
   _pathNodes[nodePos.y][nodePos.x].show();
 }
 
-Point GridContainer::getNodeCoordinates(const Point& nodePos) const {
+Point GridContainer::getNodeCoordinates(const Point &nodePos) const {
   return _pathNodes[nodePos.y][nodePos.x].getPosition();
 }
 
 void GridContainer::onWallAdd() {
   Point nodePos;
   if (getSelectedNode(nodePos)) {
-    clearGridFromAStarPathNodes();
     addCollision(nodePos);
     _gameInterface->onNodeChanged(NodeType::WALL_ADD, nodePos);
   }
@@ -176,7 +180,6 @@ void GridContainer::onWallAdd() {
 void GridContainer::onWallRemove() {
   Point nodePos;
   if (getSelectedNode(nodePos)) {
-    clearGridFromAStarPathNodes();
     removeNode(nodePos);
     _gameInterface->onNodeChanged(NodeType::NODE_REMOVE, nodePos);
   }
@@ -185,7 +188,6 @@ void GridContainer::onWallRemove() {
 void GridContainer::onStartNodeEntered() {
   Point nodePos;
   if (getSelectedNode(nodePos)) {
-    clearGridFromAStarPathNodes();
     addStartNode(nodePos);
     _gameInterface->onNodeChanged(NodeType::START_CHANGE, nodePos);
   }
@@ -194,18 +196,17 @@ void GridContainer::onStartNodeEntered() {
 void GridContainer::onEndNodeEntered() {
   Point nodePos;
   if (getSelectedNode(nodePos)) {
-    clearGridFromAStarPathNodes();
     addEndNode(nodePos);
     _gameInterface->onNodeChanged(NodeType::END_CHANGE, nodePos);
   }
 }
 
 bool GridContainer::getSelectedNode(Point &nodePos) {
-  SDL_Point mousePos;
+  Point mousePos;
   /* capture mouse position on the screen */
   SDL_GetMouseState(&mousePos.x, &mousePos.y);
 
-  SDL_Rect currBoundaryRect;
+  Rectangle currBoundaryRect;
   currBoundaryRect.w = Grid::TILE_DIMENSION;
   currBoundaryRect.h = Grid::TILE_DIMENSION;
 
@@ -217,7 +218,7 @@ bool GridContainer::getSelectedNode(Point &nodePos) {
       currBoundaryRect.x = currNodePos.x;
       currBoundaryRect.y = currNodePos.y;
 
-      if (SDL_PointInRect(&mousePos, &currBoundaryRect)) {
+      if (Rectangle::isPointInRect(mousePos, currBoundaryRect)) {
         nodePos.x = j;
         nodePos.y = i;
 

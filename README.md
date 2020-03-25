@@ -25,7 +25,8 @@ Run with "./game true" to allowed diagonal movements in the grid;
 
 TODOs:
 - implement an "obstacle loader" that uses the "UP" and "DOWN" arrow keys to load a preset of obstacle levels (level with no obstacles, and 2 more)
-- implement a better API for polling if there is collision on the walls
 - when animation is finished all "non-preset" walls should be removed
 - move the "isDiagonalMovement allowed to an option"
-- Implement a "popping up" menu (in the upper right corner). It will have the ticks "isDiagonalMovementAllowed" to a checkbox and up-down arrows for levels (predefined walls)
+- Implement a "popping up" menu (in the upper right corner). It will have the ticks "isDiagonalMovementAllowed"
+ to a checkbox and up-down arrows for levels (predefined walls)
+ - Try to change the AStar algorithm with the one with std::priority_queue<>

@@ -1,34 +1,32 @@
 //Corresponding header
-#include "AStar.h"
+#include "PathGenerator.h"
 
 //C system headers
 
 //C++ system headers
-#include <algorithm>
-#include <cmath>
 
 //Other libraries headers
 
 //Own components headers
 #include "Node.h"
 #include "common/CommonDefines.h"
+#include "gameentities/proxies/ObstacleHandlerProxyInterface.hpp"
 #include "utils/Log.h"
 
-AStar::AStar()
-    : _walls(nullptr), _allowedDirectionsCount(0), _mazeWidth(0), _mazeHeight(0) {
+PathGenerator::PathGenerator()
+    : _obstacleHandlerInterface(nullptr), _allowedDirectionsCount(0),
+      _mazeWidth(0), _mazeHeight(0) {
 
 }
 
-int32_t AStar::init(const int32_t mazeWidth, const int32_t mazeHeight,
+int32_t PathGenerator::init(const int32_t mazeWidth, const int32_t mazeHeight,
                     const bool isDiagonalMovementEnabled,
                     HeuristicFunction heuristic,
-                    const std::vector<Point> *walls) {
-  int32_t err = EXIT_SUCCESS;
-
+                    ObstacleHandlerProxyInterface *obstacleHandlerInterface) {
   _mazeWidth = mazeWidth;
   _mazeHeight = mazeHeight;
   _heuristic = heuristic;
-  _walls = walls;
+  _obstacleHandlerInterface = obstacleHandlerInterface;
 
   _allowedDirectionsCount =
       (isDiagonalMovementEnabled) ? DIAGONAL_MOVEMENTS : NON_DIAGONAL_MOVEMENTS;
@@ -43,10 +41,10 @@ int32_t AStar::init(const int32_t mazeWidth, const int32_t mazeHeight,
       { 1, -1 }  //DOWN_LEFT
   };
 
-  return err;
+  return EXIT_SUCCESS;
 }
 
-std::vector<Point> AStar::findPath(const Point &source,
+std::vector<Point> PathGenerator::findPath(const Point &source,
                                    const Point &target) const {
   std::vector<Point> path;
   if (detectCollision(source) || detectCollision(target)) {
@@ -114,7 +112,7 @@ std::vector<Point> AStar::findPath(const Point &source,
   return path;
 }
 
-Node* AStar::findNodeOnList(const std::set<Node*> &nodes,
+Node* PathGenerator::findNodeOnList(const std::set<Node*> &nodes,
                             const Point &position) const {
   for (auto node : nodes) {
     if (node->position == position) {
@@ -124,21 +122,20 @@ Node* AStar::findNodeOnList(const std::set<Node*> &nodes,
   return nullptr;
 }
 
-void AStar::releaseNodes(std::set<Node*> &nodes) const {
+void PathGenerator::releaseNodes(std::set<Node*> &nodes) const {
   for (auto it = nodes.begin(); it != nodes.end();) {
     delete *it;
     it = nodes.erase(it);
   }
 }
 
-bool AStar::detectCollision(const Point &position) const {
+bool PathGenerator::detectCollision(const Point &position) const {
   if (position.x < 0 || position.x >= _mazeWidth
       || position.y < 0
       || position.y >= _mazeHeight
-      || std::find( (*_walls).begin(), (*_walls).end(), position) != (*_walls).end()) {
+      || _obstacleHandlerInterface->isIntersectingObstacle(position)) {
     return true;
   }
 
   return false;
 }
-

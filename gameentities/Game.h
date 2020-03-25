@@ -10,9 +10,10 @@
 
 //Own components headers
 #include "GridContainer.h"
+#include "ObstacleHandler.h"
 #include "proxies/GameProxyInterface.hpp"
+#include "pathfinding/PathGenerator.h"
 #include "animators/AnimatorHandler.h"
-#include "pathfinding/MazeGenerator.h"
 
 //Forward declarations
 
@@ -37,9 +38,11 @@ private:
 
   virtual void onEndAnimFinished() override final;
 
-  MazeGenerator _generator;
+  PathGenerator _pathGenerator;
 
   GridContainer _gridContainer;
+
+  ObstacleHandler _obstacleHandler;
 
   AnimatorHandler _animHandler;
 };

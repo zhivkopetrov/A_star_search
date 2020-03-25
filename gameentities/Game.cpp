@@ -32,9 +32,9 @@ int32_t Game::init(const bool isDiagonalMovementAllowed) {
       heuristic = Heuristic::diagonal;
     }
 
-    if (EXIT_SUCCESS != _generator.init(Grid::GRID_WIDTH, Grid::GRID_HEIGHT,
-            isDiagonalMovementAllowed, heuristic)) {
-      LOGERR("Error, _generator.init() failed");
+    if (EXIT_SUCCESS != _pathGenerator.init(Grid::GRID_WIDTH, Grid::GRID_HEIGHT,
+            isDiagonalMovementAllowed, heuristic, &_obstacleHandler)) {
+      LOGERR("Error, _pathGenerator.init() failed");
       err = EXIT_FAILURE;
     }
   }
@@ -42,6 +42,13 @@ int32_t Game::init(const bool isDiagonalMovementAllowed) {
   if (EXIT_SUCCESS == err) {
     if (EXIT_SUCCESS != _animHandler.init(this, &_gridContainer)) {
       LOGERR("Error, _animHandler.init() failed");
+      err = EXIT_FAILURE;
+    }
+  }
+
+  if (EXIT_SUCCESS == err) {
+    if (EXIT_SUCCESS != _obstacleHandler.init()) {
+      LOGERR("Error, _obstacleHandler.init() failed");
       err = EXIT_FAILURE;
     }
   }
@@ -67,13 +74,12 @@ void Game::handleUserEvent(const SDL_Event &e) {
     switch (e.key.keysym.sym) {
 
     case SDLK_SPACE:
-      if (_generator.isReadyToEvaluate()) {
+      if (_gridContainer.isReadyToEvaluate()) {
         evaluateAStar();
       }
       break;
 
     case SDLK_c:
-      _generator.clear();
       _gridContainer.clearGrid();
       break;
     }
@@ -85,23 +91,21 @@ void Game::handleUserEvent(const SDL_Event &e) {
 void Game::onNodeChanged(const NodeType nodeType, const Point &nodePos) {
   switch (nodeType) {
   case NodeType::WALL_ADD:
-    _generator.addCollision(nodePos);
+    _obstacleHandler.addObstacle(nodePos);
     break;
 
   case NodeType::NODE_REMOVE:
-    _generator.removeNode(nodePos);
+    _obstacleHandler.removeObstacle(nodePos);
     break;
 
   case NodeType::START_CHANGE:
     _animHandler.perform(AnimEvent::SET_SCALE_AMIM_START_TARGET,
         _gridContainer.getNodeCoordinates(nodePos));
-    _generator.setStartNodePos(nodePos);
     break;
 
   case NodeType::END_CHANGE:
     _animHandler.perform(AnimEvent::SET_SCALE_AMIM_END_TARGET,
         _gridContainer.getNodeCoordinates(nodePos));
-    _generator.setEndNodePos(nodePos);
     break;
 
   default:
@@ -115,9 +119,11 @@ void Game::onNodeChanged(const NodeType nodeType, const Point &nodePos) {
 void Game::evaluateAStar() {
   // This method returns vector of coordinates from target to source.
   // the data will be moved, so it's not const
-  std::vector<Point> path = _generator.findPath();
+  const Point startNode = _gridContainer.getStartNodePos();
+  const Point endNode = _gridContainer.getEndNodePos();
+  std::vector<Point> path = _pathGenerator.findPath(startNode, endNode);
 
-  if ( (path.front() != _generator.getEndNodePos())) {
+  if (path.front() != endNode) {
     _animHandler.perform(AnimEvent::START_NO_PATH_ANIM);
   } else {
     _animHandler.perform(AnimEvent::LOAD_ANIM_PATH, &path);
@@ -126,7 +132,6 @@ void Game::evaluateAStar() {
 }
 
 void Game::onEndAnimFinished() {
-  _generator.clear();
   _gridContainer.clearGrid();
 }
 

@@ -37,12 +37,20 @@ public:
 
   void clearGrid();
 
+  bool isReadyToEvaluate();
+
   virtual Point getNodeCoordinates(const Point& nodePos) const override final;
+
+  inline Point getStartNodePos() const {
+    return _startNodePos;
+  }
+
+  inline Point getEndNodePos() const {
+    return _endNodePos;
+  }
 
 private:
   virtual void addAStarPathNode(const Point& nodePos) override final;
-
-  void clearGridFromAStarPathNodes();
 
   void addCollision(const Point &nodePos);
 
@@ -69,6 +77,8 @@ private:
 
   GameProxyInterface *_gameInterface;
 
+  Point _startNodePos;
+  Point _endNodePos;
   uint8_t _pathNodeRsrcId;
   uint8_t _wallNodeRsrcId;
   uint8_t _startNodeRsrcId;
