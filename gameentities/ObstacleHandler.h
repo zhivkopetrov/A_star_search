@@ -15,7 +15,6 @@
 #include "proxies/GridContainerProxyInterface.hpp"
 
 //Forward declarations
-union SDL_Event;
 
 class ObstacleHandler: public ObstacleHandlerProxyInterface {
 public:
@@ -25,7 +24,8 @@ public:
   int32_t init(GridContainerProxyInterface *gridInterface,
                const std::string &levelsFolderPath, const int32_t levelsCount);
 
-  void handleUserEvent(const SDL_Event &e);
+  void loadNextLevel();
+  void loadPreviousLevel();
 
   inline void addObstacle(const Point &nodePos) {
     _addedObstacles.push_back(nodePos);
@@ -43,9 +43,6 @@ private:
 
   int32_t loadLevelFromDisk(const std::string &levelsFolderPath,
                             const int32_t levelId);
-
-  void loadNextLevel();
-  void loadPreviousLevel();
 
   using LevelObstacles = std::vector<Obstacle>;
 

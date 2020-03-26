@@ -100,5 +100,10 @@ enum {
 };
 } //namespace BatmanDimensions
 
+enum class Option {
+  DIAGONAL_MOVEMENT,
+  LEVEL_CHANGE
+};
+
 #endif /* COMMON_COMMONDEFINES_H_ */
 

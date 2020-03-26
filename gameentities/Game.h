@@ -11,6 +11,7 @@
 //Own components headers
 #include "GridContainer.h"
 #include "ObstacleHandler.h"
+#include "OptionSelector.h"
 #include "proxies/GameProxyInterface.hpp"
 #include "pathfinding/PathGenerator.h"
 #include "animators/AnimatorHandler.h"
@@ -22,7 +23,7 @@ public:
   Game() = default;
   virtual ~Game() = default;
 
-  int32_t init(const bool isDiagonalMovementAllowed);
+  int32_t init();
 
   void deinit();
 
@@ -38,6 +39,9 @@ private:
 
   virtual void onEndAnimFinished() override final;
 
+  virtual void onOptionChanged(const Option option,
+                               const std::any &value) override final;
+
   PathGenerator _pathGenerator;
 
   GridContainer _gridContainer;
@@ -45,6 +49,8 @@ private:
   ObstacleHandler _obstacleHandler;
 
   AnimatorHandler _animHandler;
+
+  OptionSelector _optionSelector;
 };
 
 #endif /* GAME_GAMEENTITIES_H_ */

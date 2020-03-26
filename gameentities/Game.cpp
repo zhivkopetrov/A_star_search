@@ -13,7 +13,7 @@
 #include "common/CommonDefines.h"
 #include "utils/Log.h"
 
-int32_t Game::init(const bool isDiagonalMovementAllowed) {
+int32_t Game::init() {
   int32_t err = EXIT_SUCCESS;
 
   if (EXIT_SUCCESS != _gridContainer.init(this, Textures::VERTICAL_LINE,
@@ -33,15 +33,8 @@ int32_t Game::init(const bool isDiagonalMovementAllowed) {
   }
 
   if (EXIT_SUCCESS == err) {
-    HeuristicFunction heuristic = Heuristic::manhattan;
-
-    //diagonal heuristic is better for diagonal movements
-    if (isDiagonalMovementAllowed) {
-      heuristic = Heuristic::diagonal;
-    }
-
     if (EXIT_SUCCESS != _pathGenerator.init(Grid::GRID_WIDTH, Grid::GRID_HEIGHT,
-            isDiagonalMovementAllowed, heuristic, &_obstacleHandler)) {
+            &_obstacleHandler)) {
       LOGERR("Error, _pathGenerator.init() failed");
       err = EXIT_FAILURE;
     }
@@ -50,6 +43,13 @@ int32_t Game::init(const bool isDiagonalMovementAllowed) {
   if (EXIT_SUCCESS == err) {
     if (EXIT_SUCCESS != _animHandler.init(this, &_gridContainer)) {
       LOGERR("Error, _animHandler.init() failed");
+      err = EXIT_FAILURE;
+    }
+  }
+
+  if (EXIT_SUCCESS == err) {
+    if (EXIT_SUCCESS != _optionSelector.init(this)) {
+      LOGERR("Error, _optionSelector.init() failed");
       err = EXIT_FAILURE;
     }
   }
@@ -64,6 +64,7 @@ void Game::deinit() {
 void Game::draw() {
   _gridContainer.draw();
   _animHandler.draw();
+  _optionSelector.draw();
 }
 
 void Game::handleUserEvent(const SDL_Event &e) {
@@ -83,11 +84,25 @@ void Game::handleUserEvent(const SDL_Event &e) {
     case SDLK_c:
       _gridContainer.clearGrid();
       break;
+
+      //TODO temporary - remove after buttons are implemented in the OptionSelector
+    case SDLK_d:
+      _optionSelector.setOption(Option::DIAGONAL_MOVEMENT, true);
+      break;
+
+      //TODO temporary - remove after buttons are implemented in the OptionSelector
+    case SDLK_UP:
+      _obstacleHandler.loadNextLevel();
+      break;
+
+      //TODO temporary - remove after buttons are implemented in the OptionSelector
+    case SDLK_DOWN:
+      _obstacleHandler.loadPreviousLevel();
+      break;
     }
   }
 
   _gridContainer.handleUserEvent(e);
-  _obstacleHandler.handleUserEvent(e);
 }
 
 void Game::onNodeChanged(const NodeType nodeType, const Point &nodePos) {
@@ -135,5 +150,19 @@ void Game::evaluateAStar() {
 
 void Game::onEndAnimFinished() {
   _gridContainer.clearGrid();
+}
+
+void Game::onOptionChanged(const Option option, const std::any &value) {
+  switch (option) {
+    case Option::DIAGONAL_MOVEMENT:
+      _pathGenerator.changeDiagonalOption(value);
+      break;
+
+    default:
+      LOGERR("Error, received unknown Option: %d",
+          static_cast<int32_t>(option))
+      ;
+      break;
+  }
 }
 

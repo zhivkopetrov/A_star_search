@@ -20,16 +20,10 @@ PathGenerator::PathGenerator()
 }
 
 int32_t PathGenerator::init(const int32_t mazeWidth, const int32_t mazeHeight,
-                    const bool isDiagonalMovementEnabled,
-                    HeuristicFunction heuristic,
                     ObstacleHandlerProxyInterface *obstacleHandlerInterface) {
   _mazeWidth = mazeWidth;
   _mazeHeight = mazeHeight;
-  _heuristic = heuristic;
   _obstacleHandlerInterface = obstacleHandlerInterface;
-
-  _allowedDirectionsCount =
-      (isDiagonalMovementEnabled) ? DIAGONAL_MOVEMENTS : NON_DIAGONAL_MOVEMENTS;
 
   _moveDirections = { { 0, 1 }, //Right
       { 1, 0 }, //Left
@@ -40,6 +34,8 @@ int32_t PathGenerator::init(const int32_t mazeWidth, const int32_t mazeHeight,
       { -1, 1 }, //UP_RIGHT
       { 1, -1 }  //DOWN_LEFT
   };
+
+  setHeuristic(false);
 
   return EXIT_SUCCESS;
 }
@@ -110,6 +106,27 @@ std::vector<Point> PathGenerator::findPath(const Point &source,
   releaseNodes(closedSet);
 
   return path;
+}
+
+void PathGenerator::changeDiagonalOption(const std::any &value) {
+  try {
+    const auto isDiagonalMovementAllowed = std::any_cast<bool>(value);
+    setHeuristic(isDiagonalMovementAllowed);
+  } catch (const std::bad_any_cast &e) {
+    LOGERR("any_cast throwed: %s", e.what());
+  }
+}
+
+void PathGenerator::setHeuristic(const bool isDiagonalMovementAllowed) {
+  _heuristic = Heuristic::manhattan;
+
+  //diagonal heuristic is better for diagonal movements
+  if (isDiagonalMovementAllowed) {
+    _heuristic = Heuristic::diagonal;
+  }
+
+  _allowedDirectionsCount =
+      (isDiagonalMovementAllowed) ? DIAGONAL_MOVEMENTS : NON_DIAGONAL_MOVEMENTS;
 }
 
 Node* PathGenerator::findNodeOnList(const std::set<Node*> &nodes,

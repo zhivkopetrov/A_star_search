@@ -11,16 +11,9 @@
 #include "Engine.h"
 #include "utils/Log.h"
 
-int32_t main(int32_t argc, char *args[]) {
+int32_t main(const int32_t , char *[]) {
   int32_t err = EXIT_SUCCESS;
   Engine engine;
-
-  bool isDiagonalMovementAllowed = false;
-  if (1 < argc) {
-    if (0 == strcmp(args[1], "true")) {
-      isDiagonalMovementAllowed = true;
-    }
-  }
 
   if (EXIT_SUCCESS != SDLLoader::init()) {
     LOGERR("Error in SDLLoader::init() -> Terminating ...");
@@ -29,7 +22,7 @@ int32_t main(int32_t argc, char *args[]) {
   }
 
   if (EXIT_SUCCESS == err) {
-    if (EXIT_SUCCESS != engine.init(isDiagonalMovementAllowed)) {
+    if (EXIT_SUCCESS != engine.init()) {
       LOGERR("engine.init() failed");
 
       err = EXIT_FAILURE;

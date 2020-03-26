@@ -6,6 +6,7 @@ List of developed heuristics:
 
 The project uses:
 
+- Linux OS;
 - SDL2 external library for graphics;
 - cmake for build tool;
 
@@ -24,9 +25,8 @@ NOTE: the binary takes argument - "isDiagonalMovementAllowed";
 Run with "./game true" to allowed diagonal movements in the grid;
 
 TODOs:
-- implement an "obstacle loader" that uses the "UP" and "DOWN" arrow keys to load a preset of obstacle levels (level with no obstacles, and 2 more)
-- when animation is finished all "non-preset" walls should be removed
-- move the "isDiagonalMovement allowed to an option"
+- Implement buttons functionality
 - Implement a "popping up" menu (in the upper right corner). It will have the ticks "isDiagonalMovementAllowed"
  to a checkbox and up-down arrows for levels (predefined walls)
+ - Remove the TODOs from game::handleUserEvent
  - Try to change the AStar algorithm with the one with std::priority_queue<>

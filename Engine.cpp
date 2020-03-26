@@ -16,7 +16,7 @@
 #include "managers/TimerMgr.h"
 #include "utils/Log.h"
 
-int32_t Engine::init(const bool isDiagonalMovementAllowed) {
+int32_t Engine::init() {
   int32_t err = EXIT_SUCCESS;
 
   //initialise monitor to FullHD
@@ -33,7 +33,7 @@ int32_t Engine::init(const bool isDiagonalMovementAllowed) {
   }
 
   if (EXIT_SUCCESS == err) {
-    if (EXIT_SUCCESS != _game.init(isDiagonalMovementAllowed)) {
+    if (EXIT_SUCCESS != _game.init()) {
       LOGERR("Error, _game.init() failed");
       err = EXIT_FAILURE;
     }

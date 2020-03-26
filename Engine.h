@@ -20,7 +20,7 @@ public:
   Engine() = default;
   ~Engine() = default;
 
-  int32_t init(const bool isDiagonalMovementAllowed);
+  int32_t init();
 
   void deinit();
 

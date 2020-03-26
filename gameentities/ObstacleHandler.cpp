@@ -11,7 +11,6 @@
 #include <fstream>
 
 //Other libraries headers
-#include <SDL2/SDL_events.h>
 
 //Own components headers
 #include "utils/Log.h"
@@ -47,16 +46,6 @@ int32_t ObstacleHandler::init(GridContainerProxyInterface *gridInterface,
   }
 
   return err;
-}
-
-void ObstacleHandler::handleUserEvent(const SDL_Event &e) {
-  if (e.type == SDL_KEYUP) {
-    if (e.key.keysym.sym == SDLK_UP) {
-      loadNextLevel();
-    } else if (e.key.keysym.sym == SDLK_DOWN) {
-      loadPreviousLevel();
-    }
-  }
 }
 
 void ObstacleHandler::removeObstacle(const Point &nodePos) {
