@@ -21,9 +21,6 @@ cmake;
 2) After generation is complete run "make";
 3) When compilation has completed run the binary with "./game";
 
-NOTE: the binary takes argument - "isDiagonalMovementAllowed";
-Run with "./game true" to allowed diagonal movements in the grid;
-
 TODOs:
 - Implement buttons functionality
 - Implement a "popping up" menu (in the upper right corner). It will have the ticks "isDiagonalMovementAllowed"

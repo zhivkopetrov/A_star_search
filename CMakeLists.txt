@@ -50,6 +50,7 @@ include_directories(${PROJECT_ROOT_DIR}
 #file(GLOB...) allows for wildcard additions:
 file(GLOB SOURCES "${PROJECT_ROOT_DIR}/*.cpp"
                   "${PROJECT_ROOT_DIR}/utils/*.cpp"
+                  "${PROJECT_ROOT_DIR}/utils/input/*.cpp"
                   "${PROJECT_ROOT_DIR}/utils/time/*.cpp"
                   "${PROJECT_ROOT_DIR}/utils/drawing/*.cpp"
                   "${PROJECT_ROOT_DIR}/sdl/*.cpp"
