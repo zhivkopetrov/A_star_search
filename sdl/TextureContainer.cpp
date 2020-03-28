@@ -130,9 +130,10 @@ int32_t TextureContainer::loadTextures(const int32_t windowWidth,
       "../assets/batman_small.png", Textures::BATMAN_SMALL }, {
       "../assets/win_dialog.png", Textures::WIN_DIALOG }, {
       "../assets/lose_dialog.png", Textures::LOSE_DIALOG }, {
-      "../assets/obstacles.png", Textures::OBSTACLES } };
+      "../assets/obstacles.png", Textures::OBSTACLES }, {
+      "../assets/ui/check_frames.png", Textures::MENU_TICK } };
 
-  for (uint8_t i = Textures::VERTICAL_LINE; i <= Textures::OBSTACLES; ++i) {
+  for (uint8_t i = Textures::VERTICAL_LINE; i <= Textures::MENU_TICK; ++i) {
     if ( EXIT_SUCCESS != loadSingleTexture(assets[i].first, assets[i].second)) {
       LOGERR("Error in loadSingleTexture()");
 
@@ -213,5 +214,12 @@ void TextureContainer::populateTextureFrameRects(const int32_t windowWidth,
       SpeechDimensions::LOSE_DIALOG_WIDTH;
   _textureFrameRects[Textures::LOSE_DIALOG][0].h =
       SpeechDimensions::LOSE_DIALOG_HEIGHT;
+
+   _textureFrameRects[Textures::MENU_TICK].resize(2);
+   for (int32_t i = 0; i < 2; ++i) {
+     _textureFrameRects[Textures::MENU_TICK][i].x = i * 33;
+     _textureFrameRects[Textures::MENU_TICK][i].w = 33;
+     _textureFrameRects[Textures::MENU_TICK][i].h = 33;
+   }
 }
 

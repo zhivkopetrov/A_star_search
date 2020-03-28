@@ -1,10 +1,3 @@
-/*
- * Point.h
- *
- *  Created on: Jul 20, 2017
- *      Author: Zhivko Petrov
- */
-
 #ifndef UTILS_DRAWING_POINT_H_
 #define UTILS_DRAWING_POINT_H_
 

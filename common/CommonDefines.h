@@ -25,6 +25,7 @@ enum : uint8_t {
   WIN_DIALOG,
   LOSE_DIALOG,
   OBSTACLES,
+  MENU_TICK,
   FPS_TEXT,
   NO_PATH_TEXT,
 

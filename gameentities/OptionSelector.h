@@ -15,6 +15,7 @@
 
 //Forward declarations
 class GameProxyInterface;
+class InputEvent;
 
 class OptionSelector {
 public:
@@ -24,6 +25,8 @@ public:
   int32_t init(GameProxyInterface *gameInterface);
 
   void draw();
+
+  void handleEvent(const InputEvent &e);
 
   void setOption(const Option option, const std::any &value);
 

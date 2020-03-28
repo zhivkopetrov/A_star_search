@@ -12,7 +12,7 @@
 #include "utils/drawing/Text.h"
 
 //Forward declarations
-union SDL_Event;
+class InputEvent;
 
 class DebugConsole {
 public:
@@ -23,7 +23,7 @@ public:
 
   /** @ brief used to toggle active/inactive status of the debug console
    * */
-  void handleEvent(const SDL_Event &e);
+  void handleEvent(const InputEvent &e);
 
   void update(const uint32_t elapsedTime);
 

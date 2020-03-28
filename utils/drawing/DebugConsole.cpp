@@ -8,9 +8,9 @@
 #include <string>
 
 //Other libraries headers
-#include <SDL2/SDL_events.h>
 
 //Own components headers
+#include "sdl/InputEvent.h"
 #include "common/CommonDefines.h"
 #include "utils/LimitValues.hpp"
 #include "utils/time/Time.h"
@@ -30,13 +30,11 @@ int32_t DebugConsole::init() {
   return EXIT_SUCCESS;
 }
 
-void DebugConsole::handleEvent(const SDL_Event &e) {
-  if (SDL_KEYUP != e.type) {
-    return;
-  }
-
-  if (SDLK_BACKQUOTE == e.key.keysym.sym) {
-    _isActive = !_isActive;
+void DebugConsole::handleEvent(const InputEvent &e) {
+  if (TouchEvent::KEYBOARD_RELEASE == e.type) {
+    if (Keyboard::KEY_TILDA == e.key) {
+      _isActive = !_isActive;
+    }
   }
 }
 

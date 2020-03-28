@@ -9,7 +9,6 @@
 #include <string>
 
 //Other libraries headers
-#include <SDL2/SDL_events.h>
 
 //Own components headers
 #include "managers/DrawMgr.h"
@@ -47,6 +46,13 @@ int32_t Engine::init() {
   }
 
   if (EXIT_SUCCESS == err) {
+    if (EXIT_SUCCESS != _inputEvent.init()) {
+      LOGERR("Error in _inputEvent.init()");
+      err = EXIT_FAILURE;
+    }
+  }
+
+  if (EXIT_SUCCESS == err) {
     constexpr auto maxFrameRate = 60;
     _debugConsole.setMaxFrameRate(maxFrameRate);
     gDrawMgr->setMaxFrameRate(maxFrameRate);
@@ -59,24 +65,20 @@ int32_t Engine::init() {
 void Engine::deinit() {
   _game.deinit();
   _managerHandler.deinit();
+  _inputEvent.deinit();
 }
 
 void Engine::mainLoop() {
   Time fpsTime;
   uint32_t fpsDelay = 0;
-  SDL_Event event;
-  memset(&event, 0, sizeof (event));
 
   while (true) {
     //begin measure the new frame elapsed time
     fpsTime.getElapsed();
 
-    if (handleUserEvent(event)) {
+    if (processFrame()) {
       break;
     }
-
-    updateWorldState();
-    drawWorld();
 
     fpsDelay = static_cast<uint32_t>(fpsTime.getElapsed().toMicroseconds());
 
@@ -95,11 +97,23 @@ void Engine::mainLoop() {
   }
 }
 
-void Engine::updateWorldState() {
+bool Engine::processFrame() {
   _managerHandler.process();
+
+  while (_inputEvent.pollEvent()) {
+    if (_inputEvent.checkForExitRequest()) {
+      return true;
+    }
+
+    handleEvent();
+  }
+
+  drawFrame();
+
+  return false;
 }
 
-void Engine::drawWorld() {
+void Engine::drawFrame() {
   gDrawMgr->clearScreen();
 
   _game.draw();
@@ -111,17 +125,8 @@ void Engine::drawWorld() {
   gDrawMgr->finishFrame();
 }
 
-bool Engine::handleUserEvent(SDL_Event &e) {
-  while (0 != SDL_PollEvent(&e)) {
-    if ( (SDLK_ESCAPE == e.key.keysym.sym && e.type == SDL_KEYUP) || (SDL_QUIT
-        == e.type)) {
-      return true;
-    }
-
-    _debugConsole.handleEvent(e);
-    _game.handleUserEvent(e);
-  }
-
-  return false;
+void Engine::handleEvent() {
+  _debugConsole.handleEvent(_inputEvent);
+  _game.handleEvent(_inputEvent);
 }
 

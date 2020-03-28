@@ -150,8 +150,22 @@ enum Key {
 };
 } /* namespace Keyboard */
 
+namespace Mouse {
+enum MouseKey {
+  UNKNOWN = 0,
+  LEFT_BUTTON = 1, //SDL_BUTTON_LEFT
+  MIDDLE_BUTTON = 2, //SDL_BUTTON_MIDDLE
+  RIGHT_BUTTON = 3 //SDL_BUTTON_RIGHT
+};
+} /* namespace Mouse */
+
 enum class TouchEvent : uint8_t {
-  UNKNOWN = 0, PRESS, DRAG, RELEASE
+  UNKNOWN = 0,
+  TOUCH_PRESS,
+  TOUCH_DRAG,
+  TOUCH_RELEASE,
+  KEYBOARD_PRESS,
+  KEYBOARD_RELEASE
 };
 
 enum class SystemEvent : uint8_t {

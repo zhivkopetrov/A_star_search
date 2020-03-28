@@ -1,10 +1,3 @@
-/*
- * Point.h
- *
- *  Created on: Jul 20, 2017
- *      Author: Zhivko Petrov
- */
-
 //Corresponding header
 #include "Point.h"
 

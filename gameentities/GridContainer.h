@@ -17,7 +17,7 @@
 //Forward declarations
 class GameProxyInterface;
 struct Point;
-union SDL_Event;
+class InputEvent;
 
 class GridContainer: public GridContainerProxyInterface {
 public:
@@ -34,7 +34,7 @@ public:
 
   void draw();
 
-  void handleUserEvent(const SDL_Event &e);
+  void handleEvent(const InputEvent &e);
 
   void clearGrid();
 
@@ -66,16 +66,16 @@ private:
 
   void addEndNode(const Point &nodePos);
 
-  void onWallAdd();
+  void onWallAdd(const InputEvent &e);
 
-  void onWallRemove();
+  void onWallRemove(const InputEvent &e);
 
-  void onStartNodeEntered();
+  void onStartNodeEntered(const InputEvent &e);
 
-  void onEndNodeEntered();
+  void onEndNodeEntered(const InputEvent &e);
 
   //returns false if event has not selected any node
-  bool getSelectedNode(Point &nodePos);
+  bool getSelectedNode(const InputEvent &e, Point &outNodePos);
 
   enum InternalDefines {
     TOTAL_LINES_COUNT = Grid::GRID_HEIGHT + Grid::GRID_WIDTH

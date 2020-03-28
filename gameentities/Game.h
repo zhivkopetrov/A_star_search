@@ -17,6 +17,7 @@
 #include "animators/AnimatorHandler.h"
 
 //Forward declarations
+class InputEvent;
 
 class Game: private GameProxyInterface {
 public:
@@ -29,7 +30,7 @@ public:
 
   void draw();
 
-  void handleUserEvent(const SDL_Event &e);
+  void handleEvent(const InputEvent &e);
 
 private:
   void evaluateAStar();

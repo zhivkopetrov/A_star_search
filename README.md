@@ -7,6 +7,7 @@ List of developed heuristics:
 The project uses:
 
 - Linux OS;
+- Compiler that supports c++17 standard
 - SDL2 external library for graphics;
 - cmake for build tool;
 
@@ -22,7 +23,6 @@ cmake;
 3) When compilation has completed run the binary with "./game";
 
 TODOs:
-- Implement buttons functionality
 - Implement a "popping up" menu (in the upper right corner). It will have the ticks "isDiagonalMovementAllowed"
  to a checkbox and up-down arrows for levels (predefined walls)
  - Remove the TODOs from game::handleUserEvent

@@ -14,8 +14,9 @@
 #include "utils/Log.h"
 
 InputEvent::InputEvent()
-    : type(TouchEvent::UNKNOWN), key(Keyboard::KEY_UNKNOWN),
-      pos(Point::UNDEFINED), _sdlEvent(nullptr), _lastClicked(nullptr),
+    : pos(Point::UNDEFINED), key(Keyboard::KEY_UNKNOWN),
+      mouseButton(Mouse::UNKNOWN), type(TouchEvent::UNKNOWN),
+      _sdlEvent(nullptr), _lastClicked(nullptr),
       _systemType(SystemEvent::UNKNOWN), _hasLastClickedLeftBoundary(false) {
 
 }
@@ -103,37 +104,40 @@ void InputEvent::setEventTypeInternal() {
   switch (_sdlEvent->type) {
   case EventType::KEYBOARD_PRESS:
     _systemType = SystemEvent::KEYBOARD_PRESS;
-    type = TouchEvent::UNKNOWN;
+    type = TouchEvent::KEYBOARD_PRESS;
     key =
         _sdlEvent->key.keysym.sym == Keyboard::KEY_ESCAPE ?
             Keyboard::KEY_ESCAPE : Keyboard::KEY_UNKNOWN;
+    mouseButton = Mouse::UNKNOWN;
     break;
 
   case EventType::KEYBOARD_RELEASE:
     _systemType = SystemEvent::KEYBOARD_RELEASE;
-    type = TouchEvent::UNKNOWN;
+    type = TouchEvent::KEYBOARD_RELEASE;
     key = _sdlEvent->key.keysym.sym;
+    mouseButton = Mouse::UNKNOWN;
     break;
 
     //NOTE: the fall-through is intentional
   case EventType::MOUSE_PRESS:
   case EventType::FINGER_PRESS:
     _systemType = SystemEvent::UNKNOWN;
-    type = TouchEvent::PRESS;
+    type = TouchEvent::TOUCH_PRESS;
     key = Keyboard::KEY_UNKNOWN;
+    mouseButton = _sdlEvent->button.button;
     break;
 
     //NOTE: the fall-through is intentional
   case EventType::MOUSE_MOTION:
   case EventType::FINGER_MOTION:
-    validateEventMotion();
+    validateTouchEventMotion();
     break;
 
     //NOTE: the fall-through is intentional
   case EventType::MOUSE_RELEASE:
   case EventType::FINGER_RELEASE:
   case EventType::MOUSE_WHEEL_MOTION:
-    validateEventRelease();
+    validateTouchEventRelease();
     break;
 
     //X is pressed on the window
@@ -141,19 +145,22 @@ void InputEvent::setEventTypeInternal() {
     _systemType = SystemEvent::QUIT;
     type = TouchEvent::UNKNOWN;
     key = Keyboard::KEY_UNKNOWN;
+    mouseButton = Mouse::UNKNOWN;
     break;
 
   default:
     LOGERR("Warning, unknown SDL event type: %u -> " "expand the event list",
-        _sdlEvent->type);
+        _sdlEvent->type)
+    ;
     _systemType = SystemEvent::UNKNOWN;
     type = TouchEvent::UNKNOWN;
     key = Keyboard::KEY_UNKNOWN;
+    mouseButton = Mouse::UNKNOWN;
     break;
   }
 }
 
-void InputEvent::validateEventMotion() {
+void InputEvent::validateTouchEventMotion() {
   /** If _hasLastClickedLeftBoundary is true this means a PRESS was made
    *  inside the touch entity and it was DRAGGED outside the
    *  touchEntityEventRect, which resulted in TouchEntity::onLeave() call.
@@ -167,7 +174,7 @@ void InputEvent::validateEventMotion() {
       _lastClicked->onReturn(*this);
       _hasLastClickedLeftBoundary = false;
 
-      type = TouchEvent::DRAG;
+      type = TouchEvent::TOUCH_DRAG;
       _systemType = SystemEvent::UNKNOWN;
     }
     /** The user is still holding the PRESS but still has not returned
@@ -190,7 +197,7 @@ void InputEvent::validateEventMotion() {
      *  should be set to DRAG.
      * */
     if (Rectangle::isPointInRect(pos, *_lastClicked->touchEntityEventRect)) {
-      type = TouchEvent::DRAG;
+      type = TouchEvent::TOUCH_DRAG;
       _systemType = SystemEvent::UNKNOWN;
     }
     /** The user is still holding the PRESS and has exited outside of
@@ -207,9 +214,10 @@ void InputEvent::validateEventMotion() {
   }
 
   key = Keyboard::KEY_UNKNOWN;
+  mouseButton = _sdlEvent->button.button;
 }
 
-void InputEvent::validateEventRelease() {
+void InputEvent::validateTouchEventRelease() {
   /** If there is no _lastClicked activated do not result in
    *  TouchEvent::RELEASE, because PRESS did not come from inside any
    *  TouchEntity -> therefore no action should be taken.
@@ -222,7 +230,7 @@ void InputEvent::validateEventRelease() {
   if ( ( (nullptr != _lastClicked)
       && Rectangle::isPointInRect(pos, *_lastClicked->touchEntityEventRect))
       || _sdlEvent->type == EventType::MOUSE_WHEEL_MOTION) {
-    type = TouchEvent::RELEASE;
+    type = TouchEvent::TOUCH_RELEASE;
     _systemType = SystemEvent::UNKNOWN;
   } else {
     type = TouchEvent::UNKNOWN;
@@ -234,6 +242,7 @@ void InputEvent::validateEventRelease() {
   _hasLastClickedLeftBoundary = false;
 
   key = Keyboard::KEY_UNKNOWN;
+  mouseButton = _sdlEvent->button.button;
 }
 
 bool InputEvent::checkForExitRequest() const {

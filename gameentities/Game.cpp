@@ -7,9 +7,9 @@
 #include <cstdlib>
 
 //Other libraries headers
-#include <SDL2/SDL_events.h>
 
 //Own components headers
+#include "sdl/InputEvent.h"
 #include "common/CommonDefines.h"
 #include "utils/Log.h"
 
@@ -67,42 +67,43 @@ void Game::draw() {
   _optionSelector.draw();
 }
 
-void Game::handleUserEvent(const SDL_Event &e) {
+void Game::handleEvent(const InputEvent &e) {
   if (_animHandler.isActive()) {
     return;
   }
 
-  if (e.type == SDL_KEYUP) {
-    switch (e.key.keysym.sym) {
+  if (TouchEvent::KEYBOARD_RELEASE == e.type) {
+    switch (e.key) {
 
-    case SDLK_SPACE:
+    case Keyboard::KEY_SPACE:
       if (_gridContainer.isReadyToEvaluate()) {
         evaluateAStar();
       }
       break;
 
-    case SDLK_c:
+    case Keyboard::KEY_C:
       _gridContainer.clearGrid();
       break;
 
       //TODO temporary - remove after buttons are implemented in the OptionSelector
-    case SDLK_d:
+    case Keyboard::KEY_D:
       _optionSelector.setOption(Option::DIAGONAL_MOVEMENT, true);
       break;
 
       //TODO temporary - remove after buttons are implemented in the OptionSelector
-    case SDLK_UP:
+    case Keyboard::KEY_UP:
       _obstacleHandler.loadNextLevel();
       break;
 
       //TODO temporary - remove after buttons are implemented in the OptionSelector
-    case SDLK_DOWN:
+    case Keyboard::KEY_DOWN:
       _obstacleHandler.loadPreviousLevel();
       break;
     }
   }
 
-  _gridContainer.handleUserEvent(e);
+  _gridContainer.handleEvent(e);
+  _optionSelector.handleEvent(e);
 }
 
 void Game::onNodeChanged(const NodeType nodeType, const Point &nodePos) {

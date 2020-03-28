@@ -7,9 +7,9 @@
 #include <cstdlib>
 
 //Other libraries headers
-#include <SDL2/SDL_events.h>
 
 //Own components headers
+#include "sdl/InputEvent.h"
 #include "proxies/GameProxyInterface.hpp"
 #include "utils/drawing/Rectangle.h"
 
@@ -71,33 +71,33 @@ void GridContainer::draw() {
   }
 }
 
-void GridContainer::handleUserEvent(const SDL_Event &e) {
-  if (e.type == SDL_KEYUP) {
-    switch (e.key.keysym.sym) {
-    case SDLK_s:
-      onStartNodeEntered();
+void GridContainer::handleEvent(const InputEvent &e) {
+  if (TouchEvent::KEYBOARD_RELEASE == e.type) {
+    switch (e.key) {
+    case Keyboard::KEY_S:
+      onStartNodeEntered(e);
       break;
 
-    case SDLK_w:
-      onWallAdd();
+    case Keyboard::KEY_W:
+      onWallAdd(e);
       break;
 
-    case SDLK_r:
-      onWallRemove();
+    case Keyboard::KEY_R:
+      onWallRemove(e);
       break;
 
-    case SDLK_e:
-      onEndNodeEntered();
+    case Keyboard::KEY_E:
+      onEndNodeEntered(e);
       break;
 
     default:
       break;
     }
-  } else if (e.type == SDL_MOUSEBUTTONDOWN) {
-    if (e.button.button == SDL_BUTTON_LEFT) {
-      onWallAdd();
-    } else if (e.button.button == SDL_BUTTON_RIGHT) {
-      onWallRemove();
+  } else if (TouchEvent::TOUCH_PRESS == e.type) {
+    if (Mouse::LEFT_BUTTON == e.mouseButton) {
+      onWallAdd(e);
+    } else if (Mouse::RIGHT_BUTTON == e.mouseButton) {
+      onWallRemove(e);
     }
   }
 }
@@ -192,9 +192,9 @@ Point GridContainer::getNodeCoordinates(const Point &nodePos) const {
   return _pathNodes[nodePos.y][nodePos.x].getPosition();
 }
 
-void GridContainer::onWallAdd() {
+void GridContainer::onWallAdd(const InputEvent &e) {
   Point nodePos;
-  if (getSelectedNode(nodePos)) {
+  if (getSelectedNode(e, nodePos)) {
     if (_predefinedObstacleRsrcId != _pathNodes[nodePos.y][nodePos.x].getRsrcId()) {
       addCollision(nodePos);
       _gameInterface->onNodeChanged(NodeType::WALL_ADD, nodePos);
@@ -202,9 +202,9 @@ void GridContainer::onWallAdd() {
   }
 }
 
-void GridContainer::onWallRemove() {
+void GridContainer::onWallRemove(const InputEvent &e) {
   Point nodePos;
-  if (getSelectedNode(nodePos)) {
+  if (getSelectedNode(e, nodePos)) {
     if (_predefinedObstacleRsrcId != _pathNodes[nodePos.y][nodePos.x].getRsrcId()) {
       removeNode(nodePos);
       _gameInterface->onNodeChanged(NodeType::NODE_REMOVE, nodePos);
@@ -212,9 +212,9 @@ void GridContainer::onWallRemove() {
   }
 }
 
-void GridContainer::onStartNodeEntered() {
+void GridContainer::onStartNodeEntered(const InputEvent &e) {
   Point nodePos;
-  if (getSelectedNode(nodePos)) {
+  if (getSelectedNode(e, nodePos)) {
     if (_predefinedObstacleRsrcId != _pathNodes[nodePos.y][nodePos.x].getRsrcId()) {
       addStartNode(nodePos);
       _gameInterface->onNodeChanged(NodeType::START_CHANGE, nodePos);
@@ -222,9 +222,9 @@ void GridContainer::onStartNodeEntered() {
   }
 }
 
-void GridContainer::onEndNodeEntered() {
+void GridContainer::onEndNodeEntered(const InputEvent &e) {
   Point nodePos;
-  if (getSelectedNode(nodePos)) {
+  if (getSelectedNode(e, nodePos)) {
     if (_predefinedObstacleRsrcId != _pathNodes[nodePos.y][nodePos.x].getRsrcId()) {
       addEndNode(nodePos);
       _gameInterface->onNodeChanged(NodeType::END_CHANGE, nodePos);
@@ -232,10 +232,8 @@ void GridContainer::onEndNodeEntered() {
   }
 }
 
-bool GridContainer::getSelectedNode(Point &nodePos) {
-  Point mousePos;
-  /* capture mouse position on the screen */
-  SDL_GetMouseState(&mousePos.x, &mousePos.y);
+bool GridContainer::getSelectedNode(const InputEvent &e, Point &outNodePos) {
+
 
   Rectangle currBoundaryRect;
   currBoundaryRect.w = Grid::TILE_DIMENSION;
@@ -249,9 +247,9 @@ bool GridContainer::getSelectedNode(Point &nodePos) {
       currBoundaryRect.x = currNodePos.x;
       currBoundaryRect.y = currNodePos.y;
 
-      if (Rectangle::isPointInRect(mousePos, currBoundaryRect)) {
-        nodePos.x = j;
-        nodePos.y = i;
+      if (Rectangle::isPointInRect(e.pos, currBoundaryRect)) {
+        outNodePos.x = j;
+        outNodePos.y = i;
 
         return true;
       }

@@ -70,12 +70,13 @@ public:
     _lastClicked = lastClicked;
   }
 
-  /* See EventDefines.h for more information */
-  TouchEvent type;
-  int32_t key;
-
   /* Holds event position on the screen */
   Point pos;
+
+  /* See EventDefines.h for more information */
+  int32_t key;
+  uint8_t mouseButton;
+  TouchEvent type;
 
 private:
   /** @brief used to fill system events from SDL event
@@ -89,14 +90,14 @@ private:
    *         NOTE: event type and event systemType may be modified
    *                                    internally inside the method body
    * */
-  void validateEventMotion();
+  void validateTouchEventMotion();
 
   /** @brief used to perform internal release related checks
    *
    *         NOTE: event type and event systemType may be modified
    *                                    internally inside the method body
    * */
-  void validateEventRelease();
+  void validateTouchEventRelease();
 
   /** @brief used to pop unused development events out of the event queue
    *

@@ -11,6 +11,7 @@
 //Own components headers
 #include "managers/ManagerHandler.h"
 #include "gameentities/Game.h"
+#include "sdl/InputEvent.h"
 #include "utils/drawing/DebugConsole.h"
 
 //Forward declarations
@@ -31,15 +32,17 @@ public:
 private:
   void mainLoop();
 
-  void updateWorldState();
+  bool processFrame();
 
-  void drawWorld();
+  void drawFrame();
 
-  bool handleUserEvent(SDL_Event& e);
+  void handleEvent();
 
   ManagerHandler _managerHandler;
 
   Game _game;
+
+  InputEvent _inputEvent;
 
   DebugConsole _debugConsole;
 };

@@ -1,10 +1,3 @@
-/*
- * Rectangle.h
- *
- *  Created on: Jul 16, 2017
- *      Author: Zhivko Petrov
- */
-
 #ifndef UTILS_DRAWING_RECTANGLE_H_
 #define UTILS_DRAWING_RECTANGLE_H_
 

@@ -1,10 +1,3 @@
-/*
- * Rectangle.h
- *
- *  Created on: Jul 16, 2017
- *      Author: Zhivko Petrov
- */
-
 //Corresponding header
 #include "Rectangle.h"
 
