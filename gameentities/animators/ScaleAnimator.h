@@ -28,7 +28,7 @@ public:
 
   int32_t init(AnimatorHandlerProxyInterface *animatorHandlerInterface,
                const Point &startBatmanPos,
-               const uint8_t batmanRsrcId,
+               const int32_t batmanRsrcId,
                const int32_t scaleTimerId);
 
   void draw();

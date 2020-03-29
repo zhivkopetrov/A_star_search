@@ -46,10 +46,6 @@ private:
 
   using LevelObstacles = std::vector<Obstacle>;
 
-  enum ObstacleTypes : uint8_t {
-    UNKNOWN, FIRE, EARTH, ICE, SMOKE
-  };
-
   GridContainerProxyInterface *_gridInterface;
 
   std::vector<Point> _predefinedObstacles;

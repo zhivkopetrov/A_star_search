@@ -1,5 +1,5 @@
-#ifndef MANAGERUTILS_DRAWING_IMAGE_H_
-#define MANAGERUTILS_DRAWING_IMAGE_H_
+#ifndef UTILS_DRAWING_IMAGE_H_
+#define UTILS_DRAWING_IMAGE_H_
 
 //C system headers
 
@@ -33,22 +33,20 @@ public:
    *         handles draw specific data, not the actual Surface/Texture
    *   This function does not return error code for performance reasons
    *
-   *  @param const uint8_t - unique resource ID
+   *  @param const int32_t - unique resource ID
    * */
-  void create(const uint8_t textureId);
+  void create(const int32_t textureId);
 
-  inline void setFrame(const uint8_t frameId) {
-    _drawParams.frameId = frameId;
-  }
+  void setFrame(const int32_t frameId);
 
   /** @brief used to change the underlying textureId
    *
-   *  @param const uint8_t - new unique texture ID
+   *  @param const int32_t - new unique texture ID
    * */
-  inline void setTextureId(const uint8_t textureId) {
+  inline void setTextureId(const int32_t textureId) {
     _drawParams.rsrcId = textureId;
   }
 };
 
-#endif /* MANAGERUTILS_DRAWING_IMAGE_H_ */
+#endif /* UTILS_DRAWING_IMAGE_H_ */
 

@@ -26,7 +26,7 @@ ScaleAnimator::ScaleAnimator()
 
 int32_t ScaleAnimator::init(
     AnimatorHandlerProxyInterface *animatorHandlerInterface,
-    const Point &startBatmanPos, const uint8_t batmanRsrcId,
+    const Point &startBatmanPos, const int32_t batmanRsrcId,
     const int32_t scaleTimerId) {
   _animatorHandlerInterface = animatorHandlerInterface;
   _batman.create(batmanRsrcId);

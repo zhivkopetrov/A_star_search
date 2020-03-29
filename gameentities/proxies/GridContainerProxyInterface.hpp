@@ -16,11 +16,11 @@
 
 struct Obstacle {
   explicit Obstacle(const int32_t row, const int32_t col,
-                    const uint8_t inputFrameId)
+                    const int32_t inputFrameId)
       : pos(row, col), frameId(inputFrameId) {
   }
   const Point pos;
-  const uint8_t frameId;
+  const int32_t frameId;
 };
 
 class GridContainerProxyInterface {

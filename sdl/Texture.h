@@ -76,14 +76,14 @@ public:
    *  @param TTF_Font *     - SDL_Font that is used
    *  @param const SDL_Color &  - color used to create the text
    *  @param SDL_Texture *& - dynamically created SDL_Surface
-   *  @param int32_t *      - width of the created SDL_Surface text
-   *  @param int32_t *      - height of the created SDL_Surface text
+   *  @param int32_t &      - width of the created SDL_Surface text
+   *  @param int32_t &      - height of the created SDL_Surface text
    *
    *  @returns int32_t      - error code
    * */
   static int32_t loadFromText(const char *text, TTF_Font *font,
                               const SDL_Color &color, SDL_Texture *&outTexture,
-                              int32_t *outTextWidth, int32_t *outTextHeight);
+                              int32_t &outTextWidth, int32_t &outTextHeight);
 
   /** @brief used to acquire renderer pointer that will be performing
    *                                         the graphical render calls.

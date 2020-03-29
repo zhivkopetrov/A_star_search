@@ -28,9 +28,8 @@ public:
   Text(const Text &other) = delete;
   Text& operator=(const Text &other) = delete;
 
-  void create(const uint8_t rsrcId,
-              const Point &startPoint,
-              const char *startText,
+  void create(const Point &startPoint,
+              const char *text,
               const int32_t fontSize);
 
   void setText(const char *text);

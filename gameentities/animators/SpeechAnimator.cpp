@@ -17,15 +17,15 @@
 SpeechAnimator::SpeechAnimator()
     : winPhases { "Kaboom", "Bazinga", "Me >> Joker" },
       _animatorHandlerInterface(nullptr), _waitTimerId(INIT_INT32_VALUE),
-      _winPhraseCounter(0), _winSpeechBubbleRsrcId(INIT_UINT8_VALUE),
-      _loseSpeechBubbleRsrcId(INIT_UINT8_VALUE), _isActive(false) {
+      _winPhraseCounter(0), _winSpeechBubbleRsrcId(INIT_INT32_VALUE),
+      _loseSpeechBubbleRsrcId(INIT_INT32_VALUE), _isActive(false) {
 
 }
 
 int32_t SpeechAnimator::init(
     AnimatorHandlerProxyInterface *animatorHandlerInterface,
-    const Point &startBatmanPos, const uint8_t batmanRsrcId,
-    const uint8_t winSpeechBubbleRsrcId, const uint8_t loseSpeechBubbleRsrcId,
+    const Point &startBatmanPos, const int32_t batmanRsrcId,
+    const int32_t winSpeechBubbleRsrcId, const int32_t loseSpeechBubbleRsrcId,
     const int32_t waitTimerId) {
 
   _animatorHandlerInterface = animatorHandlerInterface;
@@ -44,8 +44,8 @@ int32_t SpeechAnimator::init(
 
   //the X value will be dynamically set
   constexpr int32_t SPEECH_OFFSET_Y = 195;
-  _speechText.create(Textures::NO_PATH_TEXT,
-      Point(0, _speechBubble.getY() + SPEECH_OFFSET_Y), "-", FontSize::SMALL);
+  _speechText.create(Point(0, _speechBubble.getY() + SPEECH_OFFSET_Y), "-",
+      FontSize::SMALL);
 
   return EXIT_SUCCESS;
 }
@@ -70,7 +70,8 @@ void SpeechAnimator::activateAnim(const SpeecAnimType type) {
   }
   _speechText.setX(
       _speechBubble.getX() + ( (_speechBubble.getWidth()
-          - _speechText.getWidth()) / 2));
+          - _speechText.getWidth())
+                              / 2));
 
   startTimer(3000, _waitTimerId, TimerType::ONESHOT);
 }

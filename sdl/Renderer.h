@@ -70,7 +70,7 @@ public:
 
 private:
   enum {
-    MAX_WIDGET_COUNT = 1000
+    MAX_WIDGET_COUNT = 250
   };
 
   //The window we'll be rendering to

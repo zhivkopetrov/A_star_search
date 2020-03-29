@@ -51,8 +51,8 @@ int32_t Texture::loadFromText(const char *text,
                               TTF_Font *font,
                               const SDL_Color &color,
                               SDL_Texture *& outTexture,
-                              int32_t *outTextWidth,
-                              int32_t *outTextHeight) {
+                              int32_t &outTextWidth,
+                              int32_t &outTextHeight) {
   freeTexture(outTexture);
 
   SDL_Surface *loadedSurface = TTF_RenderText_Blended(font, text, color);
@@ -63,8 +63,8 @@ int32_t Texture::loadFromText(const char *text,
     return EXIT_FAILURE;
   }
 
-  *outTextWidth = loadedSurface->w;
-  *outTextHeight = loadedSurface->h;
+  outTextWidth = loadedSurface->w;
+  outTextHeight = loadedSurface->h;
 
   //create hardware accelerated texture
   if ( EXIT_SUCCESS

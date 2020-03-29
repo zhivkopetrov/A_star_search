@@ -11,21 +11,32 @@
 #include "managers/RsrcMgr.h"
 #include "utils/Log.h"
 
-void Image::create(const uint8_t textureId) {
+void Image::create(const int32_t textureId) {
   if (_isCreated) {
-    LOGERR("Error, Text with textureId: %hhu is already created", textureId);
+    LOGERR("Error, Text with textureId: %d is already created", textureId);
     return;
   }
 
+  const Frames &frames = gRsrcMgr->getImageFrames(textureId);
   _isCreated = true;
+  _drawParams.widgetType = WidgetType::IMAGE;
   _drawParams.rsrcId = textureId;
   _drawParams.frameId = 0;
+  _drawParams.frameRect = frames[_drawParams.frameId];
+  _drawParams.pos.x = 0;
+  _drawParams.pos.y = 0;
+  _drawParams.width = frames[_drawParams.frameId].w;
+  _drawParams.height = frames[_drawParams.frameId].h;
+}
 
-  const SDL_Rect frameRect = gRsrcMgr->getTextureFrameRect(textureId,
-      _drawParams.frameId);
-  _drawParams.pos.x = frameRect.x;
-  _drawParams.pos.y = frameRect.y;
-  _drawParams.width = frameRect.w;
-  _drawParams.height = frameRect.h;
+void Image::setFrame(const int32_t frameId) {
+  const Frames &frames = gRsrcMgr->getImageFrames(_drawParams.rsrcId);
+  if (frameId >= static_cast<int32_t>(frames.size())) {
+    LOGERR("Error, frameId: %d does not exist for Image with rsrcId: %d",
+        frameId, _drawParams.rsrcId);
+  }
+
+  _drawParams.frameId = frameId;
+  _drawParams.frameRect = frames[frameId];
 }
 

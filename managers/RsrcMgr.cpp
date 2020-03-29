@@ -18,8 +18,8 @@ RsrcMgr::RsrcMgr(const int32_t monitorWidth, const int32_t monitorHeight)
 
 int32_t RsrcMgr::init() {
   int32_t err = EXIT_SUCCESS;
-  if (EXIT_SUCCESS != _textureContainer.init(_MONITOR_WIDTH, _MONITOR_HEIGHT)) {
-    LOGERR("Error in _textureContainer.init()");
+  if (EXIT_SUCCESS != TextureContainer::init(_MONITOR_WIDTH, _MONITOR_HEIGHT)) {
+    LOGERR("Error in TextureContainer::init()");
 
     err = EXIT_FAILURE;
   }
@@ -28,7 +28,7 @@ int32_t RsrcMgr::init() {
 }
 
 void RsrcMgr::deinit() {
-  _textureContainer.deinit();
+  TextureContainer::deinit();
 }
 
 void RsrcMgr::process() {

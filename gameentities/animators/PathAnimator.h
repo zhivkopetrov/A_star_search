@@ -25,7 +25,7 @@ public:
 
   int32_t init(AnimatorHandlerProxyInterface *animatorHandlerInterface,
                GridContainerProxyInterface *gridInterface,
-               const uint8_t batmanRsrcId, const int32_t pathTimerId);
+               const int32_t batmanRsrcId, const int32_t pathTimerId);
 
   void loadPath(std::vector<Point> &path);
 

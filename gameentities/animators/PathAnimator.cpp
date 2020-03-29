@@ -23,7 +23,7 @@ PathAnimator::PathAnimator()
 
 int32_t PathAnimator::init(
     AnimatorHandlerProxyInterface *animatorHandlerInterface,
-    GridContainerProxyInterface *gridInterface, const uint8_t batmanRsrcId,
+    GridContainerProxyInterface *gridInterface, const int32_t batmanRsrcId,
     const int32_t pathTimerId) {
   _animatorHandlerInterface = animatorHandlerInterface;
   _gridInterface = gridInterface;

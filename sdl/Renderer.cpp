@@ -30,9 +30,8 @@ int32_t Renderer::init() {
      * */
     if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1")) {
       LOGERR(
-          "Warning: Linear texture filtering not enabled! " "SDL_SetHint() failed. SDL Error: %s",
-          SDL_GetError());
-
+          "Warning: Linear texture filtering not enabled! "
+          "SDL_SetHint() failed. SDL Error: %s", SDL_GetError());
       err = EXIT_FAILURE;
     }
   }
@@ -88,8 +87,8 @@ void Renderer::clearScreen() {
 
 void Renderer::finishFrame() {
   SDL_Rect renderQuad = { 0, 0, 0, 0 };
-
   SDL_Rect sourceQuad = { 0, 0, 0, 0 };
+  SDL_Texture * texture = nullptr;
 
   const uint32_t USED_SIZE = _currWidgetCounter;
   //reset widget counter
@@ -97,20 +96,27 @@ void Renderer::finishFrame() {
 
   //do the actual drawing of all stored images for THIS FRAME
   for (uint32_t i = 0; i < USED_SIZE; ++i) {
-    sourceQuad = gRsrcMgr->getTextureFrameRect(_widgets[i].rsrcId,
-        _widgets[i].frameId);
+    sourceQuad = { _widgets[i].frameRect.x, _widgets[i].frameRect.y,
+                   _widgets[i].frameRect.w, _widgets[i].frameRect.h };
 
     renderQuad.x = _widgets[i].pos.x;
     renderQuad.y = _widgets[i].pos.y;
     renderQuad.w = _widgets[i].width;
     renderQuad.h = _widgets[i].height;
 
-    if (EXIT_SUCCESS != SDL_RenderCopy(_sdlRenderer,
-            gRsrcMgr->getTexture(_widgets[i].rsrcId), &sourceQuad,
-            &renderQuad)) {
-      LOGERR("Error in, SDL_RenderCopy(), SDL Error: %s", SDL_GetError());
+    if (WidgetType::IMAGE == _widgets[i].widgetType) {
+      texture = gRsrcMgr->getImageTexture(_widgets[i].rsrcId);
+    } else if (WidgetType::TEXT == _widgets[i].widgetType) {
+      texture = gRsrcMgr->getTextTexture(_widgets[i].textId);
+    } else { // (WidgetType::FBO == _widgets[i].widgetType){
+      //TODO populate me
+      LOGERR("Error, wrong widget type detected");
+    }
 
-      return;
+    if (EXIT_SUCCESS !=
+        SDL_RenderCopy(_sdlRenderer, texture, &sourceQuad,  &renderQuad)) {
+      LOGERR("Error in, SDL_RenderCopy(), SDL Error: %s", SDL_GetError());
+      break;
     }
   }
 

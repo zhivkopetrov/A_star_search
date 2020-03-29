@@ -28,9 +28,9 @@ public:
   virtual ~SpeechAnimator() = default;
 
   int32_t init(AnimatorHandlerProxyInterface * animatorHandlerInterface,
-               const Point &startBatmanPos, const uint8_t batmanRsrcId,
-               const uint8_t winSpeechBubbleRsrcId,
-               const uint8_t loseSpeechBubbleRsrcId,
+               const Point &startBatmanPos, const int32_t batmanRsrcId,
+               const int32_t winSpeechBubbleRsrcId,
+               const int32_t loseSpeechBubbleRsrcId,
                const int32_t waitTimerId);
 
   void draw();
@@ -59,8 +59,8 @@ private:
   int32_t _waitTimerId;
   int32_t _winPhraseCounter;
 
-  uint8_t _winSpeechBubbleRsrcId;
-  uint8_t _loseSpeechBubbleRsrcId;
+  int32_t _winSpeechBubbleRsrcId;
+  int32_t _loseSpeechBubbleRsrcId;
 
   bool _isActive;
 };

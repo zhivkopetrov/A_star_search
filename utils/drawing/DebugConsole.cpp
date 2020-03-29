@@ -25,7 +25,7 @@ DebugConsole::DebugConsole()
 }
 
 int32_t DebugConsole::init() {
-  _fpsText.create(Textures::FPS_TEXT, Point ( 20, 20 ), "0", FontSize::SMALL);
+  _fpsText.create(Point ( 20, 20 ), "0", FontSize::SMALL);
 
   return EXIT_SUCCESS;
 }

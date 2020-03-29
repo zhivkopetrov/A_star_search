@@ -11,16 +11,19 @@
 #include "utils/LimitValues.hpp"
 
 DrawParams::DrawParams()
-    : pos(Point::UNDEFINED), width(0), height(0), rsrcId(INIT_UINT8_VALUE),
-      frameId(0) {
+    : pos(Point::UNDEFINED), frameRect(Rectangle::UNDEFINED), width(0),
+      height(0), rsrcId(INIT_INT32_VALUE), frameId(0),
+      widgetType(WidgetType::UNKNOWN) {
 
 }
 
 void DrawParams::reset() {
   pos = Point::UNDEFINED;
+  frameRect = Rectangle::UNDEFINED;
   width = 0;
   height = 0;
-  rsrcId = INIT_UINT8_VALUE;
+  rsrcId = INIT_INT32_VALUE;
   frameId = 0;
+  widgetType = WidgetType::UNKNOWN;
 }
 

@@ -10,6 +10,14 @@
 
 //Own components headers
 #include "Point.h"
+#include "Rectangle.h"
+
+enum class WidgetType : uint8_t {
+  UNKNOWN,
+  IMAGE,
+  TEXT,
+  FBO
+};
 
 struct DrawParams {
   DrawParams();
@@ -19,15 +27,29 @@ struct DrawParams {
   //Top left position of texture
   Point pos;
 
+  //Holds frame dimensions (x, y, w, h) within the texture resource
+  Rectangle frameRect;
+
   //Draw dimensions of the texture
   int32_t width;
   int32_t height;
 
-  //unique resource ID of the texture
-  uint8_t rsrcId;
+  union {
+    //unique resource ID of the texture
+    int32_t rsrcId;
+
+    //unique resource ID of the texture
+    int32_t textId;
+
+    //unique resource ID of the texture
+    int32_t FBOId;
+  };
 
   //holds current frame of the texture
-  uint8_t frameId;
+  int32_t frameId;
+
+  //holds the type of widget that the draw params are related to
+  WidgetType widgetType;
 };
 
 #endif /* UTILS_DRAWING_DRAWPARAMS_H_ */

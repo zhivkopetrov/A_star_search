@@ -13,7 +13,7 @@
 //Forward declarations
 
 namespace Textures {
-enum : uint8_t {
+enum {
   VERTICAL_LINE,
   HORIZONTAL_LINE,
   START_NODE,
@@ -26,8 +26,6 @@ enum : uint8_t {
   LOSE_DIALOG,
   OBSTACLES,
   MENU_TICK,
-  FPS_TEXT,
-  NO_PATH_TEXT,
 
   COUNT
 };
@@ -101,7 +99,7 @@ enum {
 };
 } //namespace BatmanDimensions
 
-enum class Option {
+enum class Option : uint8_t {
   DIAGONAL_MOVEMENT,
   LEVEL_CHANGE
 };

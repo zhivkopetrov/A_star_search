@@ -26,11 +26,11 @@ public:
   virtual ~GridContainer() = default;
 
   int32_t init(GameProxyInterface *gameInterface,
-               const uint8_t vericalLineRsrcId,
-               const uint8_t horizontalLineRsrcId,
-               const uint8_t startNodeRsrcId, const uint8_t endNodeRsrcId,
-               const uint8_t pathNodeRsrcId, const uint8_t wallNodeRsrcId,
-               const uint8_t predefinedObstacleRsrcId);
+               const int32_t vericalLineRsrcId,
+               const int32_t horizontalLineRsrcId,
+               const int32_t startNodeRsrcId, const int32_t endNodeRsrcId,
+               const int32_t pathNodeRsrcId, const int32_t wallNodeRsrcId,
+               const int32_t predefinedObstacleRsrcId);
 
   void draw();
 
@@ -85,11 +85,11 @@ private:
 
   Point _startNodePos;
   Point _endNodePos;
-  uint8_t _pathNodeRsrcId;
-  uint8_t _wallNodeRsrcId;
-  uint8_t _startNodeRsrcId;
-  uint8_t _endNodeRsrcId;
-  uint8_t _predefinedObstacleRsrcId;
+  int32_t _pathNodeRsrcId;
+  int32_t _wallNodeRsrcId;
+  int32_t _startNodeRsrcId;
+  int32_t _endNodeRsrcId;
+  int32_t _predefinedObstacleRsrcId;
 
   Image _gridLines[TOTAL_LINES_COUNT];
   Image _pathNodes[Grid::GRID_HEIGHT][Grid::GRID_WIDTH];

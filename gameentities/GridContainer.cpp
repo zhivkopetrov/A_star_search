@@ -21,13 +21,13 @@ GridContainer::GridContainer()
 }
 
 int32_t GridContainer::init(GameProxyInterface *gameInterface,
-                            const uint8_t vericalLineRsrcId,
-                            const uint8_t horizontalLineRsrcId,
-                            const uint8_t startNodeRsrcId,
-                            const uint8_t endNodeRsrcId,
-                            const uint8_t pathNodeRsrcId,
-                            const uint8_t wallNodeRsrcId,
-                            const uint8_t predefinedObstacleRsrcId) {
+                            const int32_t vericalLineRsrcId,
+                            const int32_t horizontalLineRsrcId,
+                            const int32_t startNodeRsrcId,
+                            const int32_t endNodeRsrcId,
+                            const int32_t pathNodeRsrcId,
+                            const int32_t wallNodeRsrcId,
+                            const int32_t predefinedObstacleRsrcId) {
   _gameInterface = gameInterface;
   _pathNodeRsrcId = pathNodeRsrcId;
   _wallNodeRsrcId = wallNodeRsrcId;

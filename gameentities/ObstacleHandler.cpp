@@ -77,6 +77,8 @@ int32_t ObstacleHandler::loadLevelFromDisk(const std::string &levelsFolderPath,
     return EXIT_FAILURE;
   }
 
+  constexpr int32_t unknownTextureFrameId = 0;
+
   int32_t rows = 0;
   int32_t cols = 0;
   int32_t textureFrame = 0;
@@ -84,7 +86,7 @@ int32_t ObstacleHandler::loadLevelFromDisk(const std::string &levelsFolderPath,
   for (int32_t row = 0; row < rows; ++row) {
     for (int32_t col = 0; col < cols; ++col) {
       ifstream >> textureFrame;
-      if (ObstacleTypes::UNKNOWN != textureFrame) {
+      if (unknownTextureFrameId != textureFrame) {
         _levelsObstacles[levelId].emplace_back(col, row, textureFrame);
       }
     }
