@@ -16,12 +16,9 @@
 class Text : public Widget {
 public:
   Text();
-  virtual ~Text() = default;
+  ~Text();
 
-  //move constructor needed for STL containers emplace_back/push_back
   Text(Text &&movedOther) = default;
-
-  //move assignment operator implementation
   Text& operator=(Text &&movedOther) = default;
 
   //forbid the copy constructor and copy assignment operator
@@ -34,8 +31,15 @@ public:
 
   void setText(const char *text);
 
+  void destroy();
+
 private:
   int32_t _fontSize;
+
+  /* used in order to check if resource was destroyed ->
+   *                                              not to destroy it twice
+   */
+  bool    _isDestroyed;
 };
 
 #endif /* UTILS_DRAWING_TEXT_H_ */

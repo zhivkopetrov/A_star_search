@@ -5,6 +5,7 @@
 
 //C++ system headers
 #include <cstdint>
+#include <vector>
 
 //Other libraries headers
 
@@ -57,22 +58,18 @@ public:
 
   /** @brief transfer draw specific data from Textures to renderer
    *
-   *  @param DrawParams * - draw specific data for a single Texture
+   *  @param const DrawParams * - draw specific data for a single Texture
    * */
-  void drawTexture(DrawParams *drawParams);
+  void drawTexture(const DrawParams *drawParams);
 
   /** @brief transfer draw specific data from Textures to renderer
    *
-   *  @param DrawParams ** - draw specific data for a Texture array
-   *  @param const int32_t - size of the array
+   *  @param const DrawParams *[] - draw specific data for a Texture array
+   *  @param const size_t         - size of the array
    * */
-  void drawTextureArr(DrawParams drawParamsArr[], const int32_t size);
+  void drawTextureArr(const DrawParams drawParamsArr[], const size_t size);
 
 private:
-  enum {
-    MAX_WIDGET_COUNT = 250
-  };
-
   //The window we'll be rendering to
   SDL_Window *_window;
 
@@ -80,9 +77,9 @@ private:
   SDL_Renderer *_sdlRenderer;
 
   //counter for Textures in each individual frame
-  uint32_t _currWidgetCounter;
+  size_t _currWidgetCounter;
 
-  DrawParams _widgets[MAX_WIDGET_COUNT];
+  std::vector<DrawParams> _widgets;
 };
 
 #endif /* SDL_RENDERER_H_ */

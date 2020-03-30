@@ -4,6 +4,7 @@
 //C system headers
 
 //C++ system headers
+#include <cstddef>
 
 //Other libraries headers
 
@@ -84,16 +85,16 @@ public:
 
   /** @brief transfer draw specific data from Widgets to renderer
    *
-   *  @param drawParams - draw specific data for a single Widget
+   *  @param const DrawParams * - draw specific data for a single Widget
    * */
-  void addDrawCmd(DrawParams *drawParams);
+  void addDrawCmd(const DrawParams *drawParams);
 
   /** @brief transfer draw specific data from Textures to renderer
    *
-   *  @param DrawParams ** - draw specific data for a Texture array
-   *  @param const int32_t - size of the array
+   *  @param const DrawParams *[] - draw specific data for a Texture array
+   *  @param const size_t         - size of the array
    * */
-  void addDrawCmdArr(DrawParams drawParamsArr[], const int32_t size);
+  void addDrawCmdArr(const DrawParams drawParamsArr[], const size_t size);
 
   /** @brief used to limit the frame rate to a specific value.
    *         In order not to over burden the CPU, when the desired FPS

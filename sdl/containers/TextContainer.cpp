@@ -83,6 +83,15 @@ void TextContainer::reloadText(const char *text, const int32_t fontSize,
   }
 }
 
+void TextContainer::unloadText(const int32_t textId) {
+  if (textId >= static_cast<int32_t>(_textures.size())) {
+    LOGERR("Warning, unloading a non-existing text index for textId: %d",
+        textId);
+    return;
+  }
+  freeSlotIndex(textId);
+}
+
 void TextContainer::occupyFreeSlotIndex(int32_t &occupiedTextId) {
   bool foundIdx = false;
 

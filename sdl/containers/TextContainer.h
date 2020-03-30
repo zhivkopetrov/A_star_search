@@ -32,6 +32,8 @@ public:
                   const int32_t textId, int32_t &outTextWidth,
                   int32_t &outTextHeight);
 
+  void unloadText(const int32_t textId);
+
 protected:
   int32_t init();
 

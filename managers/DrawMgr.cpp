@@ -82,10 +82,10 @@ void DrawMgr::finishFrame() {
   _renderer->finishFrame();
 }
 
-void DrawMgr::addDrawCmd(DrawParams *drawParams) {
+void DrawMgr::addDrawCmd(const DrawParams *drawParams) {
   _renderer->drawTexture(drawParams);
 }
 
-void DrawMgr::addDrawCmdArr(DrawParams drawParamsArr[], const int32_t size) {
+void DrawMgr::addDrawCmdArr(const DrawParams drawParamsArr[], const size_t size) {
   _renderer->drawTextureArr(drawParamsArr, size);
 }

@@ -15,13 +15,10 @@ class Sprite;
 
 class Image: public Widget {
 public:
-  Image() = default;
-  ~Image() = default;
+  Image();
+  ~Image();
 
-  //move constructor needed for STL containers emplace_back/push_back
   Image(Image &&movedOther) = default;
-
-  //move assignment operator implementation
   Image& operator=(Image &&movedOther) = default;
 
   //forbid the copy constructor and copy assignment operator
@@ -37,6 +34,8 @@ public:
    * */
   void create(const int32_t textureId);
 
+  void destroy();
+
   void setFrame(const int32_t frameId);
 
   /** @brief used to change the underlying textureId
@@ -46,6 +45,12 @@ public:
   inline void setTextureId(const int32_t textureId) {
     _drawParams.rsrcId = textureId;
   }
+
+private:
+  /* used in order to check if resource was destroyed ->
+   *                                              not to destroy it twice
+   */
+  bool _isDestroyed;
 };
 
 #endif /* UTILS_DRAWING_IMAGE_H_ */

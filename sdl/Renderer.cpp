@@ -5,7 +5,6 @@
 
 //C++ system headers
 #include <cstdlib>
-#include <cstring>
 
 //Other libraries headers
 #include <SDL2/SDL_render.h>
@@ -23,6 +22,8 @@ Renderer::Renderer(SDL_Window *window)
 
 int32_t Renderer::init() {
   int32_t err = EXIT_SUCCESS;
+  const auto initialSize = 250;
+  _widgets.resize(initialSize);
 
   if (EXIT_SUCCESS == err) {
     /** Set texture filtering to linear
@@ -90,7 +91,7 @@ void Renderer::finishFrame() {
   SDL_Rect sourceQuad = { 0, 0, 0, 0 };
   SDL_Texture * texture = nullptr;
 
-  const uint32_t USED_SIZE = _currWidgetCounter;
+  const size_t USED_SIZE = _currWidgetCounter;
   //reset widget counter
   _currWidgetCounter = 0;
 
@@ -124,16 +125,28 @@ void Renderer::finishFrame() {
   SDL_RenderPresent(_sdlRenderer);
 }
 
-void Renderer::drawTexture(DrawParams *drawParams) {
-  _widgets[_currWidgetCounter] = *drawParams;
-
+void Renderer::drawTexture(const DrawParams *drawParams) {
+  if (_currWidgetCounter < _widgets.size()) {
+    _widgets[_currWidgetCounter] = *drawParams;
+  } else {
+    LOGERR("Warning, dynamic resize of Renderer's widget's size. Consider "
+        "increasing the initial size of the widgets to prevent run-time spike");
+    _widgets.push_back(*drawParams);
+  }
   ++_currWidgetCounter;
 }
 
-void Renderer::drawTextureArr(DrawParams drawParamsArr[], const int32_t size) {
-  memcpy(&_widgets[_currWidgetCounter], drawParamsArr,
-      sizeof(DrawParams) * size);
+void Renderer::drawTextureArr(const DrawParams drawParamsArr[], const size_t size) {
+  if (_currWidgetCounter + size >= _widgets.size()) {
+    _widgets.resize((_currWidgetCounter + size) * 2);
 
+    LOGERR("Warning, dynamic resize of Renderer's widget's size. Consider "
+        "increasing the initial size of the widgets to prevent run-time spike");
+  }
+
+  for (size_t i = 0; i < size; ++i) {
+    _widgets[_currWidgetCounter] = drawParamsArr[i];
+  }
   _currWidgetCounter += size;
 }
 

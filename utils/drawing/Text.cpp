@@ -12,9 +12,15 @@
 #include "managers/RsrcMgr.h"
 #include "utils/Log.h"
 
-Text::Text()
-    : _fontSize(0) {
+Text::Text() : _fontSize(0), _isDestroyed(false) {
+  _drawParams.widgetType = WidgetType::TEXT;
+}
 
+Text::~Text() {
+  //attempt to destroy text only if it's was first created and not destroyed
+  if(true == _isCreated && false == _isDestroyed) {
+    Text::destroy();
+  }
 }
 
 void Text::create(const Point &startPoint, const char *text,
@@ -29,7 +35,7 @@ void Text::create(const Point &startPoint, const char *text,
       _drawParams.height);
 
   _isCreated = true;
-  _drawParams.widgetType = WidgetType::TEXT;
+  _isDestroyed = false;
   _drawParams.frameId = 0;
   _drawParams.pos = startPoint;
   _fontSize = fontSize;
@@ -46,4 +52,30 @@ void Text::setText(const char *text) {
   _drawParams.frameRect.w = _drawParams.width;
   _drawParams.frameRect.h = _drawParams.height;
 }
+
+void Text::destroy() {
+  if(_isDestroyed)
+  {
+     LOGERR("Warning, trying to destroy already destroyed text with textId: %d",
+            _drawParams.textId);
+     return;
+  }
+
+  if(!_isCreated)
+  {
+      LOGERR("Warning, trying to destroy a not-created text with fontId: %d",
+            _drawParams.rsrcId);
+      return;
+  }
+
+  //sanity check, because manager could already been destroyed
+  if(nullptr != gRsrcMgr) {
+      //unload text from graphical text vector
+      gRsrcMgr->unloadText(_drawParams.textId);
+  }
+
+  _isDestroyed = true;
+  Widget::reset();
+}
+
 
