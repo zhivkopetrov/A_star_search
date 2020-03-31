@@ -23,7 +23,8 @@ cmake;
 3) When compilation has completed run the binary with "./game";
 
 TODOs:
-- Implement FBO
+- Implement FBO clear color to be full transparent (needs blending mode set before that). 
+Do not use directly clear screen from DrawMgr. Implement another method that takes color as input param.
 - Implement a "popping up" menu (in the upper right corner). It will have the ticks "isDiagonalMovementAllowed"
  to a checkbox and up-down arrows for levels (predefined walls)
  - Remove the TODOs from game::handleUserEvent

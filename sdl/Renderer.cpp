@@ -16,7 +16,8 @@
 #include "utils/Log.h"
 
 Renderer::Renderer(SDL_Window *window)
-    : _window(window), _sdlRenderer(nullptr), _currWidgetCounter(0) {
+    : _window(window), _sdlRenderer(nullptr), _currWidgetCounter(0),
+      _isRendererLocked(true) {
 
 }
 
@@ -87,42 +88,19 @@ void Renderer::clearScreen() {
 }
 
 void Renderer::finishFrame() {
-  SDL_Rect renderQuad = { 0, 0, 0, 0 };
-  SDL_Rect sourceQuad = { 0, 0, 0, 0 };
-  SDL_Texture * texture = nullptr;
+  if (!_isRendererLocked) {
+    LOGERR("Error, renderer is left unlocked while finishFrame has been called."
+        " Renderer will forcefully lock itself at the cost of breaking "
+        "'visually' that forgot to lock it");
+    _isRendererLocked = true;
+  }
 
-  const size_t USED_SIZE = _currWidgetCounter;
+  drawStoredWidgets(_widgets.data(), _currWidgetCounter);
+
   //reset widget counter
   _currWidgetCounter = 0;
 
-  //do the actual drawing of all stored images for THIS FRAME
-  for (uint32_t i = 0; i < USED_SIZE; ++i) {
-    sourceQuad = { _widgets[i].frameRect.x, _widgets[i].frameRect.y,
-                   _widgets[i].frameRect.w, _widgets[i].frameRect.h };
 
-    renderQuad.x = _widgets[i].pos.x;
-    renderQuad.y = _widgets[i].pos.y;
-    renderQuad.w = _widgets[i].width;
-    renderQuad.h = _widgets[i].height;
-
-    if (WidgetType::IMAGE == _widgets[i].widgetType) {
-      texture = gRsrcMgr->getImageTexture(_widgets[i].rsrcId);
-    } else if (WidgetType::TEXT == _widgets[i].widgetType) {
-      texture = gRsrcMgr->getTextTexture(_widgets[i].textId);
-    } else { // (WidgetType::FBO == _widgets[i].widgetType){
-      //TODO populate me
-      LOGERR("Error, wrong widget type detected");
-    }
-
-    if (EXIT_SUCCESS !=
-        SDL_RenderCopy(_sdlRenderer, texture, &sourceQuad,  &renderQuad)) {
-      LOGERR("Error in, SDL_RenderCopy(), SDL Error: %s", SDL_GetError());
-      break;
-    }
-  }
-
-  //------------- UPDATE SCREEN----------------
-  SDL_RenderPresent(_sdlRenderer);
 }
 
 void Renderer::drawTexture(const DrawParams *drawParams) {
@@ -136,7 +114,8 @@ void Renderer::drawTexture(const DrawParams *drawParams) {
   ++_currWidgetCounter;
 }
 
-void Renderer::drawTextureArr(const DrawParams drawParamsArr[], const size_t size) {
+void Renderer::drawTextureArr(const DrawParams drawParamsArr[],
+                              const size_t size) {
   if (_currWidgetCounter + size >= _widgets.size()) {
     _widgets.resize((_currWidgetCounter + size) * 2);
 
@@ -148,5 +127,86 @@ void Renderer::drawTextureArr(const DrawParams drawParamsArr[], const size_t siz
     _widgets[_currWidgetCounter] = drawParamsArr[i];
   }
   _currWidgetCounter += size;
+}
+
+int32_t Renderer::lockRenderer() {
+  if (_isRendererLocked) {
+    LOGERR("Error, renderer is already locked");
+    return EXIT_FAILURE;
+  }
+
+  _isRendererLocked = true;
+  return EXIT_SUCCESS;
+}
+
+int32_t Renderer::unlockRenderer() {
+  if (!_isRendererLocked) {
+    LOGERR("Error, renderer is already unlocked");
+    return EXIT_FAILURE;
+  }
+
+  _isRendererLocked = false;
+  return EXIT_SUCCESS;
+}
+
+void Renderer::changeRendererTarget(const int32_t FBOId) {
+  if (_isRendererLocked) {
+    LOGERR("Error, renderer is locked! changeRendererTarget() for FBOId: %d "
+        "will not be performed", FBOId);
+    return;
+  }
+
+  Texture::setRendererTarget(gRsrcMgr->getFBOTexture(FBOId));
+}
+
+void Renderer::resetRendererTarget() {
+  if (!_isRendererLocked) {
+    LOGERR("Error, renderer is unlocked! resetRendererTarget() will not be "
+        "performed");
+    return;
+  }
+
+  //set default back buffer
+  Texture::setRendererTarget(nullptr);
+}
+
+void Renderer::updateCurrRendererTarget(const DrawParams drawParamsArr[],
+                                        const size_t size) {
+  drawStoredWidgets(drawParamsArr, size);
+}
+
+void Renderer::drawStoredWidgets(const DrawParams drawParamsArr[],
+                                 const size_t size) {
+  SDL_Rect renderQuad = { 0, 0, 0, 0 };
+  SDL_Rect sourceQuad = { 0, 0, 0, 0 };
+  SDL_Texture * texture = nullptr;
+
+  //do the actual drawing of all stored images for THIS FRAME
+  for (size_t i = 0; i < size; ++i) {
+    sourceQuad = { drawParamsArr[i].frameRect.x, drawParamsArr[i].frameRect.y,
+                   drawParamsArr[i].frameRect.w, drawParamsArr[i].frameRect.h };
+
+    renderQuad.x = drawParamsArr[i].pos.x;
+    renderQuad.y = drawParamsArr[i].pos.y;
+    renderQuad.w = drawParamsArr[i].width;
+    renderQuad.h = drawParamsArr[i].height;
+
+    if (WidgetType::IMAGE == drawParamsArr[i].widgetType) {
+      texture = gRsrcMgr->getImageTexture(drawParamsArr[i].rsrcId);
+    } else if (WidgetType::TEXT == drawParamsArr[i].widgetType) {
+      texture = gRsrcMgr->getTextTexture(drawParamsArr[i].textId);
+    } else { // (WidgetType::FBO == drawParamsArr[i].widgetType){
+      texture = gRsrcMgr->getFBOTexture(drawParamsArr[i].FBOId);
+    }
+
+    if (EXIT_SUCCESS !=
+        SDL_RenderCopy(_sdlRenderer, texture, &sourceQuad,  &renderQuad)) {
+          LOGERR("Error in, SDL_RenderCopy(), SDL Error: %s", SDL_GetError());
+          break;
+    }
+  }
+
+  //------------- UPDATE SCREEN----------------
+  SDL_RenderPresent(_sdlRenderer);
 }
 

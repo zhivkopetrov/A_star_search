@@ -34,11 +34,19 @@ int32_t TextureContainer::init(const int32_t windowWidth,
     }
   }
 
+  if ( EXIT_SUCCESS == err) {
+    if ( EXIT_SUCCESS != FBOContainer::init()) {
+      LOGERR("Error in TextContainer::init()");
+      err = EXIT_FAILURE;
+    }
+  }
+
   return err;
 }
 
 void TextureContainer::deinit() {
   ImageContainer::deinit();
   TextContainer::deinit();
+  FBOContainer::deinit();
 }
 

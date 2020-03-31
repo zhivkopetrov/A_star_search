@@ -1,5 +1,5 @@
-#ifndef THIRDPARTY_SDLUTILS_TEXTURE_H_
-#define THIRDPARTY_SDLUTILS_TEXTURE_H_
+#ifndef SDL_TEXTURE_H_
+#define SDL_TEXTURE_H_
 
 //C system headers
 
@@ -85,6 +85,37 @@ public:
                               const SDL_Color &color, SDL_Texture *&outTexture,
                               int32_t &outTextWidth, int32_t &outTextHeight);
 
+  /** @brief to create a texture for the current rendering context.
+   *
+   *  @param const int32_t  - Texture width
+   *  @param const int32_t  - Texture height
+   *  @param SDL_Texture *& - pointer to newly created SDL_Texture
+   *                                                 (nullptr on failure)
+   *
+   *         WARNING: memory for outTexture is dynamically allocated by
+   *                  SDL. It's up to the developer to call
+   *                  SDL_FreeTexture() on the created Texture when he is
+   *                  done dealing with the memory. Otherwise memory leak
+   *                  will occur.
+   *
+   *  @return int32_t       - error code
+   * */
+  static int32_t createEmptyTexture(const int32_t  width,
+                                    const int32_t  height,
+                                    SDL_Texture *& outTexture);
+
+  /** @brief used to change the target for main graphical renderer.
+   *
+   *         WARNING: use this method only if you know what you are doing!
+   *
+   *  @param SDL_Texture *  - the new target for the hardware renderer
+   *                          (use nullptr as target param in order
+   *                                 to reset to default renderer target)
+   *
+   *  @return int32_t       - error code
+   * */
+  static int32_t setRendererTarget(SDL_Texture * target);
+
   /** @brief used to acquire renderer pointer that will be performing
    *                                         the graphical render calls.
    *
@@ -100,5 +131,5 @@ private:
   static SDL_Renderer *_renderer;
 };
 
-#endif /* THIRDPARTY_SDLUTILS_TEXTURE_H_ */
+#endif /* SDL_TEXTURE_H_ */
 

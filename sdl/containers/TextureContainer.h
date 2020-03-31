@@ -11,15 +11,18 @@
 //Own components headers
 #include "ImageContainer.h"
 #include "TextContainer.h"
+#include "FBOContainer.h"
 
 //Forward declarations
 
 class TextureContainer : public ImageContainer,
-                         public TextContainer {
+                         public TextContainer,
+                         public FBOContainer{
 public:
   TextureContainer();
   ~TextureContainer() = default;
 
+protected:
   int32_t init(const int32_t windowWidth, const int32_t windowHeight);
 
   void deinit();

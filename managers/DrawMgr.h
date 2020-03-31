@@ -96,6 +96,39 @@ public:
    * */
   void addDrawCmdArr(const DrawParams drawParamsArr[], const size_t size);
 
+  /* @brief locks the renderer - so it is able to draw again to the default
+   *        back buffer
+   *
+   *  @return int32_t - error code
+   * */
+  int32_t lockRenderer();
+
+  /** @brief locks the renderer - so it is able to draw again on custom
+   *         back buffer
+   *
+   *  @return int32_t - error code
+   * */
+  int32_t unlockRenderer();
+
+  /** @brief change renderer target to the FBO back buffer texture
+   *
+   *  @param const int32_t - unique FBO id (back buffer texture)
+   * */
+  void changeRendererTarget(const int32_t FBOId);
+
+  /** @brief resets the renderer target to the default back buffer
+   * */
+  void resetRendererTarget();
+
+  /** @brief transfer draw specific data from Textures to custom back buffer
+   *         renderer target
+   *
+   *  @param const DrawParams *[] - draw specific data for a Texture array
+   *  @param const size_t         - size of the array
+   * */
+  void updateCurrRendererTarget(const DrawParams drawParamsArr[],
+                                const size_t size);
+
   /** @brief used to limit the frame rate to a specific value.
    *         In order not to over burden the CPU, when the desired FPS
    *         is reached, the thread that executes the drawing is put

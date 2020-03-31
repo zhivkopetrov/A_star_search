@@ -89,3 +89,26 @@ void DrawMgr::addDrawCmd(const DrawParams *drawParams) {
 void DrawMgr::addDrawCmdArr(const DrawParams drawParamsArr[], const size_t size) {
   _renderer->drawTextureArr(drawParamsArr, size);
 }
+
+int32_t DrawMgr::lockRenderer() {
+  return _renderer->lockRenderer();
+}
+
+int32_t DrawMgr::unlockRenderer() {
+  return _renderer->unlockRenderer();
+}
+
+void DrawMgr::changeRendererTarget(const int32_t FBOId) {
+  _renderer->changeRendererTarget(FBOId);
+}
+
+void DrawMgr::resetRendererTarget() {
+  _renderer->resetRendererTarget();
+}
+
+void DrawMgr::updateCurrRendererTarget(const DrawParams drawParamsArr[],
+                                       const size_t size) {
+  _renderer->updateCurrRendererTarget(drawParamsArr, size);
+}
+
+
