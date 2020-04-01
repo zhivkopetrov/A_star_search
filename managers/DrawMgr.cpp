@@ -106,9 +106,18 @@ void DrawMgr::resetRendererTarget() {
   _renderer->resetRendererTarget();
 }
 
+void DrawMgr::clearCurrentRendererTarget(const Color &clearColor) {
+  _renderer->clearCurrentRendererTarget(clearColor);
+}
+
 void DrawMgr::updateCurrRendererTarget(const DrawParams drawParamsArr[],
                                        const size_t size) {
   _renderer->updateCurrRendererTarget(drawParamsArr, size);
+}
+
+void DrawMgr::setWidgetBlendMode(const DrawParams &widgetInfo,
+                                 const BlendMode blendMode) {
+  _renderer->setWidgetBlendMode(widgetInfo, blendMode);
 }
 
 

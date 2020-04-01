@@ -12,7 +12,7 @@
 #include "managers/RsrcMgr.h"
 #include "utils/Log.h"
 
-Text::Text() : _fontSize(0), _isDestroyed(false) {
+Text::Text() : _color(Colors::BLACK), _fontSize(0), _isDestroyed(false) {
   _drawParams.widgetType = WidgetType::TEXT;
 }
 
@@ -24,15 +24,16 @@ Text::~Text() {
 }
 
 void Text::create(const Point &startPoint, const char *text,
-                  const int32_t fontSize) {
+                  const Color& color, const int32_t fontSize) {
   if (_isCreated) {
     LOGERR("Error, Text with textId: %d is already created",
         _drawParams.textId);
     return;
   }
+  _color = color;
 
-  gRsrcMgr->createText(text, fontSize, _drawParams.textId, _drawParams.width,
-      _drawParams.height);
+  gRsrcMgr->createText(text, _color, fontSize, _drawParams.textId,
+      _drawParams.width, _drawParams.height);
 
   _isCreated = true;
   _isDestroyed = false;
@@ -46,7 +47,7 @@ void Text::create(const Point &startPoint, const char *text,
 }
 
 void Text::setText(const char *text) {
-  gRsrcMgr->reloadText(text, _fontSize, _drawParams.textId,
+  gRsrcMgr->reloadText(text, _color, _fontSize, _drawParams.textId,
       _drawParams.width, _drawParams.height);
 
   _drawParams.frameRect.w = _drawParams.width;

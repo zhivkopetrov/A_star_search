@@ -19,6 +19,14 @@ enum class WidgetType : uint8_t {
   FBO
 };
 
+
+
+enum class BlendMode : uint8_t {
+  NONE,  //value for SDL_BLENDMODE_NONE
+  BLEND, //value for SDL_BLENDMODE_BLEND
+  ADD,   //value for SDL_BLENDMODE_ADD
+};
+
 struct DrawParams {
   DrawParams();
 

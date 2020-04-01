@@ -15,6 +15,7 @@
 //Forward declarations
 struct SDL_Window;
 struct SDL_Renderer;
+class Color;
 class TextureContainer;
 
 class Renderer {
@@ -94,6 +95,12 @@ public:
    * */
   void resetRendererTarget();
 
+  /** @brief clear current renderer target (back buffer) with the selected color
+   *
+   * @param const Color & - target clear color
+   * */
+  void clearCurrentRendererTarget(const Color &clearColor);
+
   /** @brief transfer draw specific data from Textures to custom back buffer
    *         renderer target
    *
@@ -103,6 +110,15 @@ public:
   void updateCurrRendererTarget(const DrawParams drawParamsArr[],
                                 const size_t size);
 
+  /** @brief used to change the underlying texture blendmode for target widget
+   *
+   * @param const DrawParams & - target widget
+   * @param const BlendMode    - target blendmode
+   * */
+  void setWidgetBlendMode(const DrawParams &widgetInfo,
+                          const BlendMode blendMode);
+
+private:
   /** @brief actual rendering of stored widgets on the current back buffer
    *
    *  @param const DrawParams *[] - draw specific data for a Texture array
@@ -111,7 +127,6 @@ public:
   void drawStoredWidgets(const DrawParams drawParamsArr[],
                          const size_t size);
 
-private:
   //The window we'll be rendering to
   SDL_Window *_window;
 

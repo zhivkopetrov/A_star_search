@@ -13,6 +13,7 @@
 //Own components headers
 #include "Texture.h"
 #include "managers/RsrcMgr.h"
+#include "utils/EnumClassUtils.hpp"
 #include "utils/Log.h"
 
 Renderer::Renderer(SDL_Window *window)
@@ -156,7 +157,10 @@ void Renderer::changeRendererTarget(const int32_t FBOId) {
     return;
   }
 
-  Texture::setRendererTarget(gRsrcMgr->getFBOTexture(FBOId));
+  if (EXIT_SUCCESS !=
+      Texture::setRendererTarget(gRsrcMgr->getFBOTexture(FBOId))) {
+    LOGERR("Texture::setRendererTarget() failed for FBO with Id: %d", FBOId);
+  }
 }
 
 void Renderer::resetRendererTarget() {
@@ -170,9 +174,32 @@ void Renderer::resetRendererTarget() {
   Texture::setRendererTarget(nullptr);
 }
 
+void Renderer::clearCurrentRendererTarget(const Color &clearColor) {
+  if (EXIT_SUCCESS != Texture::clearCurrentRendererTarget(clearColor)) {
+    LOGERR("Texture::clearCurrentRendererTarget() failed");
+  }
+}
+
 void Renderer::updateCurrRendererTarget(const DrawParams drawParamsArr[],
                                         const size_t size) {
   drawStoredWidgets(drawParamsArr, size);
+}
+
+void Renderer::setWidgetBlendMode(const DrawParams &widgetInfo,
+                                  const BlendMode blendMode) {
+  SDL_Texture * texture = nullptr;
+  if (WidgetType::IMAGE == widgetInfo.widgetType) {
+    texture = gRsrcMgr->getImageTexture(widgetInfo.rsrcId);
+  } else if (WidgetType::TEXT == widgetInfo.widgetType) {
+    texture = gRsrcMgr->getTextTexture(widgetInfo.textId);
+  } else { // (WidgetType::FBO == widgetInfo.widgetType){
+    texture = gRsrcMgr->getFBOTexture(widgetInfo.FBOId);
+  }
+
+  if (EXIT_SUCCESS !=
+      Texture::setBlendMode(texture, getEnumClassValue(blendMode))) {
+    LOGERR("Error, Texture::setBlendMode() failed");
+  }
 }
 
 void Renderer::drawStoredWidgets(const DrawParams drawParamsArr[],

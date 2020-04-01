@@ -10,6 +10,7 @@
 
 //Own components headers
 #include "Widget.h"
+#include "utils/drawing/Color.h"
 
 //Forward declarations
 
@@ -27,6 +28,7 @@ public:
 
   void create(const Point &startPoint,
               const char *text,
+              const Color& color,
               const int32_t fontSize);
 
   void setText(const char *text);
@@ -34,6 +36,7 @@ public:
   void destroy();
 
 private:
+  Color _color;
   int32_t _fontSize;
 
   /* used in order to check if resource was destroyed ->

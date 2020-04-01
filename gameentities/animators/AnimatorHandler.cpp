@@ -13,6 +13,7 @@
 #include "common/CommonDefines.h"
 #include "managers/DrawMgr.h"
 #include "utils/drawing/Point.h"
+#include "utils/EnumClassUtils.hpp"
 #include "utils/Log.h"
 
 AnimatorHandler::AnimatorHandler()
@@ -98,8 +99,7 @@ void AnimatorHandler::perform(const AnimEvent event, const std::any &args) {
 
   default:
     LOGERR("Error, received unknown AnimEvent type: %d",
-        static_cast<int32_t>(event))
-    ;
+        getEnumClassValue(event));
     break;
   }
 }
@@ -147,8 +147,7 @@ void AnimatorHandler::onAnimFinished(const AnimType type) {
 
   default:
     LOGERR("Error, received unknown AnimEvent type: %d",
-        static_cast<int32_t>(type))
-    ;
+        getEnumClassValue(type));
     break;
   }
 }

@@ -13,6 +13,7 @@
 
 //Own components headers
 #include "Widget.h"
+#include "utils/drawing/Color.h"
 
 //Forward declarations
 
@@ -90,6 +91,10 @@ public:
 
   void draw();
 
+  inline void setClearColor(const Color& color) {
+    _clearColor = color;
+  }
+
   /** @brief used to move all stored FBO items (widgets)
    *         with relative offset
    *
@@ -145,6 +150,9 @@ private:
    * all stored items
    * */
   std::vector<DrawParams> _storedItems;
+
+  /** used for texture clearing (back buffer clear) */
+  Color _clearColor;
 
   /* Stores relative offset for stored items(widgets) in the FBO
    * */

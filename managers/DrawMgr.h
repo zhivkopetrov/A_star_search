@@ -15,7 +15,9 @@
 class SDLContainers;
 class Renderer;
 class MonitorWindow;
+class Color;
 struct DrawParams;
+enum class BlendMode : uint8_t;
 
 class DrawMgr: public MgrBase {
 public:
@@ -120,6 +122,12 @@ public:
    * */
   void resetRendererTarget();
 
+  /** @brief clear current renderer target (back buffer) with the selected color
+   *
+   * @param const Color & - target clear color
+   * */
+  void clearCurrentRendererTarget(const Color &clearColor);
+
   /** @brief transfer draw specific data from Textures to custom back buffer
    *         renderer target
    *
@@ -128,6 +136,14 @@ public:
    * */
   void updateCurrRendererTarget(const DrawParams drawParamsArr[],
                                 const size_t size);
+
+  /** @brief used to change the underlying texture blendmode for target widget
+   *
+   * @param const DrawParams & - target widget
+   * @param const BlendMode    - target blendmode
+   * */
+  void setWidgetBlendMode(const DrawParams &widgetInfo,
+                          const BlendMode blendMode);
 
   /** @brief used to limit the frame rate to a specific value.
    *         In order not to over burden the CPU, when the desired FPS

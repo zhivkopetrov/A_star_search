@@ -11,6 +11,7 @@
 #include <SDL_ttf.h>
 
 //Own components headers
+#include "utils/drawing/Color.h"
 #include "utils/Log.h"
 
 SDL_Renderer *Texture::_renderer = nullptr;
@@ -49,13 +50,15 @@ int32_t Texture::loadSurfaceFromFile(const char *path,
 
 int32_t Texture::loadFromText(const char *text,
                               TTF_Font *font,
-                              const SDL_Color &color,
+                              const Color& color,
                               SDL_Texture *& outTexture,
                               int32_t &outTextWidth,
                               int32_t &outTextHeight) {
   freeTexture(outTexture);
 
-  SDL_Surface *loadedSurface = TTF_RenderText_Blended(font, text, color);
+  SDL_Surface *loadedSurface =
+      TTF_RenderText_Blended(font, text,
+          *(reinterpret_cast<const SDL_Color *>(&color.rgba)));
 
   if (loadedSurface == nullptr) {
     LOGERR("Unable to load image! SDL_image Error: %s", IMG_GetError());
@@ -129,6 +132,94 @@ int32_t Texture::createEmptyTexture(const int32_t  width,
     }
 
     return err;
+}
+
+int32_t Texture::clearCurrentRendererTarget(const Color & clearColor)
+{
+  Color currRendererColor = Colors::BLACK;
+  bool  isSameColorAsOld = true;
+
+  //remember old renderer color
+  if(EXIT_SUCCESS != SDL_GetRenderDrawColor(_renderer,
+                                            &currRendererColor.rgba.r,
+                                            &currRendererColor.rgba.g,
+                                            &currRendererColor.rgba.b,
+                                            &currRendererColor.rgba.a)) {
+    LOGERR("Error in, SDL_GetRenderDrawColor(), SDL Error: %s",
+                                                         SDL_GetError());
+    return EXIT_FAILURE;
+  }
+
+  if(currRendererColor != clearColor) {
+      isSameColorAsOld = false;
+  }
+
+  if(isSameColorAsOld) {
+    //clear target
+    if(EXIT_SUCCESS != SDL_RenderClear(_renderer))  {
+        LOGERR("Error in, SDL_RenderClear(), SDL Error: %s", SDL_GetError());
+        return EXIT_FAILURE;
+    }
+  }
+  else {//color should be changed temporary
+    //set new renderer color
+    if(EXIT_SUCCESS != SDL_SetRenderDrawColor(_renderer,
+                                              clearColor.rgba.r,
+                                              clearColor.rgba.g,
+                                              clearColor.rgba.b,
+                                              clearColor.rgba.a)) {
+      LOGERR("Error in, SDL_SetRenderDrawColor(), SDL Error: %s",
+                                                   SDL_GetError());
+      return EXIT_FAILURE;
+    }
+
+    //clear target
+    if(EXIT_SUCCESS != SDL_RenderClear(_renderer))
+    {
+      LOGERR("Error in, SDL_RenderClear(), SDL Error: %s", SDL_GetError());
+      return EXIT_FAILURE;
+    }
+
+    //restore old renderer colour
+
+    if(EXIT_SUCCESS !=
+            SDL_SetRenderDrawColor(_renderer,
+                                   currRendererColor.rgba.r,
+                                   currRendererColor.rgba.g,
+                                   currRendererColor.rgba.b,
+                                   currRendererColor.rgba.a))
+    {
+      LOGERR("Error in, SDL_SetRenderDrawColor(), SDL Error: %s",
+                                                   SDL_GetError());
+      return EXIT_FAILURE;
+    }
+  }
+
+  return EXIT_SUCCESS;
+}
+
+void Texture::setAlpha(SDL_Texture * texture, const int32_t alpha) {
+    if(EXIT_SUCCESS !=
+            SDL_SetTextureAlphaMod(texture, static_cast<uint8_t>(alpha))) {
+        LOGERR("Warning, .setAlpha() method will not take effect. Reason: "
+               "invalid texture or alpha modulation is not supported. "
+              "SDL_SetTextureAlphaMod() failed. SDL Error: %s", SDL_GetError());
+    }
+}
+
+int32_t Texture::setBlendMode(SDL_Texture * texture, const uint8_t blendMode) {
+    if(EXIT_SUCCESS !=
+            SDL_SetTextureBlendMode(texture,
+                                    static_cast<SDL_BlendMode>(blendMode)))
+    {
+        LOGERR("Warning, .setBlendMode() method will not take effect. Reason: "
+               "invalid texture or blend mode is not supported. "
+               "SDL_SetTextureBlendMode() failed. SDL Error: %s",
+                                                               SDL_GetError());
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
 }
 
 int32_t Texture::setRendererTarget(SDL_Texture * target) {

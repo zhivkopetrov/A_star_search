@@ -11,6 +11,7 @@
 //Own components headers
 #include "sdl/InputEvent.h"
 #include "common/CommonDefines.h"
+#include "utils/EnumClassUtils.hpp"
 #include "utils/Log.h"
 
 int32_t Game::init() {
@@ -127,9 +128,7 @@ void Game::onNodeChanged(const NodeType nodeType, const Point &nodePos) {
     break;
 
   default:
-    LOGERR("Error, received unknown NodeType: %d",
-        static_cast<int32_t>(nodeType))
-    ;
+    LOGERR("Error, received unknown NodeType: %d", getEnumClassValue(nodeType));
     break;
   }
 }
@@ -160,9 +159,7 @@ void Game::onOptionChanged(const Option option, const std::any &value) {
       break;
 
     default:
-      LOGERR("Error, received unknown Option: %d",
-          static_cast<int32_t>(option))
-      ;
+      LOGERR("Error, received unknown Option: %d", getEnumClassValue(option));
       break;
   }
 }

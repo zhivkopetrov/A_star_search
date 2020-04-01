@@ -15,9 +15,10 @@
 #include "utils/Log.h"
 
 //default constructor
-FBO::FBO()
-    : _itemsOffsetX(0), _itemsOffsetY(0), _isLocked(true), _isDestroyed(false) {
-  _drawParams.widgetType = WidgetType::FBO;
+FBO::FBO() :
+      _clearColor(Colors::FULL_TRANSPARENT), _itemsOffsetX(0), _itemsOffsetY(0),
+      _isLocked(true), _isDestroyed(false) {
+      _drawParams.widgetType = WidgetType::FBO;
 }
 
 FBO::~FBO() {
@@ -46,6 +47,7 @@ void FBO::create(const Point &startPoint, const int32_t FBOWidth,
     _drawParams.frameRect.h = FBOHeight;
 
     gRsrcMgr->createFBO(FBOWidth, FBOHeight, _drawParams.FBOId);
+    gDrawMgr->setWidgetBlendMode(_drawParams, BlendMode::BLEND);
   }
 }
 
@@ -142,7 +144,7 @@ void FBO::reset() {
 
   _storedItems.clear();
 
-  gDrawMgr->clearScreen();
+  gDrawMgr->clearCurrentRendererTarget(_clearColor);
 }
 
 void FBO::addWidget(const Widget &widget) {

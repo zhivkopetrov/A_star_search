@@ -17,11 +17,6 @@
 
 TextContainer::TextContainer()
     : _fontSmall(nullptr), _fontBig(nullptr) {
-  //set black color for text
-  _color.r = 0;
-  _color.g = 0;
-  _color.b = 0;
-  _color.a = 0;
 }
 
 int32_t TextContainer::init() {
@@ -54,29 +49,29 @@ void TextContainer::deinit() {
   _textures.clear();
 }
 
-void TextContainer::createText(const char *text, const int32_t fontSize,
-                               int32_t &outTextId, int32_t &outTextWidth,
-                               int32_t &outTextHeight) {
+void TextContainer::createText(const char *text, const Color &color,
+                               const int32_t fontSize, int32_t &outTextId,
+                               int32_t &outTextWidth, int32_t &outTextHeight) {
   TTF_Font *font = (FontSize::SMALL == fontSize) ? _fontSmall : _fontBig;
   occupyFreeSlotIndex(outTextId);
 
   //create hardware accelerated texture
   if ( EXIT_SUCCESS
-      != Texture::loadFromText(text, font, _color, _textures[outTextId],
+      != Texture::loadFromText(text, font, color, _textures[outTextId],
           outTextWidth, outTextHeight)) {
     LOGERR("Unable to load text: %s with ID: %d", text, outTextId);
     freeSlotIndex(outTextId);
   }
 }
 
-void TextContainer::reloadText(const char *text, const int32_t fontSize,
-                               const int32_t textId, int32_t &outTextWidth,
-                               int32_t &outTextHeight) {
+void TextContainer::reloadText(const char *text, const Color &color,
+                               const int32_t fontSize, const int32_t textId,
+                               int32_t &outTextWidth, int32_t &outTextHeight) {
   TTF_Font *font = (FontSize::SMALL == fontSize) ? _fontSmall : _fontBig;
 
   //create hardware accelerated texture
   if ( EXIT_SUCCESS
-      != Texture::loadFromText(text, font, _color, _textures[textId],
+      != Texture::loadFromText(text, font, color, _textures[textId],
           outTextWidth, outTextHeight)) {
     LOGERR("Unable to load text: %s with ID: %d", text, textId);
     freeSlotIndex(textId);

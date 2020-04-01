@@ -8,11 +8,11 @@
 #include <vector>
 
 //Other libraries headers
-#include <SDL_pixels.h>
 
 //Own components headers
 
 //Forward declarations
+class Color;
 struct SDL_Texture;
 typedef struct _TTF_Font TTF_Font;
 
@@ -25,10 +25,11 @@ public:
     return _textures[textId];
   }
 
-  void createText(const char *text, const int32_t fontSize, int32_t &outTextId,
-                  int32_t &outTextWidth, int32_t &outTextHeight);
+  void createText(const char *text, const Color &color, const int32_t fontSize,
+                  int32_t &outTextId, int32_t &outTextWidth,
+                  int32_t &outTextHeight);
 
-  void reloadText(const char *text, const int32_t fontSize,
+  void reloadText(const char *text, const Color &color, const int32_t fontSize,
                   const int32_t textId, int32_t &outTextWidth,
                   int32_t &outTextHeight);
 
@@ -48,9 +49,6 @@ private:
   //the global fonts we'll be using
   TTF_Font *_fontSmall;
   TTF_Font *_fontBig;
-
-  //the color we'll be using for the text
-  SDL_Color _color;
 
   //the textures we'll be drawing
   std::vector<SDL_Texture*> _textures;

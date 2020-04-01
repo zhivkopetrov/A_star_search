@@ -74,7 +74,7 @@ public:
    *
    *  @param const char *   - user provided text
    *  @param TTF_Font *     - SDL_Font that is used
-   *  @param const SDL_Color &  - color used to create the text
+   *  @param const Color &  - color used to create the text
    *  @param SDL_Texture *& - dynamically created SDL_Surface
    *  @param int32_t &      - width of the created SDL_Surface text
    *  @param int32_t &      - height of the created SDL_Surface text
@@ -82,7 +82,7 @@ public:
    *  @returns int32_t      - error code
    * */
   static int32_t loadFromText(const char *text, TTF_Font *font,
-                              const SDL_Color &color, SDL_Texture *&outTexture,
+                              const Color& color, SDL_Texture *&outTexture,
                               int32_t &outTextWidth, int32_t &outTextHeight);
 
   /** @brief to create a texture for the current rendering context.
@@ -103,6 +103,37 @@ public:
   static int32_t createEmptyTexture(const int32_t  width,
                                     const int32_t  height,
                                     SDL_Texture *& outTexture);
+
+  /** @brief used to clear (wipe out) current renderer target with
+   *         currently set draw color for the main renderer
+   *
+   *  @param const Color & - the clear color for the hardware renderer
+   *
+   *  @return int32_t - error code
+   * */
+  static int32_t clearCurrentRendererTarget(const Color & clearColor);
+
+  /** @brief used to change the alpha channel (Widget transparency)
+   *
+   *         NOTE: alpha channel is only supported by Hardware renderer
+   *
+   *  @param SDL_Texture * - texture to be modified
+   *  @param const int32_t - new alpha channel value
+   * */
+  static void setAlpha(SDL_Texture * texture, const int32_t alpha);
+
+  /** @brief used to change the Widget blend mode (used for calculations
+   *         on the SDL_Texture RGBA pixels)
+   *
+   *         NOTE: blend mode is only supported by Hardware renderer
+   *
+   *  @param SDL_Texture * - texture to be modified
+   *  @param const uint8_t - new blend mode value
+   *
+   *  @return int32_t      - error code
+   * */
+  static int32_t setBlendMode(SDL_Texture * texture,
+                              const uint8_t blendMode);
 
   /** @brief used to change the target for main graphical renderer.
    *
