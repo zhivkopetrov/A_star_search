@@ -85,21 +85,6 @@ void Game::handleEvent(const InputEvent &e) {
     case Keyboard::KEY_C:
       _gridContainer.clearGrid();
       break;
-
-      //TODO temporary - remove after buttons are implemented in the OptionSelector
-    case Keyboard::KEY_D:
-      _optionSelector.setOption(Option::DIAGONAL_MOVEMENT, true);
-      break;
-
-      //TODO temporary - remove after buttons are implemented in the OptionSelector
-    case Keyboard::KEY_UP:
-      _obstacleHandler.loadNextLevel();
-      break;
-
-      //TODO temporary - remove after buttons are implemented in the OptionSelector
-    case Keyboard::KEY_DOWN:
-      _obstacleHandler.loadPreviousLevel();
-      break;
     }
   }
 
@@ -156,6 +141,10 @@ void Game::onOptionChanged(const Option option, const std::any &value) {
   switch (option) {
     case Option::DIAGONAL_MOVEMENT:
       _pathGenerator.changeDiagonalOption(value);
+      break;
+
+    case Option::LEVEL_CHANGE:
+      _obstacleHandler.changeLevel(value);
       break;
 
     default:

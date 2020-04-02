@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <vector>
 #include <string>
+#include <any>
 
 //Other libraries headers
 
@@ -24,8 +25,7 @@ public:
   int32_t init(GridContainerProxyInterface *gridInterface,
                const std::string &levelsFolderPath, const int32_t levelsCount);
 
-  void loadNextLevel();
-  void loadPreviousLevel();
+  void changeLevel(const std::any &value);
 
   inline void addObstacle(const Point &nodePos) {
     _addedObstacles.push_back(nodePos);
@@ -43,6 +43,9 @@ private:
 
   int32_t loadLevelFromDisk(const std::string &levelsFolderPath,
                             const int32_t levelId);
+
+  void loadNextLevel();
+  void loadPreviousLevel();
 
   using LevelObstacles = std::vector<Obstacle>;
 

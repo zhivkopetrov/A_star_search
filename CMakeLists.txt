@@ -58,6 +58,7 @@ file(GLOB SOURCES "${PROJECT_ROOT_DIR}/*.cpp"
                   "${PROJECT_ROOT_DIR}/managers/*.cpp"
                   "${PROJECT_ROOT_DIR}/gameentities/*.cpp"
                   "${PROJECT_ROOT_DIR}/gameentities/animators/*.cpp"
+                  "${PROJECT_ROOT_DIR}/gameentities/optionsmenu/*.cpp"
                   "${PROJECT_ROOT_DIR}/pathfinding/*.cpp"
                   "${PROJECT_ROOT_DIR}/common/*.cpp")
                    

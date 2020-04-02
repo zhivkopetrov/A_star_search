@@ -118,9 +118,9 @@ public:
    *         not the actual Surface/Texture.
    *   This function does not return error code for performance reasons
    *
-   *  @param const uint8_t - unique resource ID
+   *  @param const int32_t - unique resource ID
    * */
-  void create(const uint8_t rsrcId);
+  void create(const int32_t rsrcId);
 
   inline void draw() {
     _buttonTexture.draw();

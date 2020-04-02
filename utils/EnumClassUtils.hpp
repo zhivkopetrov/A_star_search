@@ -12,7 +12,7 @@
 
 /* extract value from enumeration class */
 template <typename Enumeration>
-inline typename std::underlying_type<Enumeration>::type getEnumClassValue(
+constexpr inline typename std::underlying_type<Enumeration>::type getEnumClassValue(
     Enumeration const value) {
   return static_cast<typename std::underlying_type<Enumeration>::type>(value);
 }

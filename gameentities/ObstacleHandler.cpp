@@ -48,6 +48,21 @@ int32_t ObstacleHandler::init(GridContainerProxyInterface *gridInterface,
   return err;
 }
 
+void ObstacleHandler::changeLevel(const std::any &value) {
+  try {
+    const auto levelOffset = std::any_cast<int32_t>(value);
+    if (1 == levelOffset) {
+      loadNextLevel();
+    } else if (-1 == levelOffset) {
+      loadPreviousLevel();
+    } else {
+      LOGERR("Received unknown level offset: %d", levelOffset);
+    }
+  } catch (const std::bad_any_cast &e) {
+    LOGERR("any_cast throwed: %s", e.what());
+  }
+}
+
 void ObstacleHandler::removeObstacle(const Point &nodePos) {
   auto it = std::find(_addedObstacles.begin(), _addedObstacles.end(), nodePos);
   if (it != _addedObstacles.end()) {

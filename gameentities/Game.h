@@ -11,7 +11,7 @@
 //Own components headers
 #include "GridContainer.h"
 #include "ObstacleHandler.h"
-#include "OptionSelector.h"
+#include "optionsmenu/OptionSelector.h"
 #include "proxies/GameProxyInterface.hpp"
 #include "pathfinding/PathGenerator.h"
 #include "animators/AnimatorHandler.h"

@@ -113,7 +113,7 @@ void ButtonBase::unlockInput() {
   _buttonTexture.setFrame(UNCLICKED);
 }
 
-void ButtonBase::create(const uint8_t rsrcId) {
+void ButtonBase::create(const int32_t rsrcId) {
   _buttonTexture.create(rsrcId);
 
   _originalEventRect.x = _buttonTexture.getX();
