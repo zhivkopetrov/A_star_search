@@ -16,13 +16,11 @@ MenuButton::MenuButton()
 
 }
 
-int32_t MenuButton::init(OptionSelecterProxyInterface *interface,
-                         const MenuButtonType buttonType,
-                         const int32_t buttonRsrcId, const Point &startPos) {
-  _menuInterface = interface;
-  _buttonType = buttonType;
-  create(buttonRsrcId);
-  setPosition(startPos);
+int32_t MenuButton::init(const MenuButtonCfg &cfg) {
+  _menuInterface = cfg.interface;
+  _buttonType = cfg.buttonType;
+  create(cfg.buttonRsrcId);
+  setPosition(cfg.startPos);
 
   return EXIT_SUCCESS;
 }
@@ -34,4 +32,12 @@ void MenuButton::handleEvent(const InputEvent &e) {
     setFrame(UNCLICKED);
     _menuInterface->onMenuButtonClicked(_buttonType);
   }
+}
+
+void MenuButton::lockInput() {
+  _isInputUnlocked = false;
+}
+
+void MenuButton::unlockInput() {
+  _isInputUnlocked = true;
 }

@@ -88,8 +88,10 @@ void Game::handleEvent(const InputEvent &e) {
     }
   }
 
+  if(_optionSelector.handleEvent(e)) {
+    return;
+  }
   _gridContainer.handleEvent(e);
-  _optionSelector.handleEvent(e);
 }
 
 void Game::onNodeChanged(const NodeType nodeType, const Point &nodePos) {

@@ -52,9 +52,14 @@ int32_t ImageContainer::loadTextures() {
       "../assets/win_dialog.png", Textures::WIN_DIALOG }, {
       "../assets/lose_dialog.png", Textures::LOSE_DIALOG }, {
       "../assets/obstacles.png", Textures::OBSTACLES }, {
-      "../assets/ui/check_frames.png", Textures::MENU_TICK } };
+      "../assets/ui/menu.png", Textures::MENU }, {
+      "../assets/ui/settings_frames.png", Textures::MENU_SETTINGS }, {
+      "../assets/ui/cross_frames.png", Textures::MENU_CROSS }, {
+      "../assets/ui/plus_frames.png", Textures::MENU_PLUS }, {
+      "../assets/ui/minus_frames.png", Textures::MENU_MINUS }, {
+      "../assets/ui/check_frames.png", Textures::MENU_CHECK } };
 
-  for (int32_t i = Textures::VERTICAL_LINE; i <= Textures::MENU_TICK; ++i) {
+  for (int32_t i = 0; i < Textures::COUNT; ++i) {
     if ( EXIT_SUCCESS != loadSingleTexture(assets[i].first, assets[i].second)) {
       LOGERR("Error in loadSingleTexture()");
 
@@ -136,11 +141,20 @@ void ImageContainer::populateTextureFrameRects(const int32_t windowWidth,
   _textureFrameRects[Textures::LOSE_DIALOG][0].h =
       SpeechDimensions::LOSE_DIALOG_HEIGHT;
 
-   _textureFrameRects[Textures::MENU_TICK].resize(2);
-   for (int32_t i = 0; i < 2; ++i) {
-     _textureFrameRects[Textures::MENU_TICK][i].x = i * 33;
-     _textureFrameRects[Textures::MENU_TICK][i].w = 33;
-     _textureFrameRects[Textures::MENU_TICK][i].h = 33;
-   }
+  constexpr int32_t menuWidth = 400;
+  constexpr int32_t menuHeight = 200;
+  _textureFrameRects[Textures::MENU][0].w = menuWidth;
+  _textureFrameRects[Textures::MENU][0].h = menuHeight;
+
+  constexpr int32_t buttonFrames = 2;
+  constexpr int32_t buttonFrameDimension = 66;
+  for (int32_t i = Textures::MENU_SETTINGS; i <= Textures::MENU_CHECK; ++i) {
+    _textureFrameRects[i].resize(buttonFrames);
+    for (int32_t frameId = 0; frameId < buttonFrames; ++frameId) {
+      _textureFrameRects[i][frameId].x = frameId * buttonFrameDimension;
+      _textureFrameRects[i][frameId].w = buttonFrameDimension;
+      _textureFrameRects[i][frameId].h = buttonFrameDimension;
+    }
+  }
 }
 

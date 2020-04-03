@@ -23,7 +23,8 @@ cmake;
 3) When compilation has completed run the binary with "./game";
 
 TODOs:
-- Implement a "popping up" menu (in the upper right corner). It will have the ticks "isDiagonalMovementAllowed"
- to a checkbox and up-down arrows for levels (predefined walls)
- - Remove the TODOs from game::handleUserEvent
+ - Finish the Implementation of OptionsSelector
+ - Implement a change color functionality for Text and change the color of "DiagonalMove" in the OptionsSelector
+Green color when allowed, red when forbidden. 
+ - Implement activateAlphaModulation for Image, Text, FBO and use it on the OptionSelector menu
  - Try to change the AStar algorithm with the one with std::priority_queue<>

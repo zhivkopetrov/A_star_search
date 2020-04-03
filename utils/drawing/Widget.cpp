@@ -50,6 +50,13 @@ void Widget::draw() {
   }
 }
 
+bool Widget::containsPoint(const Point &point) const {
+  const Rectangle bounds { _drawParams.pos.x, _drawParams.pos.y,
+      _drawParams.width, _drawParams.height };
+
+  return bounds.isPointInRect(point);
+}
+
 void Widget::reset() {
   _drawParams.reset();
   _isCreated = false;

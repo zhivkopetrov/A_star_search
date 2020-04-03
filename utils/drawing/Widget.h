@@ -184,9 +184,11 @@ public:
     return _isVisible;
   }
 
-  inline uint8_t getRsrcId() const {
+  inline int32_t getRsrcId() const {
     return _drawParams.rsrcId;
   }
+
+  bool containsPoint(const Point &point) const;
 
 protected:
   void reset();

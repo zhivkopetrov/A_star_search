@@ -13,15 +13,13 @@
 //Forward declarations
 
 enum class MenuButtonType : uint8_t {
-  UNKNOWN,
-  OPEN_MENU,
-  CLOSE_MENU,
+  TOGGLE_MENU,
   INCREASE,
   DECREASE,
-  ENABLE_DIAGONAL,
-  DISABLE_DIAGONAL,
+  ALLOW_DIAGONAL,
+  FORBID_DIAGONAL,
 
-  COUNT
+  UNKNOWN = 255
 };
 
 class OptionSelecterProxyInterface {

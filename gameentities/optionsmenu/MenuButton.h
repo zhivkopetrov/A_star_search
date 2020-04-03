@@ -15,17 +15,36 @@
 //Forward declarations
 class InputEvent;
 
-class MenuButton : public ButtonBase {
+struct MenuButtonCfg {
+  MenuButtonCfg(OptionSelecterProxyInterface *inputInterface,
+                         const Point &inputStartPos,
+                         const int32_t inputButtonRsrcId,
+                         const MenuButtonType inputButtonType)
+      : interface(inputInterface), startPos(inputStartPos),
+        buttonRsrcId(inputButtonRsrcId), buttonType(inputButtonType) {
+
+  }
+
+  MenuButtonCfg() = delete;
+
+  OptionSelecterProxyInterface *interface;
+  const Point startPos;
+  const int32_t buttonRsrcId;
+  const MenuButtonType buttonType;
+};
+
+class MenuButton: public ButtonBase {
 public:
   MenuButton();
   virtual ~MenuButton() = default;
 
-  int32_t init(OptionSelecterProxyInterface *interface,
-               const MenuButtonType buttonType,
-               const int32_t buttonRsrcId,
-               const Point &startPos);
+  int32_t init(const MenuButtonCfg &cfg);
 
   virtual void handleEvent(const InputEvent &e) override final;
+
+  virtual void lockInput() override final;
+
+  virtual void unlockInput() override final;
 
 private:
   OptionSelecterProxyInterface *_menuInterface;
