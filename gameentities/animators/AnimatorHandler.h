@@ -13,19 +13,23 @@
 #include "PathAnimator.h"
 #include "ScaleAnimator.h"
 #include "SpeechAnimator.h"
+#include "MenuMoveAnimator.h"
 #include "gameentities/proxies/AnimatorHandlerProxyInterface.hpp"
 
-//Forward declarations
-class GameProxyInterface;
-class GridContainerProxyInterface;
-
-enum class AnimEvent {
+enum class AnimEvent : uint8_t {
   SET_SCALE_AMIM_START_TARGET,
   SET_SCALE_AMIM_END_TARGET,
   LOAD_ANIM_PATH,
   START_PATH_ANIM,
-  START_NO_PATH_ANIM
+  START_NO_PATH_ANIM,
+  START_OPEN_MENU_ANIM,
+  START_CLOSE_MENU_ANIM,
+  UPDATE_MENU_ANIM_CONTENT
 };
+
+//Forward declarations
+class GameProxyInterface;
+class GridContainerProxyInterface;
 
 class AnimatorHandler: public AnimatorHandlerProxyInterface {
 public:
@@ -50,13 +54,18 @@ private:
 
   void performSetScaleAnimTarget(const ScaleAnimTargetType type,
                                  const std::any &args);
+
   void performLoadAnimPath(const std::any &args);
+
+  void performUpdateMenuMoveAnimContent(const std::any &args);
 
   PathAnimator _pathAnimator;
 
   ScaleAnimator _scaleAnimator;
 
   SpeechAnimator _speechAnimator;
+
+  MenuMoveAnimator _menuMoveAnimator;
 
   GameProxyInterface *_gameInterface;
 };

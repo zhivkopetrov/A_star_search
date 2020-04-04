@@ -25,10 +25,12 @@ int32_t AnimatorHandler::init(GameProxyInterface *gameInterface,
                               GridContainerProxyInterface *gridInterface) {
   int32_t err = EXIT_SUCCESS;
   _gameInterface = gameInterface;
+  const int32_t monitorWidth = gDrawMgr->getMonitorWidth();
+  const int32_t monitorHeight = gDrawMgr->getMonitorHeight();
 
   const Point BIG_BATMAN_START_POS(
-      ( (gDrawMgr->getMonitorWidth() - BatmanDimensions::BIG_BATMAN_WIDTH) / 2),
-      ( (gDrawMgr->getMonitorHeight() - BatmanDimensions::BIG_BATMAN_HEIGHT) / 2));
+      ( (monitorWidth - BatmanDimensions::BIG_BATMAN_WIDTH) / 2),
+      ( (monitorHeight - BatmanDimensions::BIG_BATMAN_HEIGHT) / 2));
 
   if (EXIT_SUCCESS != _speechAnimator.init(this, BIG_BATMAN_START_POS,
           Textures::BATMAN_BIG, Textures::WIN_DIALOG, Textures::LOSE_DIALOG,
@@ -53,6 +55,18 @@ int32_t AnimatorHandler::init(GameProxyInterface *gameInterface,
     }
   }
 
+  if (EXIT_SUCCESS == err) {
+    const Rectangle animFBORect { OptionMenuDimensions::MENU_X,
+        OptionMenuDimensions::MENU_Y, OptionMenuDimensions::MENU_WIDTH,
+        OptionMenuDimensions::MENU_HEIGHT };
+
+    if (EXIT_SUCCESS != _menuMoveAnimator.init(this, animFBORect,
+            Timers::MENU_MOVE_ANIM_TIMER_ID)) {
+      LOGERR("Error, _menuMoveAnimator.init() failed");
+      err = EXIT_FAILURE;
+    }
+  }
+
   return err;
 }
 
@@ -68,11 +82,15 @@ void AnimatorHandler::draw() {
   if (_scaleAnimator.isActive()) {
     _scaleAnimator.draw();
   }
+
+  if (_menuMoveAnimator.isActive()) {
+    _menuMoveAnimator.draw();
+  }
 }
 
 bool AnimatorHandler::isActive() const {
   return _scaleAnimator.isActive() || _pathAnimator.isActive()
-         || _speechAnimator.isActive();
+         || _speechAnimator.isActive() || _menuMoveAnimator.isActive();
 }
 
 void AnimatorHandler::perform(const AnimEvent event, const std::any &args) {
@@ -97,9 +115,22 @@ void AnimatorHandler::perform(const AnimEvent event, const std::any &args) {
     _speechAnimator.activateAnim(SpeecAnimType::LOSE);
     break;
 
+  case AnimEvent::START_OPEN_MENU_ANIM:
+    _menuMoveAnimator.startAnim(OptionAnimStatus::START_OPEN_ANIM);
+    break;
+
+  case AnimEvent::START_CLOSE_MENU_ANIM:
+    _menuMoveAnimator.startAnim(OptionAnimStatus::START_CLOSE_ANIM);
+    break;
+
+  case AnimEvent::UPDATE_MENU_ANIM_CONTENT:
+    performUpdateMenuMoveAnimContent(args);
+    break;
+
   default:
     LOGERR("Error, received unknown AnimEvent type: %d",
-        getEnumClassValue(event));
+        getEnumClassValue(event))
+    ;
     break;
   }
 }
@@ -110,7 +141,7 @@ void AnimatorHandler::performSetScaleAnimTarget(const ScaleAnimTargetType type,
     const auto pos = std::any_cast<Point>(args);
     if (ScaleAnimTargetType::START_TARGET == type) {
       _scaleAnimator.setStartTargetPos(pos);
-    } else{
+    } else {
       _scaleAnimator.setEndTargetPos(pos);
     }
   } catch (const std::bad_any_cast &e) {
@@ -120,8 +151,18 @@ void AnimatorHandler::performSetScaleAnimTarget(const ScaleAnimTargetType type,
 
 void AnimatorHandler::performLoadAnimPath(const std::any &args) {
   try {
-    auto path = *std::any_cast<std::vector<Point>*>(args);
+    auto &path = * (std::any_cast<std::vector<Point>*>(args));
     _pathAnimator.loadPath(path);
+  } catch (const std::bad_any_cast &e) {
+    LOGERR("any_cast throwed: %s", e.what());
+  }
+}
+
+void AnimatorHandler::performUpdateMenuMoveAnimContent(const std::any &args) {
+  try {
+    const auto &widgets = * (std::any_cast<const std::vector<const Widget*>*>(
+        args));
+    _menuMoveAnimator.updateAnimContent(widgets);
   } catch (const std::bad_any_cast &e) {
     LOGERR("any_cast throwed: %s", e.what());
   }
@@ -142,12 +183,21 @@ void AnimatorHandler::onAnimFinished(const AnimType type) {
     break;
 
   case AnimType::SPEECH_ANIM:
-    _gameInterface->onEndAnimFinished();
+    _gameInterface->onAnimFinished(AnimType::SPEECH_ANIM);
+    break;
+
+  case AnimType::MENU_OPEN_MOVE_ANIM:
+    _gameInterface->onAnimFinished(AnimType::MENU_OPEN_MOVE_ANIM);
+    break;
+
+  case AnimType::MENU_CLOSE_MOVE_ANIM:
+    _gameInterface->onAnimFinished(AnimType::MENU_CLOSE_MOVE_ANIM);
     break;
 
   default:
     LOGERR("Error, received unknown AnimEvent type: %d",
-        getEnumClassValue(type));
+        getEnumClassValue(type))
+    ;
     break;
   }
 }

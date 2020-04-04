@@ -31,12 +31,17 @@ public:
 
   /** @brief used to create an empty FBO with the given params.
    *
-   *  @param const Point & - starting coordinate for the FBO
+   *  @param const int32_t - starting X coordinate for the FBO
+   *  @param const int32_t - starting Y coordinate for the FBO
    *  @param const int32_t - width for the FBO (final texture)
    *  @param const int32_t - height for the FBO (final texture)
    * */
-  void create(const Point &startPoint, const int32_t FBOWidth,
-              const int32_t FBOHeight);
+  void create(const int32_t startPosX, const int32_t startPosY,
+              const int32_t FBOWidth,  const int32_t FBOHeight);
+
+  inline void create(const Rectangle & FBODimensions) {
+    create(FBODimensions.x, FBODimensions.y, FBODimensions.w, FBODimensions.h);
+  }
 
   /** @brief used to destroy the FBO
    * */

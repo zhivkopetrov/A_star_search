@@ -10,8 +10,8 @@
 
 //Own components headers
 #include "gameentities/proxies/AnimatorHandlerProxyInterface.hpp"
+#include "gameentities/proxies/GridContainerProxyInterface.hpp"
 #include "common/CommonDefines.h"
-#include "gameentities/GridContainer.h"
 #include "utils/LimitValues.hpp"
 #include "utils/Log.h"
 

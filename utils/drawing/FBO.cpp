@@ -29,8 +29,8 @@ FBO::~FBO() {
   }
 }
 
-void FBO::create(const Point &startPoint, const int32_t FBOWidth,
-                 const int32_t FBOHeight) {
+void FBO::create(const int32_t startPosX, const int32_t startPosY,
+                 const int32_t FBOWidth,  const int32_t FBOHeight) {
   if (_isCreated) {
     LOGERR("Warning, trying to create a FBO that was already created!");
   } else {
@@ -38,7 +38,8 @@ void FBO::create(const Point &startPoint, const int32_t FBOWidth,
     _isCreated = true;
     _isDestroyed = false;
 
-    _drawParams.pos = startPoint;
+    _drawParams.pos.x = startPosX;
+    _drawParams.pos.y = startPosY;
     _drawParams.width = FBOWidth;
     _drawParams.height = FBOHeight;
     _drawParams.frameRect.x = 0;

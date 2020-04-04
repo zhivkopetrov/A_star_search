@@ -88,7 +88,7 @@ void Game::handleEvent(const InputEvent &e) {
     }
   }
 
-  if(_optionSelector.handleEvent(e)) {
+  if (_optionSelector.handleEvent(e)) {
     return;
   }
   _gridContainer.handleEvent(e);
@@ -115,7 +115,8 @@ void Game::onNodeChanged(const NodeType nodeType, const Point &nodePos) {
     break;
 
   default:
-    LOGERR("Error, received unknown NodeType: %d", getEnumClassValue(nodeType));
+    LOGERR("Error, received unknown NodeType: %hhu", getEnumClassValue(nodeType))
+    ;
     break;
   }
 }
@@ -135,23 +136,47 @@ void Game::evaluateAStar() {
   }
 }
 
-void Game::onEndAnimFinished() {
-  _gridContainer.clearGrid();
+void Game::onAnimFinished(const AnimType animType) {
+  if (AnimType::SPEECH_ANIM == animType) {
+    _gridContainer.clearGrid();
+  } else if (AnimType::MENU_OPEN_MOVE_ANIM == animType) {
+    _optionSelector.onMoveAnimFinished(OptionAnimStatus::END_OPEN_ANIM);
+  } else if (AnimType::MENU_CLOSE_MOVE_ANIM == animType) {
+    _optionSelector.onMoveAnimFinished(OptionAnimStatus::END_CLOSE_ANIM);
+  } else {
+    LOGERR("Error, should not receive AnimType: %hhu here",
+        getEnumClassValue(animType)) ;
+  }
 }
 
 void Game::onOptionChanged(const Option option, const std::any &value) {
   switch (option) {
-    case Option::DIAGONAL_MOVEMENT:
-      _pathGenerator.changeDiagonalOption(value);
-      break;
+  case Option::DIAGONAL_MOVEMENT:
+    _pathGenerator.changeDiagonalOption(value);
+    break;
 
-    case Option::LEVEL_CHANGE:
-      _obstacleHandler.changeLevel(value);
-      break;
+  case Option::LEVEL_CHANGE:
+    _obstacleHandler.changeLevel(value);
+    break;
 
-    default:
-      LOGERR("Error, received unknown Option: %d", getEnumClassValue(option));
-      break;
+  default:
+    LOGERR("Error, received unknown Option: %hhu", getEnumClassValue(option))
+    ;
+    break;
+  }
+}
+
+void Game::onOptionAnimStatusChange(const OptionAnimStatus type) {
+  if (OptionAnimStatus::START_OPEN_ANIM == type) {
+    _animHandler.perform(AnimEvent::START_OPEN_MENU_ANIM);
+  } else if (OptionAnimStatus::START_CLOSE_ANIM == type) {
+    _animHandler.perform(AnimEvent::START_CLOSE_MENU_ANIM);
+  } else if (OptionAnimStatus::UPDATE_ANIM_CONTENT == type) {
+    const auto widgetState = _optionSelector.getWidgetsState();
+    _animHandler.perform(AnimEvent::UPDATE_MENU_ANIM_CONTENT, &widgetState);
+  } else {
+    LOGERR("Error, received unknown OptionAnimType: %hhu",
+        getEnumClassValue(type));
   }
 }
 

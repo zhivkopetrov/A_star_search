@@ -8,6 +8,7 @@
 #include <unordered_map>
 #include <any>
 #include <array>
+#include <vector>
 
 //Other libraries headers
 
@@ -36,6 +37,10 @@ public:
 
   void setOption(const Option option, const std::any &value);
 
+  std::vector<const Widget *> getWidgetsState() const;
+
+  void onMoveAnimFinished(const OptionAnimStatus type);
+
 private:
   virtual void onMenuButtonClicked(const MenuButtonType buttonType)
     override final;
@@ -47,22 +52,18 @@ private:
     TOGGLE_MENU_IDX = 0,
     ALLOW_DIAGONAL_IDX = 3,
     FORBID_DIAGONAL_IDX = 4,
-    BUTTONS_COUNT = 5,
-
-    MENU_X = 1510,
-    MENY_Y = 25,
-    MENU_OFFSET_X = 325
+    BUTTONS_COUNT = 5
   };
 
   std::unordered_map<Option, std::any> _options;
 
   GameProxyInterface *_gameInterface;
 
-  //TODO add animators
   std::array<MenuButton, BUTTONS_COUNT> _buttons;
   Image _menuImg;
 
   bool _isMenuActive;
+  bool _isBeingAnimated;
 };
 
 #endif /* GAMEENTITIES_OPTIONSMENU_OPTIONSELECTOR_H_ */

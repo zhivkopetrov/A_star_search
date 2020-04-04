@@ -15,7 +15,7 @@
 #include "utils/Log.h"
 
 OptionSelector::OptionSelector()
-    : _gameInterface(nullptr), _isMenuActive(false) {
+    : _gameInterface(nullptr), _isMenuActive(false), _isBeingAnimated(false) {
 
 }
 
@@ -23,14 +23,20 @@ int32_t OptionSelector::init(GameProxyInterface *gameInterface) {
   _gameInterface = gameInterface;
 
   _menuImg.create(Textures::MENU);
-  _menuImg.setPosition(MENU_X, MENY_Y);
+  _menuImg.setPosition(OptionMenuDimensions::MENU_X,
+      OptionMenuDimensions::MENU_Y);
 
-  const MenuButtonCfg buttonCfgs[BUTTONS_COUNT] {
-    { this, Point(MENU_X, MENY_Y), Textures::MENU_SETTINGS, MenuButtonType::TOGGLE_MENU },
-    { this, Point(MENU_X + 200, MENY_Y + 114), Textures::MENU_PLUS, MenuButtonType::INCREASE },
-    { this, Point(MENU_X + 320, MENY_Y + 114), Textures::MENU_MINUS, MenuButtonType::DECREASE },
-    { this, Point(MENU_X + 320, MENY_Y + 20), Textures::MENU_CHECK,  MenuButtonType::ALLOW_DIAGONAL },
-    { this, Point(MENU_X + 320, MENY_Y + 20), Textures::MENU_CROSS,  MenuButtonType::FORBID_DIAGONAL } };
+  const MenuButtonCfg buttonCfgs[BUTTONS_COUNT] { { this, Point(
+      OptionMenuDimensions::MENU_X, OptionMenuDimensions::MENU_Y),
+      Textures::MENU_SETTINGS, MenuButtonType::TOGGLE_MENU }, { this, Point(
+      OptionMenuDimensions::MENU_X + 200, OptionMenuDimensions::MENU_Y + 114),
+      Textures::MENU_PLUS, MenuButtonType::INCREASE }, { this, Point(
+      OptionMenuDimensions::MENU_X + 320, OptionMenuDimensions::MENU_Y + 114),
+      Textures::MENU_MINUS, MenuButtonType::DECREASE }, { this, Point(
+      OptionMenuDimensions::MENU_X + 320, OptionMenuDimensions::MENU_Y + 20),
+      Textures::MENU_CHECK, MenuButtonType::ALLOW_DIAGONAL }, { this, Point(
+      OptionMenuDimensions::MENU_X + 320, OptionMenuDimensions::MENU_Y + 20),
+      Textures::MENU_CROSS, MenuButtonType::FORBID_DIAGONAL } };
 
   for (int32_t i = 0; i < BUTTONS_COUNT; ++i) {
     if (_buttons[i].init(buttonCfgs[i])) {
@@ -39,7 +45,8 @@ int32_t OptionSelector::init(GameProxyInterface *gameInterface) {
     }
   }
 
-  deactivateMenu();
+  _buttons[TOGGLE_MENU_IDX].moveRight(OptionMenuDimensions::MENU_OFFSET_X);
+  _menuImg.moveRight(OptionMenuDimensions::MENU_OFFSET_X);
   _buttons[ALLOW_DIAGONAL_IDX].lockInput();
   _buttons[ALLOW_DIAGONAL_IDX].hide();
 
@@ -47,6 +54,10 @@ int32_t OptionSelector::init(GameProxyInterface *gameInterface) {
 }
 
 void OptionSelector::draw() {
+  if (_isBeingAnimated) {
+    return;
+  }
+
   if (_isMenuActive) {
     _menuImg.draw();
     for (auto &button : _buttons) {
@@ -86,6 +97,30 @@ bool OptionSelector::handleEvent(const InputEvent &e) {
 void OptionSelector::setOption(const Option option, const std::any &value) {
   _options[option] = value;
   _gameInterface->onOptionChanged(option, value);
+}
+
+std::vector<const Widget*> OptionSelector::getWidgetsState() const {
+  std::vector<const Widget*> widgets;
+  widgets.reserve(BUTTONS_COUNT + 1);
+  widgets.push_back(&_menuImg);
+  for (const auto &button : _buttons) {
+    widgets.push_back(& (button.getButtonImage()));
+  }
+
+  return widgets;
+}
+
+void OptionSelector::onMoveAnimFinished(const OptionAnimStatus type) {
+  _isBeingAnimated = false;
+
+  if (OptionAnimStatus::END_OPEN_ANIM == type) {
+    _isMenuActive = true;
+  } else if (OptionAnimStatus::END_CLOSE_ANIM == type) {
+    _isMenuActive = false;
+  } else {
+    LOGERR("Error, received unknown OptionAnimType: %hhu",
+        getEnumClassValue(type));
+  }
 }
 
 void OptionSelector::onMenuButtonClicked(const MenuButtonType buttonType) {
@@ -129,16 +164,28 @@ void OptionSelector::onMenuButtonClicked(const MenuButtonType buttonType) {
 }
 
 void OptionSelector::activateMenu() {
-  _isMenuActive = true;
-  _buttons[TOGGLE_MENU_IDX].moveLeft(MENU_OFFSET_X);
+  _isBeingAnimated = true;
 
-  _menuImg.moveLeft(MENU_OFFSET_X);
+  //first move the button and menu background image so they can be "baked" into
+  //the FBO
+  _buttons[TOGGLE_MENU_IDX].moveLeft(OptionMenuDimensions::MENU_OFFSET_X);
+  _menuImg.moveLeft(OptionMenuDimensions::MENU_OFFSET_X);
+
+  _gameInterface->onOptionAnimStatusChange(
+      OptionAnimStatus::UPDATE_ANIM_CONTENT);
+  _gameInterface->onOptionAnimStatusChange(OptionAnimStatus::START_OPEN_ANIM);
 }
 
 void OptionSelector::deactivateMenu() {
-  _isMenuActive = false;
-  _buttons[TOGGLE_MENU_IDX].moveRight(MENU_OFFSET_X);
+  _isBeingAnimated = true;
 
-  _menuImg.moveRight(MENU_OFFSET_X);
+  //first "bake" the button and menu background image into the FBO
+  _gameInterface->onOptionAnimStatusChange(
+      OptionAnimStatus::UPDATE_ANIM_CONTENT);
+  _gameInterface->onOptionAnimStatusChange(OptionAnimStatus::START_CLOSE_ANIM);
+
+  //the move them
+  _buttons[TOGGLE_MENU_IDX].moveRight(OptionMenuDimensions::MENU_OFFSET_X);
+  _menuImg.moveRight(OptionMenuDimensions::MENU_OFFSET_X);
 }
 

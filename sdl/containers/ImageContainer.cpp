@@ -141,10 +141,8 @@ void ImageContainer::populateTextureFrameRects(const int32_t windowWidth,
   _textureFrameRects[Textures::LOSE_DIALOG][0].h =
       SpeechDimensions::LOSE_DIALOG_HEIGHT;
 
-  constexpr int32_t menuWidth = 400;
-  constexpr int32_t menuHeight = 200;
-  _textureFrameRects[Textures::MENU][0].w = menuWidth;
-  _textureFrameRects[Textures::MENU][0].h = menuHeight;
+  _textureFrameRects[Textures::MENU][0].w = OptionMenuDimensions::MENU_WIDTH;
+  _textureFrameRects[Textures::MENU][0].h = OptionMenuDimensions::MENU_HEIGHT;
 
   constexpr int32_t buttonFrames = 2;
   constexpr int32_t buttonFrameDimension = 66;

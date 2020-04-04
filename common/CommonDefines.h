@@ -52,15 +52,12 @@ enum {
 
 namespace Grid {
 enum {
-  GRID_HEIGHT = 9,
-  GRID_WIDTH = 16,
+  GRID_HEIGHT = 9, GRID_WIDTH = 16,
 
-  TILE_DIMENSION = 115,
-  LINE_OFFSET = 5,
-  TILE_OFFSET = LINE_OFFSET + TILE_DIMENSION,
+  TILE_DIMENSION = 115, LINE_OFFSET = 5, TILE_OFFSET = LINE_OFFSET
+      + TILE_DIMENSION,
 
-  OBSTACLE_LEVELS = 4,
-  OBSTACLES_TYPE_COUNT = 5
+  OBSTACLE_LEVELS = 4, OBSTACLES_TYPE_COUNT = 5
 };
 } //namespace Grid
 
@@ -77,9 +74,7 @@ enum {
 
 namespace Timers {
 enum {
-  PATH_TIMER_ID,
-  SCALE_TIMER_ID,
-  SPEECH_WAIT_TIMER_ID
+  PATH_TIMER_ID, SCALE_TIMER_ID, SPEECH_WAIT_TIMER_ID, MENU_MOVE_ANIM_TIMER_ID
 };
 } //namespace Timers
 
@@ -104,9 +99,40 @@ enum {
 };
 } //namespace BatmanDimensions
 
+namespace OptionMenuDimensions {
+enum {
+  MENU_X = 1510,
+  MENU_Y = 25,
+  MENU_WIDTH = 400,
+  MENU_HEIGHT = 200,
+  MENU_OFFSET_X = 330
+};
+} //namespace OptionMenuDimensions
+
+enum class NodeType : uint8_t {
+  WALL_ADD = 0, NODE_REMOVE, START_CHANGE, END_CHANGE
+};
+
+enum class AnimType : uint8_t {
+  DOWNSCALE_ANIM,
+  UPSCALE_ANIM,
+  PATH_ANIM,
+  SPEECH_ANIM,
+  MENU_OPEN_MOVE_ANIM,
+  MENU_CLOSE_MOVE_ANIM
+};
+
 enum class Option : uint8_t {
-  DIAGONAL_MOVEMENT,
-  LEVEL_CHANGE
+  DIAGONAL_MOVEMENT, LEVEL_CHANGE
+};
+
+enum class OptionAnimStatus : uint8_t {
+  UNKNOWN,
+  START_OPEN_ANIM,
+  END_OPEN_ANIM,
+  END_CLOSE_ANIM,
+  START_CLOSE_ANIM,
+  UPDATE_ANIM_CONTENT
 };
 
 #endif /* COMMON_COMMONDEFINES_H_ */

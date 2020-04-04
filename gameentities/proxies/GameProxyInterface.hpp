@@ -16,9 +16,7 @@
 
 //Forward declarations
 
-enum class NodeType {
-  WALL_ADD = 0, NODE_REMOVE, START_CHANGE, END_CHANGE
-};
+
 
 class GameProxyInterface {
 public:
@@ -27,10 +25,12 @@ public:
 
   virtual void onNodeChanged(const NodeType nodeType, const Point &nodePos) = 0;
 
-  virtual void onEndAnimFinished() = 0;
+  virtual void onAnimFinished(const AnimType animType) = 0;
 
   virtual void onOptionChanged(const Option option,
                                const std::any &value) = 0;
+
+  virtual void onOptionAnimStatusChange(const OptionAnimStatus type) = 0;
 };
 
 #endif /* GAMEENTITIES_PROXIES_GAMEPROXYINTERFACE_HPP_ */

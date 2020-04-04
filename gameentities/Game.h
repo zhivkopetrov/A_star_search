@@ -38,10 +38,13 @@ private:
   virtual void onNodeChanged(const NodeType nodeType, const Point &nodePosY)
       override final;
 
-  virtual void onEndAnimFinished() override final;
+  virtual void onAnimFinished(const AnimType animType) override final;
 
-  virtual void onOptionChanged(const Option option,
-                               const std::any &value) override final;
+  virtual void onOptionChanged(const Option option, const std::any &value)
+      override final;
+
+  virtual void onOptionAnimStatusChange(const OptionAnimStatus type)
+      override final;
 
   PathGenerator _pathGenerator;
 

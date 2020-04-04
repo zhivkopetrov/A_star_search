@@ -127,7 +127,7 @@ public:
   }
 
   //Used by Graphics's drawWidget functionalities
-  inline Image& operator()() {
+  inline const Image& getButtonImage() const {
     return _buttonTexture;
   }
 

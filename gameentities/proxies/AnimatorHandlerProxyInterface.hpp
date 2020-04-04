@@ -8,15 +8,9 @@
 //Other libraries headers
 
 //Own components headers
+#include "common/CommonDefines.h"
 
 //Forward declarations
-
-enum class AnimType {
-  DOWNSCALE_ANIM,
-  UPSCALE_ANIM,
-  PATH_ANIM,
-  SPEECH_ANIM
-};
 
 class AnimatorHandlerProxyInterface {
 public:
