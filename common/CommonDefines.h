@@ -101,7 +101,7 @@ enum {
 
 namespace OptionMenuDimensions {
 enum {
-  MENU_X = 1510,
+  MENU_X = 1520,
   MENU_Y = 25,
   MENU_WIDTH = 400,
   MENU_HEIGHT = 200,

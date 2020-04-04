@@ -80,6 +80,7 @@ extern const Color MAGENTA;
 extern const Color YELLOW;
 extern const Color ORANGE;
 extern const Color PURPLE;
+extern const Color DARK_OCHRID;
 extern const Color DARK_GREEN;
 extern const Color CARAMEL_GOLD;
 extern const Color FULL_TRANSPARENT;

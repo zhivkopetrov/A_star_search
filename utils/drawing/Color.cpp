@@ -21,6 +21,7 @@ const Color MAGENTA(255, 0, 255, 255);
 const Color YELLOW(255, 255, 0, 255);
 const Color ORANGE(255, 128, 0, 255);
 const Color PURPLE(128, 0, 128, 255);
+const Color DARK_OCHRID(153, 50, 204, 255);
 const Color DARK_GREEN(6, 65, 14, 255);
 const Color CARAMEL_GOLD(254, 213, 151, 255);
 const Color FULL_TRANSPARENT(0, 0, 0, 0);

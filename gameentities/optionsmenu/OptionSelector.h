@@ -17,7 +17,7 @@
 #include "gameentities/proxies/OptionSelecterProxyInterface.hpp"
 #include "common/CommonDefines.h"
 #include "utils/drawing/Image.h"
-
+#include "utils/drawing/Text.h"
 
 //Forward declarations
 class GameProxyInterface;
@@ -41,6 +41,8 @@ public:
 
   void onMoveAnimFinished(const OptionAnimStatus type);
 
+  void setTextLevelId(const int32_t levelId);
+
 private:
   virtual void onMenuButtonClicked(const MenuButtonType buttonType)
     override final;
@@ -48,11 +50,24 @@ private:
   void activateMenu();
   void deactivateMenu();
 
-  enum InternalDefines {
-    TOGGLE_MENU_IDX = 0,
-    ALLOW_DIAGONAL_IDX = 3,
-    FORBID_DIAGONAL_IDX = 4,
-    BUTTONS_COUNT = 5
+  void centerLevelValueText();
+
+  enum MenuButtonDefines {
+    TOGGLE_MENU_IDX,
+    INCR_LEVEL_IDX,
+    DECR_LEVEL_IDX,
+    ALLOW_DIAGONAL_IDX,
+    FORBID_DIAGONAL_IDX,
+
+    BUTTONS_COUNT
+  };
+
+  enum TextDefines {
+    DIAGONAL_TEXT_IDX,
+    LEVEL_TEXT_IDX,
+    LEVEL_NUMBER_TEXT_IDX,
+
+    TEXTS_COUNT
   };
 
   std::unordered_map<Option, std::any> _options;
@@ -61,6 +76,8 @@ private:
 
   std::array<MenuButton, BUTTONS_COUNT> _buttons;
   Image _menuImg;
+
+  std::array<Text, TEXTS_COUNT> _texts;
 
   bool _isMenuActive;
   bool _isBeingAnimated;

@@ -35,6 +35,10 @@ public:
     _addedObstacles.clear();
   }
 
+  int32_t getCurrLevelId() const {
+    return _currLoadedLevelId;
+  }
+
   void removeObstacle(const Point &nodePos);
 
 private:

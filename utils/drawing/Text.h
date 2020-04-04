@@ -5,6 +5,7 @@
 
 //C++ system headers
 #include <cstdint>
+#include <string>
 
 //Other libraries headers
 
@@ -33,16 +34,26 @@ public:
 
   void setText(const char *text);
 
+  /** Warning: this method will destroy the text and
+   *           recreate it with the new color
+   * */
+  void setColor(const Color& color);
+
   void destroy();
 
+  inline std::string getTextContent() const {
+    return _textContent;
+  }
+
 private:
+  std::string _textContent;
   Color _color;
   int32_t _fontSize;
 
   /* used in order to check if resource was destroyed ->
    *                                              not to destroy it twice
    */
-  bool    _isDestroyed;
+  bool _isDestroyed;
 };
 
 #endif /* UTILS_DRAWING_TEXT_H_ */

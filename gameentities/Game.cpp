@@ -157,6 +157,7 @@ void Game::onOptionChanged(const Option option, const std::any &value) {
 
   case Option::LEVEL_CHANGE:
     _obstacleHandler.changeLevel(value);
+    _optionSelector.setTextLevelId(_obstacleHandler.getCurrLevelId());
     break;
 
   default:

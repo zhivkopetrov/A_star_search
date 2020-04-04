@@ -29,13 +29,13 @@ int32_t OptionSelector::init(GameProxyInterface *gameInterface) {
   const MenuButtonCfg buttonCfgs[BUTTONS_COUNT] { { this, Point(
       OptionMenuDimensions::MENU_X, OptionMenuDimensions::MENU_Y),
       Textures::MENU_SETTINGS, MenuButtonType::TOGGLE_MENU }, { this, Point(
-      OptionMenuDimensions::MENU_X + 200, OptionMenuDimensions::MENU_Y + 114),
+      OptionMenuDimensions::MENU_X + 195, OptionMenuDimensions::MENU_Y + 124),
       Textures::MENU_PLUS, MenuButtonType::INCREASE }, { this, Point(
-      OptionMenuDimensions::MENU_X + 320, OptionMenuDimensions::MENU_Y + 114),
+      OptionMenuDimensions::MENU_X + 320, OptionMenuDimensions::MENU_Y + 124),
       Textures::MENU_MINUS, MenuButtonType::DECREASE }, { this, Point(
-      OptionMenuDimensions::MENU_X + 320, OptionMenuDimensions::MENU_Y + 20),
+      OptionMenuDimensions::MENU_X + 320, OptionMenuDimensions::MENU_Y + 40),
       Textures::MENU_CHECK, MenuButtonType::ALLOW_DIAGONAL }, { this, Point(
-      OptionMenuDimensions::MENU_X + 320, OptionMenuDimensions::MENU_Y + 20),
+      OptionMenuDimensions::MENU_X + 320, OptionMenuDimensions::MENU_Y + 40),
       Textures::MENU_CROSS, MenuButtonType::FORBID_DIAGONAL } };
 
   for (int32_t i = 0; i < BUTTONS_COUNT; ++i) {
@@ -47,8 +47,21 @@ int32_t OptionSelector::init(GameProxyInterface *gameInterface) {
 
   _buttons[TOGGLE_MENU_IDX].moveRight(OptionMenuDimensions::MENU_OFFSET_X);
   _menuImg.moveRight(OptionMenuDimensions::MENU_OFFSET_X);
-  _buttons[ALLOW_DIAGONAL_IDX].lockInput();
-  _buttons[ALLOW_DIAGONAL_IDX].hide();
+  _buttons[FORBID_DIAGONAL_IDX].lockInput();
+  _buttons[FORBID_DIAGONAL_IDX].hide();
+
+  _texts[DIAGONAL_TEXT_IDX].create(
+      Point(OptionMenuDimensions::MENU_X + 70,
+          OptionMenuDimensions::MENU_Y + 50), "Diagonal", Colors::RED,
+      FontSize::SMALL);
+  _texts[LEVEL_TEXT_IDX].create(
+      Point(OptionMenuDimensions::MENU_X + 20,
+          OptionMenuDimensions::MENU_Y + 135), "Level", Colors::DARK_OCHRID,
+      FontSize::SMALL);
+  _texts[LEVEL_NUMBER_TEXT_IDX].create(
+      Point(OptionMenuDimensions::MENU_X + 280,
+          OptionMenuDimensions::MENU_Y + 135), "1", Colors::DARK_OCHRID,
+      FontSize::SMALL);
 
   return EXIT_SUCCESS;
 }
@@ -62,6 +75,9 @@ void OptionSelector::draw() {
     _menuImg.draw();
     for (auto &button : _buttons) {
       button.draw();
+    }
+    for (auto &text : _texts) {
+      text.draw();
     }
   } else {
     _menuImg.draw();
@@ -101,10 +117,15 @@ void OptionSelector::setOption(const Option option, const std::any &value) {
 
 std::vector<const Widget*> OptionSelector::getWidgetsState() const {
   std::vector<const Widget*> widgets;
-  widgets.reserve(BUTTONS_COUNT + 1);
+  widgets.reserve(BUTTONS_COUNT + TEXTS_COUNT);
   widgets.push_back(&_menuImg);
   for (const auto &button : _buttons) {
-    widgets.push_back(& (button.getButtonImage()));
+    if (button.isVisible()) {
+      widgets.push_back(& (button.getButtonImage()));
+    }
+  }
+  for (const auto &text : _texts) {
+    widgets.push_back(&text);
   }
 
   return widgets;
@@ -121,6 +142,11 @@ void OptionSelector::onMoveAnimFinished(const OptionAnimStatus type) {
     LOGERR("Error, received unknown OptionAnimType: %hhu",
         getEnumClassValue(type));
   }
+}
+
+void OptionSelector::setTextLevelId(const int32_t levelId) {
+  _texts[LEVEL_NUMBER_TEXT_IDX].setText(std::to_string(levelId + 1).c_str());
+  centerLevelValueText();
 }
 
 void OptionSelector::onMenuButtonClicked(const MenuButtonType buttonType) {
@@ -145,6 +171,7 @@ void OptionSelector::onMenuButtonClicked(const MenuButtonType buttonType) {
     _buttons[ALLOW_DIAGONAL_IDX].hide();
     _buttons[FORBID_DIAGONAL_IDX].unlockInput();
     _buttons[FORBID_DIAGONAL_IDX].show();
+    _texts[DIAGONAL_TEXT_IDX].setColor(Colors::GREEN);
     setOption(Option::DIAGONAL_MOVEMENT, true);
     break;
 
@@ -153,6 +180,7 @@ void OptionSelector::onMenuButtonClicked(const MenuButtonType buttonType) {
     _buttons[ALLOW_DIAGONAL_IDX].show();
     _buttons[FORBID_DIAGONAL_IDX].lockInput();
     _buttons[FORBID_DIAGONAL_IDX].hide();
+    _texts[DIAGONAL_TEXT_IDX].setColor(Colors::RED);
     setOption(Option::DIAGONAL_MOVEMENT, false);
     break;
 
@@ -187,5 +215,14 @@ void OptionSelector::deactivateMenu() {
   //the move them
   _buttons[TOGGLE_MENU_IDX].moveRight(OptionMenuDimensions::MENU_OFFSET_X);
   _menuImg.moveRight(OptionMenuDimensions::MENU_OFFSET_X);
+}
+
+void OptionSelector::centerLevelValueText() {
+  const int32_t leftBound =
+      _buttons[INCR_LEVEL_IDX].getX() + _buttons[INCR_LEVEL_IDX].getWidth();
+  const int32_t rightBound = _buttons[DECR_LEVEL_IDX].getX();
+  const int32_t targetOffsetX =
+      (rightBound - leftBound - _texts[LEVEL_NUMBER_TEXT_IDX].getWidth()) / 2;
+  _texts[LEVEL_NUMBER_TEXT_IDX].setX(leftBound + targetOffsetX);
 }
 
