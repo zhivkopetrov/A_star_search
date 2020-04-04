@@ -105,7 +105,9 @@ enum {
   MENU_Y = 25,
   MENU_WIDTH = 400,
   MENU_HEIGHT = 200,
-  MENU_OFFSET_X = 330
+  MENU_OFFSET_X = 330,
+
+  CLOSED_MENU_OPACITY = 90
 };
 } //namespace OptionMenuDimensions
 

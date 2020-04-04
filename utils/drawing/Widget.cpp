@@ -80,11 +80,19 @@ void Widget::deactivateAlphaModulation() {
 }
 
 void Widget::setOpacity(const int32_t opacity) {
+  if (!_isAlphaModulationEnabled) {
+    LOGERR("Error, alpha modulation was not enabled for Widget with Id: %d",
+        _drawParams.rsrcId);
+    return;
+  }
+
   if(ZERO_OPACITY > opacity || FULL_OPACITY < opacity) {
     LOGERR("Error, opacity can only be in the range 0-255 while %d is provided "
         "for widget with ID: %d", opacity, _drawParams.rsrcId);
     return;
   }
+
+  _drawParams.opacity = opacity;
 
   //WidgetType::IMAGE gets their opacity set in the actual draw cycle
   if (WidgetType::IMAGE != _drawParams.widgetType) {

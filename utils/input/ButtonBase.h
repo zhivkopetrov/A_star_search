@@ -45,7 +45,7 @@ class InputEvent;
 
 class ButtonBase: public TouchEntity {
 public:
-  enum ButtonStates : uint8_t {
+  enum ButtonStates {
     UNCLICKED, CLICKED, DISABLED
   };
 
@@ -126,7 +126,6 @@ public:
     _buttonTexture.draw();
   }
 
-  //Used by Graphics's drawWidget functionalities
   inline const Image& getButtonImage() const {
     return _buttonTexture;
   }
@@ -157,8 +156,12 @@ public:
     _buttonTexture.setY(y);
   }
 
-  inline void setFrame(const uint8_t frameIndex) {
+  inline void setFrame(const int32_t frameIndex) {
     _buttonTexture.setFrame(frameIndex);
+  }
+
+  inline void setOpacity(const int32_t opacity) {
+    _buttonTexture.setOpacity(opacity);
   }
 
   inline void moveDown(const int32_t y) {
@@ -201,6 +204,10 @@ public:
     return _originalEventRect.h;
   }
 
+  int32_t getOpacity() const {
+    return _buttonTexture.getOpacity();
+  }
+
   Rectangle getButtonEventRect() const;
 
   inline void hide() {
@@ -239,6 +246,14 @@ public:
    * */
   inline bool isEventCaptureRectSet() const {
     return _isCaptureEventRectSet;
+  }
+
+  inline void activateAlphaModulation() {
+    _buttonTexture.activateAlphaModulation();
+  }
+
+  inline void deactivateAlphaModulation() {
+    _buttonTexture.deactivateAlphaModulation();
   }
 
 private:

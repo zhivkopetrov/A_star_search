@@ -25,6 +25,7 @@ int32_t OptionSelector::init(GameProxyInterface *gameInterface) {
   _menuImg.create(Textures::MENU);
   _menuImg.setPosition(OptionMenuDimensions::MENU_X,
       OptionMenuDimensions::MENU_Y);
+  _menuImg.activateAlphaModulation();
 
   const MenuButtonCfg buttonCfgs[BUTTONS_COUNT] { { this, Point(
       OptionMenuDimensions::MENU_X, OptionMenuDimensions::MENU_Y),
@@ -34,9 +35,9 @@ int32_t OptionSelector::init(GameProxyInterface *gameInterface) {
       OptionMenuDimensions::MENU_X + 320, OptionMenuDimensions::MENU_Y + 124),
       Textures::MENU_MINUS, MenuButtonType::DECREASE }, { this, Point(
       OptionMenuDimensions::MENU_X + 320, OptionMenuDimensions::MENU_Y + 40),
-      Textures::MENU_CHECK, MenuButtonType::ALLOW_DIAGONAL }, { this, Point(
+      Textures::MENU_CROSS, MenuButtonType::ALLOW_DIAGONAL }, { this, Point(
       OptionMenuDimensions::MENU_X + 320, OptionMenuDimensions::MENU_Y + 40),
-      Textures::MENU_CROSS, MenuButtonType::FORBID_DIAGONAL } };
+      Textures::MENU_CHECK, MenuButtonType::FORBID_DIAGONAL } };
 
   for (int32_t i = 0; i < BUTTONS_COUNT; ++i) {
     if (_buttons[i].init(buttonCfgs[i])) {
@@ -45,6 +46,7 @@ int32_t OptionSelector::init(GameProxyInterface *gameInterface) {
     }
   }
 
+  _buttons[TOGGLE_MENU_IDX].activateAlphaModulation();
   _buttons[TOGGLE_MENU_IDX].moveRight(OptionMenuDimensions::MENU_OFFSET_X);
   _menuImg.moveRight(OptionMenuDimensions::MENU_OFFSET_X);
   _buttons[FORBID_DIAGONAL_IDX].lockInput();
@@ -119,7 +121,7 @@ std::vector<const Widget*> OptionSelector::getWidgetsState() const {
   std::vector<const Widget*> widgets;
   widgets.reserve(BUTTONS_COUNT + TEXTS_COUNT);
   widgets.push_back(&_menuImg);
-  for (const auto &button : _buttons) {
+  for (auto &button : _buttons) {
     if (button.isVisible()) {
       widgets.push_back(& (button.getButtonImage()));
     }
@@ -194,6 +196,9 @@ void OptionSelector::onMenuButtonClicked(const MenuButtonType buttonType) {
 void OptionSelector::activateMenu() {
   _isBeingAnimated = true;
 
+  _buttons[TOGGLE_MENU_IDX].setOpacity(FULL_OPACITY);
+  _menuImg.setOpacity(FULL_OPACITY);
+
   //first move the button and menu background image so they can be "baked" into
   //the FBO
   _buttons[TOGGLE_MENU_IDX].moveLeft(OptionMenuDimensions::MENU_OFFSET_X);
@@ -211,6 +216,10 @@ void OptionSelector::deactivateMenu() {
   _gameInterface->onOptionAnimStatusChange(
       OptionAnimStatus::UPDATE_ANIM_CONTENT);
   _gameInterface->onOptionAnimStatusChange(OptionAnimStatus::START_CLOSE_ANIM);
+
+  _buttons[TOGGLE_MENU_IDX].setOpacity(
+      OptionMenuDimensions::CLOSED_MENU_OPACITY);
+  _menuImg.setOpacity(OptionMenuDimensions::CLOSED_MENU_OPACITY);
 
   //the move them
   _buttons[TOGGLE_MENU_IDX].moveRight(OptionMenuDimensions::MENU_OFFSET_X);
