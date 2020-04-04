@@ -145,6 +145,14 @@ public:
   void setWidgetBlendMode(const DrawParams &widgetInfo,
                           const BlendMode blendMode);
 
+  /** @brief used to change the target texture opacity (transparency)
+   *
+   * @param const DrawParams & - target widget
+   * @param const uint8_t      - target opacity
+   * */
+  void setWidgetOpacity(const DrawParams &widgetInfo,
+                        const uint8_t opacity);
+
   /** @brief used to limit the frame rate to a specific value.
    *         In order not to over burden the CPU, when the desired FPS
    *         is reached, the thread that executes the drawing is put

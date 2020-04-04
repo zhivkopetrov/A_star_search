@@ -13,7 +13,7 @@
 
 //default constructor
 Widget::Widget()
-    : _isCreated(false), _isVisible(true) {
+    : _isCreated(false), _isVisible(true), _isAlphaModulationEnabled(false) {
 
 }
 
@@ -57,9 +57,45 @@ bool Widget::containsPoint(const Point &point) const {
   return bounds.isPointInRect(point);
 }
 
+void Widget::activateAlphaModulation() {
+  if (_isAlphaModulationEnabled) {
+    LOGERR("Error, alpha modulation is already set for Widget with Id: %d",
+        _drawParams.rsrcId);
+    return;
+  }
+
+  _isAlphaModulationEnabled = true;
+  gDrawMgr->setWidgetBlendMode(_drawParams, BlendMode::BLEND);
+}
+
+void Widget::deactivateAlphaModulation() {
+  if (!_isAlphaModulationEnabled) {
+    LOGERR("Error, alpha modulation was not enabled for Widget with Id: %d",
+        _drawParams.rsrcId);
+    return;
+  }
+
+  _isAlphaModulationEnabled = false;
+  gDrawMgr->setWidgetBlendMode(_drawParams, BlendMode::NONE);
+}
+
+void Widget::setOpacity(const int32_t opacity) {
+  if(ZERO_OPACITY > opacity || FULL_OPACITY < opacity) {
+    LOGERR("Error, opacity can only be in the range 0-255 while %d is provided "
+        "for widget with ID: %d", opacity, _drawParams.rsrcId);
+    return;
+  }
+
+  //WidgetType::IMAGE gets their opacity set in the actual draw cycle
+  if (WidgetType::IMAGE != _drawParams.widgetType) {
+    gDrawMgr->setWidgetOpacity(_drawParams, static_cast<uint8_t>(opacity));
+  }
+}
+
 void Widget::reset() {
   _drawParams.reset();
   _isCreated = false;
   _isVisible = true;
 }
+
 

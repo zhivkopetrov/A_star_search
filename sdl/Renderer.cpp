@@ -187,18 +187,22 @@ void Renderer::updateCurrRendererTarget(const DrawParams drawParamsArr[],
 
 void Renderer::setWidgetBlendMode(const DrawParams &widgetInfo,
                                   const BlendMode blendMode) {
-  SDL_Texture * texture = nullptr;
-  if (WidgetType::IMAGE == widgetInfo.widgetType) {
-    texture = gRsrcMgr->getImageTexture(widgetInfo.rsrcId);
-  } else if (WidgetType::TEXT == widgetInfo.widgetType) {
-    texture = gRsrcMgr->getTextTexture(widgetInfo.textId);
-  } else { // (WidgetType::FBO == widgetInfo.widgetType){
-    texture = gRsrcMgr->getFBOTexture(widgetInfo.FBOId);
-  }
+  SDL_Texture * texture = getTargetTexture(widgetInfo);
 
   if (EXIT_SUCCESS !=
       Texture::setBlendMode(texture, getEnumClassValue(blendMode))) {
-    LOGERR("Error, Texture::setBlendMode() failed");
+    LOGERR("Error, Texture::setBlendMode() failed for widget with Id: %d",
+        widgetInfo.rsrcId);
+  }
+}
+
+void Renderer::setWidgetOpacity(const DrawParams &widgetInfo,
+                                const uint8_t opacity) {
+  SDL_Texture * texture = getTargetTexture(widgetInfo);
+
+  if (EXIT_SUCCESS != Texture::setAlpha(texture, opacity)) {
+    LOGERR("Error, Texture::setAlpha() failed for widget with Id: %d",
+        widgetInfo.rsrcId);
   }
 }
 
@@ -212,18 +216,15 @@ void Renderer::drawStoredWidgets(const DrawParams drawParamsArr[],
   for (size_t i = 0; i < size; ++i) {
     sourceQuad = { drawParamsArr[i].frameRect.x, drawParamsArr[i].frameRect.y,
                    drawParamsArr[i].frameRect.w, drawParamsArr[i].frameRect.h };
+    renderQuad = { drawParamsArr[i].pos.x, drawParamsArr[i].pos.y,
+                   drawParamsArr[i].width, drawParamsArr[i].height };
 
-    renderQuad.x = drawParamsArr[i].pos.x;
-    renderQuad.y = drawParamsArr[i].pos.y;
-    renderQuad.w = drawParamsArr[i].width;
-    renderQuad.h = drawParamsArr[i].height;
-
+    texture = getTargetTexture(drawParamsArr[i]);
+    //images have additional pre-draw and post-draw evaluations
     if (WidgetType::IMAGE == drawParamsArr[i].widgetType) {
-      texture = gRsrcMgr->getImageTexture(drawParamsArr[i].rsrcId);
-    } else if (WidgetType::TEXT == drawParamsArr[i].widgetType) {
-      texture = gRsrcMgr->getTextTexture(drawParamsArr[i].textId);
-    } else { // (WidgetType::FBO == drawParamsArr[i].widgetType){
-      texture = gRsrcMgr->getFBOTexture(drawParamsArr[i].FBOId);
+      drawImageTexture(
+            texture, sourceQuad, renderQuad, drawParamsArr[i].opacity);
+      continue;
     }
 
     if (EXIT_SUCCESS !=
@@ -235,5 +236,44 @@ void Renderer::drawStoredWidgets(const DrawParams drawParamsArr[],
 
   //------------- UPDATE SCREEN----------------
   SDL_RenderPresent(_sdlRenderer);
+}
+
+void Renderer::drawImageTexture(SDL_Texture *texture,
+                                const SDL_Rect &sourceQuad,
+                                const SDL_Rect &renderQuad,
+                                const int32_t imageOpacity) {
+  /* Since multiple WidgetType::IMAGE widget can reused the same texture -
+   * if opacity is present:
+   * - change the opacity
+   * - make the draw
+   * - restore the original opacity
+   * */
+  if (FULL_OPACITY == imageOpacity) {
+    if (EXIT_SUCCESS !=
+        SDL_RenderCopy(_sdlRenderer, texture, &sourceQuad,  &renderQuad)) {
+          LOGERR("Error in, SDL_RenderCopy(), SDL Error: %s", SDL_GetError());
+          return;
+    }
+  } else {
+    Texture::setAlpha(texture, static_cast<uint8_t>(imageOpacity));
+    if (EXIT_SUCCESS !=
+        SDL_RenderCopy(_sdlRenderer, texture, &sourceQuad,  &renderQuad)) {
+          LOGERR("Error in, SDL_RenderCopy(), SDL Error: %s", SDL_GetError());
+          return;
+    }
+    Texture::setAlpha(texture, static_cast<uint8_t>(FULL_OPACITY));
+  }
+}
+
+SDL_Texture * Renderer::getTargetTexture(const DrawParams &widgetInfo) {
+  SDL_Texture * texture = nullptr;
+  if (WidgetType::IMAGE == widgetInfo.widgetType) {
+    texture = gRsrcMgr->getImageTexture(widgetInfo.rsrcId);
+  } else if (WidgetType::TEXT == widgetInfo.widgetType) {
+    texture = gRsrcMgr->getTextTexture(widgetInfo.textId);
+  } else { // (WidgetType::FBO == widgetInfo.widgetType){
+    texture = gRsrcMgr->getFBOTexture(widgetInfo.FBOId);
+  }
+  return texture;
 }
 

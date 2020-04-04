@@ -12,7 +12,7 @@
 
 DrawParams::DrawParams()
     : pos(Point::UNDEFINED), frameRect(Rectangle::UNDEFINED), width(0),
-      height(0), rsrcId(INIT_INT32_VALUE), frameId(0),
+      height(0), rsrcId(INIT_INT32_VALUE), frameId(0), opacity(FULL_OPACITY),
       widgetType(WidgetType::UNKNOWN) {
 
 }
@@ -24,6 +24,7 @@ void DrawParams::reset() {
   height = 0;
   rsrcId = INIT_INT32_VALUE;
   frameId = 0;
+  opacity = FULL_OPACITY;
   widgetType = WidgetType::UNKNOWN;
 }
 

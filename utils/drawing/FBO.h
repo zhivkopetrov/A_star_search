@@ -96,9 +96,7 @@ public:
 
   void draw();
 
-  inline void setClearColor(const Color& color) {
-    _clearColor = color;
-  }
+  void setClearColor(const Color& color);
 
   /** @brief used to move all stored FBO items (widgets)
    *         with relative offset

@@ -15,6 +15,8 @@
 //Forward declarations
 struct SDL_Window;
 struct SDL_Renderer;
+struct SDL_Texture;
+struct SDL_Rect;
 class Color;
 class TextureContainer;
 
@@ -118,14 +120,25 @@ public:
   void setWidgetBlendMode(const DrawParams &widgetInfo,
                           const BlendMode blendMode);
 
+  /** @brief used to change the target texture opacity (transparency)
+   *
+   * @param const DrawParams & - target widget
+   * @param const uint8_t      - target opacity
+   * */
+  void setWidgetOpacity(const DrawParams &widgetInfo, const uint8_t opacity);
+
 private:
   /** @brief actual rendering of stored widgets on the current back buffer
    *
    *  @param const DrawParams *[] - draw specific data for a Texture array
    *  @param const size_t         - size of the array
    * */
-  void drawStoredWidgets(const DrawParams drawParamsArr[],
-                         const size_t size);
+  void drawStoredWidgets(const DrawParams drawParamsArr[], const size_t size);
+
+  void drawImageTexture(SDL_Texture *texture, const SDL_Rect &sourceQuad,
+                        const SDL_Rect &renderQuad, const int32_t imageOpacity);
+
+  SDL_Texture* getTargetTexture(const DrawParams &widgetInfo);
 
   //The window we'll be rendering to
   SDL_Window *_window;

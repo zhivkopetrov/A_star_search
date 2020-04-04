@@ -16,7 +16,7 @@
 
 //default constructor
 FBO::FBO() :
-      _clearColor(Colors::FULL_TRANSPARENT), _itemsOffsetX(0), _itemsOffsetY(0),
+      _clearColor(Colors::BLACK), _itemsOffsetX(0), _itemsOffsetY(0),
       _isLocked(true), _isDestroyed(false) {
       _drawParams.widgetType = WidgetType::FBO;
 }
@@ -48,7 +48,6 @@ void FBO::create(const int32_t startPosX, const int32_t startPosY,
     _drawParams.frameRect.h = FBOHeight;
 
     gRsrcMgr->createFBO(FBOWidth, FBOHeight, _drawParams.FBOId);
-    gDrawMgr->setWidgetBlendMode(_drawParams, BlendMode::BLEND);
   }
 }
 
@@ -175,6 +174,16 @@ void FBO::update() {
 
   //add the actual command and the data for the stored DrawParams
   gDrawMgr->updateCurrRendererTarget(_storedItems.data(), _storedItems.size());
+}
+
+void FBO::setClearColor(const Color& color) {
+  if (!_isAlphaModulationEnabled && Colors::FULL_TRANSPARENT == color) {
+    LOGERR("Error, FULL_TRANSPARENT color requires alpha modulation "
+        "to be set first");
+    return;
+  }
+
+  _clearColor = color;
 }
 
 void FBO::transformToMonitorRelativeCoordinates() {

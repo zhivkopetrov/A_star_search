@@ -120,4 +120,9 @@ void DrawMgr::setWidgetBlendMode(const DrawParams &widgetInfo,
   _renderer->setWidgetBlendMode(widgetInfo, blendMode);
 }
 
+void DrawMgr::setWidgetOpacity(const DrawParams &widgetInfo,
+                               const uint8_t opacity) {
+  _renderer->setWidgetOpacity(widgetInfo, opacity);
+}
+
 

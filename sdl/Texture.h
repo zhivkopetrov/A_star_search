@@ -118,9 +118,11 @@ public:
    *         NOTE: alpha channel is only supported by Hardware renderer
    *
    *  @param SDL_Texture * - texture to be modified
-   *  @param const int32_t - new alpha channel value
+   *  @param const uint8_t - new alpha channel value
+   *
+   *  @return int32_t      - error code
    * */
-  static void setAlpha(SDL_Texture * texture, const int32_t alpha);
+  static int32_t setAlpha(SDL_Texture * texture, const uint8_t alpha);
 
   /** @brief used to change the Widget blend mode (used for calculations
    *         on the SDL_Texture RGBA pixels)

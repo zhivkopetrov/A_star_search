@@ -137,7 +137,7 @@ int32_t Texture::createEmptyTexture(const int32_t  width,
 int32_t Texture::clearCurrentRendererTarget(const Color & clearColor)
 {
   Color currRendererColor = Colors::BLACK;
-  bool  isSameColorAsOld = true;
+  bool isSameColorAsOld = true;
 
   //remember old renderer color
   if(EXIT_SUCCESS != SDL_GetRenderDrawColor(_renderer,
@@ -174,8 +174,7 @@ int32_t Texture::clearCurrentRendererTarget(const Color & clearColor)
     }
 
     //clear target
-    if(EXIT_SUCCESS != SDL_RenderClear(_renderer))
-    {
+    if(EXIT_SUCCESS != SDL_RenderClear(_renderer)) {
       LOGERR("Error in, SDL_RenderClear(), SDL Error: %s", SDL_GetError());
       return EXIT_FAILURE;
     }
@@ -187,8 +186,7 @@ int32_t Texture::clearCurrentRendererTarget(const Color & clearColor)
                                    currRendererColor.rgba.r,
                                    currRendererColor.rgba.g,
                                    currRendererColor.rgba.b,
-                                   currRendererColor.rgba.a))
-    {
+                                   currRendererColor.rgba.a)) {
       LOGERR("Error in, SDL_SetRenderDrawColor(), SDL Error: %s",
                                                    SDL_GetError());
       return EXIT_FAILURE;
@@ -198,49 +196,48 @@ int32_t Texture::clearCurrentRendererTarget(const Color & clearColor)
   return EXIT_SUCCESS;
 }
 
-void Texture::setAlpha(SDL_Texture * texture, const int32_t alpha) {
-    if(EXIT_SUCCESS !=
-            SDL_SetTextureAlphaMod(texture, static_cast<uint8_t>(alpha))) {
-        LOGERR("Warning, .setAlpha() method will not take effect. Reason: "
-               "invalid texture or alpha modulation is not supported. "
-              "SDL_SetTextureAlphaMod() failed. SDL Error: %s", SDL_GetError());
-    }
+int32_t Texture::setAlpha(SDL_Texture * texture, const uint8_t alpha) {
+  if(EXIT_SUCCESS !=  SDL_SetTextureAlphaMod(texture, alpha)) {
+    LOGERR("Warning, .setAlpha() method will not take effect. Reason: "
+           "invalid texture or alpha modulation is not supported. "
+          "SDL_SetTextureAlphaMod() failed. SDL Error: %s", SDL_GetError());
+    return EXIT_FAILURE;
+  }
+  return EXIT_SUCCESS;
 }
 
 int32_t Texture::setBlendMode(SDL_Texture * texture, const uint8_t blendMode) {
-    if(EXIT_SUCCESS !=
-            SDL_SetTextureBlendMode(texture,
-                                    static_cast<SDL_BlendMode>(blendMode)))
-    {
-        LOGERR("Warning, .setBlendMode() method will not take effect. Reason: "
-               "invalid texture or blend mode is not supported. "
-               "SDL_SetTextureBlendMode() failed. SDL Error: %s",
-                                                               SDL_GetError());
-        return EXIT_FAILURE;
-    }
+  if(EXIT_SUCCESS !=
+          SDL_SetTextureBlendMode(texture,
+                                  static_cast<SDL_BlendMode>(blendMode))) {
+    LOGERR("Warning, .setBlendMode() method will not take effect. Reason: "
+           "invalid texture or blend mode is not supported. "
+           "SDL_SetTextureBlendMode() failed. SDL Error: %s", SDL_GetError());
+    return EXIT_FAILURE;
+  }
 
-    return EXIT_SUCCESS;
+  return EXIT_SUCCESS;
 }
 
 int32_t Texture::setRendererTarget(SDL_Texture * target) {
-    int32_t err = EXIT_SUCCESS;
+  int32_t err = EXIT_SUCCESS;
 
-    if(nullptr == _renderer) {
-        LOGERR("Error, renderer is still not set for Texture. You are missing"
-                        " Texture::setRenderer() call "
-                                    "in the program initialization process");
-        err = EXIT_FAILURE;
-    }
+  if(nullptr == _renderer) {
+      LOGERR("Error, renderer is still not set for Texture. You are missing"
+                      " Texture::setRenderer() call "
+                                  "in the program initialization process");
+      err = EXIT_FAILURE;
+  }
 
-    if(EXIT_SUCCESS == err) {
-        if(EXIT_SUCCESS != SDL_SetRenderTarget(_renderer, target)) {
-            LOGERR("Error, default renderer target could not be set. "
-                            "SDL_SetRenderTarget() failed, SDL Error: %s",
-                                                               SDL_GetError());
-            err = EXIT_FAILURE;
-        }
-    }
-    return err;
+  if(EXIT_SUCCESS == err) {
+      if(EXIT_SUCCESS != SDL_SetRenderTarget(_renderer, target)) {
+          LOGERR("Error, default renderer target could not be set. "
+                          "SDL_SetRenderTarget() failed, SDL Error: %s",
+                                                             SDL_GetError());
+          err = EXIT_FAILURE;
+      }
+  }
+  return err;
 }
 
 void Texture::setRenderer(SDL_Renderer *renderer) {

@@ -78,6 +78,16 @@ public:
     _drawParams.height = height;
   }
 
+  void activateAlphaModulation();
+
+  void deactivateAlphaModulation();
+
+  void setOpacity(const int32_t opacity);
+
+  inline int32_t getOpacity() const {
+    return _drawParams.opacity;
+  }
+
   /** @brief used to move widget vertically.
    *
    *  @param const int32_t - Y coordinate offset
@@ -201,6 +211,9 @@ protected:
 
   //flag to determine if Widget is visible or not
   bool _isVisible;
+
+  //flag to determine is blending (alpha modulation) enabled for current widget
+  bool _isAlphaModulationEnabled;
 };
 
 #endif /* UTILS_DRAWING_WIDGET_H_ */

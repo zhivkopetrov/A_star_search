@@ -23,5 +23,5 @@ cmake;
 3) When compilation has completed run the binary with "./game";
 
 TODOs:
- - Implement activateAlphaModulation for Image, Text, FBO and use it on the OptionSelector menu
+ - Apply opacity in the MeniMoveAnimator
  - Try to change the AStar algorithm with the one with std::priority_queue<>

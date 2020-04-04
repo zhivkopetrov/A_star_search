@@ -24,8 +24,10 @@ int32_t MenuMoveAnimator::init(AnimatorHandlerProxyInterface *interface,
                                const Rectangle &animFBODimensions,
                                const int32_t moveTimerId) {
   _animatorHandlerInterface = interface;
-  _animContent.create(animFBODimensions);
   _moveTimerId = moveTimerId;
+  _animContent.create(animFBODimensions);
+  _animContent.activateAlphaModulation();
+  _animContent.setClearColor(Colors::FULL_TRANSPARENT);
   return EXIT_SUCCESS;
 }
 

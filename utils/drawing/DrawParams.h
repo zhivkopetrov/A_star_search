@@ -19,13 +19,14 @@ enum class WidgetType : uint8_t {
   FBO
 };
 
-
-
 enum class BlendMode : uint8_t {
   NONE,  //value for SDL_BLENDMODE_NONE
   BLEND, //value for SDL_BLENDMODE_BLEND
   ADD,   //value for SDL_BLENDMODE_ADD
 };
+
+inline constexpr int32_t FULL_OPACITY = 255;
+inline constexpr int32_t ZERO_OPACITY = 0;
 
 struct DrawParams {
   DrawParams();
@@ -55,6 +56,9 @@ struct DrawParams {
 
   //holds current frame of the texture
   int32_t frameId;
+
+  //holds current opacity of the texture
+  int32_t opacity;
 
   //holds the type of widget that the draw params are related to
   WidgetType widgetType;
