@@ -11,6 +11,7 @@
 //Own components headers
 #include "GridContainer.h"
 #include "ObstacleHandler.h"
+#include "GameCursor.h"
 #include "optionsmenu/OptionSelector.h"
 #include "proxies/GameProxyInterface.hpp"
 #include "pathfinding/PathGenerator.h"
@@ -55,6 +56,8 @@ private:
   AnimatorHandler _animHandler;
 
   OptionSelector _optionSelector;
+
+  GameCursor _gameCursor;
 };
 
 #endif /* GAME_GAMEENTITIES_H_ */

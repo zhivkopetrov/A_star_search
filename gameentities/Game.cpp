@@ -45,11 +45,19 @@ int32_t Game::init() {
     return EXIT_FAILURE;
   }
 
+  constexpr int32_t cursorClickX = 29;
+  constexpr int32_t cursorClickY = 24;
+  if (EXIT_SUCCESS != _gameCursor.init("../assets/batman_gadget.png",
+      cursorClickX, cursorClickY)) {
+    LOGERR("Error, _gameCursor.init() failed");
+    return EXIT_FAILURE;
+  }
+
   return EXIT_SUCCESS;
 }
 
 void Game::deinit() {
-
+  _gameCursor.deinit();
 }
 
 void Game::draw() {
