@@ -13,11 +13,41 @@
 #include "proxies/GridContainerProxyInterface.hpp"
 #include "utils/drawing/DrawParams.h"
 #include "utils/drawing/Image.h"
+#include "utils/drawing/FBO.h"
 
 //Forward declarations
 class GameProxyInterface;
 struct Point;
 class InputEvent;
+
+struct GridContainerCfg {
+  GridContainerCfg(GameProxyInterface *interface,
+                   const int32_t inputVerticalLineRsrcId,
+                   const int32_t inputHorizontalLineRsrcId,
+                   const int32_t inputStartNodeRsrcId,
+                   const int32_t inputEndNodeRsrcId,
+                   const int32_t inputPathNodeRsrcId,
+                   const int32_t inputWallNodeRsrcId,
+                   const int32_t inputPredefinedObstacleRsrcId)
+      : gameInterface(interface), verticalLineRsrcId(inputVerticalLineRsrcId),
+        horizontalLineRsrcId(inputHorizontalLineRsrcId),
+        startNodeRsrcId(inputStartNodeRsrcId),
+        endNodeRsrcId(inputEndNodeRsrcId), pathNodeRsrcId(inputPathNodeRsrcId),
+        wallNodeRsrcId(inputWallNodeRsrcId),
+        predefinedObstacleRsrcId(inputPredefinedObstacleRsrcId) {
+
+  }
+  GridContainerCfg() = delete;
+
+  GameProxyInterface *gameInterface;
+  const int32_t verticalLineRsrcId;
+  const int32_t horizontalLineRsrcId;
+  const int32_t startNodeRsrcId;
+  const int32_t endNodeRsrcId;
+  const int32_t pathNodeRsrcId;
+  const int32_t wallNodeRsrcId;
+  const int32_t predefinedObstacleRsrcId;
+};
 
 class GridContainer: public GridContainerProxyInterface {
 public:
@@ -25,12 +55,7 @@ public:
 
   virtual ~GridContainer() = default;
 
-  int32_t init(GameProxyInterface *gameInterface,
-               const int32_t vericalLineRsrcId,
-               const int32_t horizontalLineRsrcId,
-               const int32_t startNodeRsrcId, const int32_t endNodeRsrcId,
-               const int32_t pathNodeRsrcId, const int32_t wallNodeRsrcId,
-               const int32_t predefinedObstacleRsrcId);
+  int32_t init(const GridContainerCfg &cfg);
 
   void draw();
 
@@ -77,6 +102,8 @@ private:
   //returns false if event has not selected any node
   bool getSelectedNode(const InputEvent &e, Point &outNodePos);
 
+  void createGridLineFBO();
+
   enum InternalDefines {
     TOTAL_LINES_COUNT = Grid::GRID_HEIGHT + Grid::GRID_WIDTH
   };
@@ -93,6 +120,8 @@ private:
 
   Image _gridLines[TOTAL_LINES_COUNT];
   Image _pathNodes[Grid::GRID_HEIGHT][Grid::GRID_WIDTH];
+
+  FBO _gridLinesFBO;
 };
 
 #endif /* GAMEENTITIES_GRIDCONTAINER_H_ */

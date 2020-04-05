@@ -15,9 +15,10 @@
 #include "utils/Log.h"
 
 int32_t Game::init() {
-  if (EXIT_SUCCESS != _gridContainer.init(this, Textures::VERTICAL_LINE,
-          Textures::HORIZONTAL_LINE, Textures::START_NODE, Textures::END_NODE,
-          Textures::A_STAR_PATH, Textures::WALL, Textures::OBSTACLES)) {
+  const GridContainerCfg gridCfg(this, Textures::VERTICAL_LINE,
+      Textures::HORIZONTAL_LINE, Textures::START_NODE, Textures::END_NODE,
+      Textures::A_STAR_PATH, Textures::WALL, Textures::OBSTACLES);
+  if (EXIT_SUCCESS != _gridContainer.init(gridCfg)) {
     LOGERR("Error in _gridLineContainer.init()");
 
     return EXIT_FAILURE;
@@ -48,7 +49,7 @@ int32_t Game::init() {
   constexpr int32_t cursorClickX = 29;
   constexpr int32_t cursorClickY = 24;
   if (EXIT_SUCCESS != _gameCursor.init("../assets/batman_gadget.png",
-      cursorClickX, cursorClickY)) {
+          cursorClickX, cursorClickY)) {
     LOGERR("Error, _gameCursor.init() failed");
     return EXIT_FAILURE;
   }
@@ -114,7 +115,8 @@ void Game::onNodeChanged(const NodeType nodeType, const Point &nodePos) {
 
   default:
     LOGERR("Error, received unknown NodeType: %hhu",
-        getEnumClassValue(nodeType));
+        getEnumClassValue(nodeType))
+    ;
     break;
   }
 }
@@ -159,7 +161,8 @@ void Game::onOptionChanged(const Option option, const std::any &value) {
     break;
 
   default:
-    LOGERR("Error, received unknown Option: %hhu", getEnumClassValue(option));
+    LOGERR("Error, received unknown Option: %hhu", getEnumClassValue(option))
+    ;
     break;
   }
 }

@@ -11,7 +11,7 @@
 //Own components headers
 #include "sdl/InputEvent.h"
 #include "proxies/GameProxyInterface.hpp"
-#include "utils/drawing/Rectangle.h"
+#include "managers/DrawMgr.h"
 
 GridContainer::GridContainer()
     : _gameInterface(nullptr), _startNodePos(Point::UNDEFINED),
@@ -20,49 +20,41 @@ GridContainer::GridContainer()
 
 }
 
-int32_t GridContainer::init(GameProxyInterface *gameInterface,
-                            const int32_t vericalLineRsrcId,
-                            const int32_t horizontalLineRsrcId,
-                            const int32_t startNodeRsrcId,
-                            const int32_t endNodeRsrcId,
-                            const int32_t pathNodeRsrcId,
-                            const int32_t wallNodeRsrcId,
-                            const int32_t predefinedObstacleRsrcId) {
-  _gameInterface = gameInterface;
-  _pathNodeRsrcId = pathNodeRsrcId;
-  _wallNodeRsrcId = wallNodeRsrcId;
-  _startNodeRsrcId = startNodeRsrcId;
-  _endNodeRsrcId = endNodeRsrcId;
-  _predefinedObstacleRsrcId = predefinedObstacleRsrcId;
+int32_t GridContainer::init(const GridContainerCfg &cfg) {
+  _gameInterface = cfg.gameInterface;
+  _pathNodeRsrcId = cfg.pathNodeRsrcId;
+  _wallNodeRsrcId = cfg.wallNodeRsrcId;
+  _startNodeRsrcId = cfg.startNodeRsrcId;
+  _endNodeRsrcId = cfg.endNodeRsrcId;
+  _predefinedObstacleRsrcId = cfg.predefinedObstacleRsrcId;
 
   for (int32_t i = 0; i < Grid::GRID_HEIGHT; ++i) {
-    _gridLines[i].create(horizontalLineRsrcId);
+    _gridLines[i].create(cfg.horizontalLineRsrcId);
     _gridLines[i].setPosition(0, i * Grid::TILE_OFFSET);
   }
 
   for (int32_t i = 0; i < Grid::GRID_WIDTH; ++i) {
-    _gridLines[i + Grid::GRID_HEIGHT].create(vericalLineRsrcId);
+    _gridLines[i + Grid::GRID_HEIGHT].create(cfg.verticalLineRsrcId);
     _gridLines[i + Grid::GRID_HEIGHT].setPosition(i * Grid::TILE_OFFSET, 0);
   }
 
   for (int32_t i = 0; i < Grid::GRID_HEIGHT; ++i) {
     for (int32_t j = 0; j < Grid::GRID_WIDTH; ++j) {
-      _pathNodes[i][j].create(pathNodeRsrcId);
+      _pathNodes[i][j].create(cfg.pathNodeRsrcId);
       _pathNodes[i][j].setPosition(
           ( (j * Grid::TILE_OFFSET) + Grid::LINE_OFFSET),
           ( (i * Grid::TILE_OFFSET) + Grid::LINE_OFFSET));
     }
   }
 
+  createGridLineFBO();
   clearGrid();
 
   return EXIT_SUCCESS;
 }
 
 void GridContainer::draw() {
-  for (int32_t i = 0; i < TOTAL_LINES_COUNT; ++i) {
-    _gridLines[i].draw();
-  }
+  _gridLinesFBO.draw();
 
   for (int32_t i = 0; i < Grid::GRID_HEIGHT; ++i) {
     for (int32_t j = 0; j < Grid::GRID_WIDTH; ++j) {
@@ -233,12 +225,9 @@ void GridContainer::onEndNodeEntered(const InputEvent &e) {
 }
 
 bool GridContainer::getSelectedNode(const InputEvent &e, Point &outNodePos) {
-
-
   Rectangle currBoundaryRect;
   currBoundaryRect.w = Grid::TILE_DIMENSION;
   currBoundaryRect.h = Grid::TILE_DIMENSION;
-
   Point currNodePos;
 
   for (int32_t i = 0; i < Grid::GRID_HEIGHT; ++i) {
@@ -259,3 +248,16 @@ bool GridContainer::getSelectedNode(const InputEvent &e, Point &outNodePos) {
   return false;
 }
 
+void GridContainer::createGridLineFBO() {
+  _gridLinesFBO.create(0, 0, gDrawMgr->getMonitorWidth(),
+      gDrawMgr->getMonitorHeight());
+  _gridLinesFBO.setClearColor(Colors::BLUE);
+
+  _gridLinesFBO.unlock();
+  _gridLinesFBO.reset();
+  for (int32_t i = 0; i < TOTAL_LINES_COUNT; ++i) {
+    _gridLinesFBO.addWidget(_gridLines[i]);
+  }
+  _gridLinesFBO.update();
+  _gridLinesFBO.lock();
+}
