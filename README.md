@@ -18,10 +18,10 @@ libsdl2-image-dev;
 libsdl2-image-mixer;
 cmake;
 
-1) To auto-generate na GNU makefile step inside the build directory and run "cmake .." in the terminal; The cmake should generate a GNU makefile.
+1) To auto-generate na GNU makefile step inside the build directory
+and run "cmake .." in the terminal; The cmake should generate a GNU makefile.
 2) After generation is complete run "make";
 3) When compilation has completed run the binary with "./game";
 
 TODOs:
- - Apply opacity in the MeniMoveAnimator
  - Try to change the AStar algorithm with the one with std::priority_queue<>

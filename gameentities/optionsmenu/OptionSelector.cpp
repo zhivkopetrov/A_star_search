@@ -23,9 +23,11 @@ int32_t OptionSelector::init(GameProxyInterface *gameInterface) {
   _gameInterface = gameInterface;
 
   _menuImg.create(Textures::MENU);
-  _menuImg.setPosition(OptionMenuDimensions::MENU_X,
+  _menuImg.setPosition(
+      OptionMenuDimensions::MENU_X + OptionMenuDimensions::MENU_OFFSET_X,
       OptionMenuDimensions::MENU_Y);
   _menuImg.activateAlphaModulation();
+  _menuImg.setOpacity(OptionMenuDimensions::CLOSED_MENU_OPACITY);
 
   const MenuButtonCfg buttonCfgs[BUTTONS_COUNT] { { this, Point(
       OptionMenuDimensions::MENU_X, OptionMenuDimensions::MENU_Y),
@@ -48,7 +50,9 @@ int32_t OptionSelector::init(GameProxyInterface *gameInterface) {
 
   _buttons[TOGGLE_MENU_IDX].activateAlphaModulation();
   _buttons[TOGGLE_MENU_IDX].moveRight(OptionMenuDimensions::MENU_OFFSET_X);
-  _menuImg.moveRight(OptionMenuDimensions::MENU_OFFSET_X);
+  _buttons[TOGGLE_MENU_IDX].setOpacity(
+      OptionMenuDimensions::CLOSED_MENU_OPACITY);
+
   _buttons[FORBID_DIAGONAL_IDX].lockInput();
   _buttons[FORBID_DIAGONAL_IDX].hide();
 
@@ -64,6 +68,10 @@ int32_t OptionSelector::init(GameProxyInterface *gameInterface) {
       Point(OptionMenuDimensions::MENU_X + 280,
           OptionMenuDimensions::MENU_Y + 135), "1", Colors::DARK_OCHRID,
       FontSize::SMALL);
+
+  _texts[LEVEL_TEXT_IDX].activateAlphaModulation();
+  _texts[LEVEL_TEXT_IDX].moveRight(OptionMenuDimensions::MENU_OFFSET_X);
+  _texts[LEVEL_TEXT_IDX].setOpacity(OptionMenuDimensions::CLOSED_MENU_OPACITY);
 
   return EXIT_SUCCESS;
 }
@@ -84,6 +92,7 @@ void OptionSelector::draw() {
   } else {
     _menuImg.draw();
     _buttons[TOGGLE_MENU_IDX].draw();
+    _texts[LEVEL_TEXT_IDX].draw();
   }
 }
 
@@ -198,11 +207,13 @@ void OptionSelector::activateMenu() {
 
   _buttons[TOGGLE_MENU_IDX].setOpacity(FULL_OPACITY);
   _menuImg.setOpacity(FULL_OPACITY);
+  _texts[LEVEL_TEXT_IDX].setOpacity(FULL_OPACITY);
 
   //first move the button and menu background image so they can be "baked" into
   //the FBO
   _buttons[TOGGLE_MENU_IDX].moveLeft(OptionMenuDimensions::MENU_OFFSET_X);
   _menuImg.moveLeft(OptionMenuDimensions::MENU_OFFSET_X);
+  _texts[LEVEL_TEXT_IDX].moveLeft(OptionMenuDimensions::MENU_OFFSET_X);
 
   _gameInterface->onOptionAnimStatusChange(
       OptionAnimStatus::UPDATE_ANIM_CONTENT);
@@ -220,10 +231,12 @@ void OptionSelector::deactivateMenu() {
   _buttons[TOGGLE_MENU_IDX].setOpacity(
       OptionMenuDimensions::CLOSED_MENU_OPACITY);
   _menuImg.setOpacity(OptionMenuDimensions::CLOSED_MENU_OPACITY);
+  _texts[LEVEL_TEXT_IDX].setOpacity(OptionMenuDimensions::CLOSED_MENU_OPACITY);
 
   //the move them
   _buttons[TOGGLE_MENU_IDX].moveRight(OptionMenuDimensions::MENU_OFFSET_X);
   _menuImg.moveRight(OptionMenuDimensions::MENU_OFFSET_X);
+  _texts[LEVEL_TEXT_IDX].moveRight(OptionMenuDimensions::MENU_OFFSET_X);
 }
 
 void OptionSelector::centerLevelValueText() {

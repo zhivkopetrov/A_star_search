@@ -58,6 +58,12 @@ bool Widget::containsPoint(const Point &point) const {
 }
 
 void Widget::activateAlphaModulation() {
+  if (!_isCreated) {
+    LOGERR("Error, alpha modulation can not be set, because Widget is not yet "
+        "created");
+    return;
+  }
+
   if (_isAlphaModulationEnabled) {
     LOGERR("Error, alpha modulation is already set for Widget with Id: %d",
         _drawParams.rsrcId);

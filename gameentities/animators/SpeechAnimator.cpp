@@ -15,7 +15,7 @@
 #include "utils/Log.h"
 
 SpeechAnimator::SpeechAnimator()
-    : winPhases { "Kaboom", "Bazinga", "Me >> Joker" },
+    : winPhases { "Kaboom", "Bazinga", "Me >> Joker", "GG WP" },
       _animatorHandlerInterface(nullptr), _waitTimerId(INIT_INT32_VALUE),
       _winPhraseCounter(0), _winSpeechBubbleRsrcId(INIT_INT32_VALUE),
       _loseSpeechBubbleRsrcId(INIT_INT32_VALUE), _isActive(false) {

@@ -15,7 +15,7 @@
 
 MenuMoveAnimator::MenuMoveAnimator()
     : _animatorHandlerInterface(nullptr), _moveTimerId(INIT_INT32_VALUE),
-      _animStepsLeft(0), _offsetSign(0),
+      _animStepsLeft(0), _updateSign(0), _currAnimOpacity(FULL_OPACITY),
       _currAnimStatus(OptionAnimStatus::UNKNOWN), _isActive(false) {
 
 }
@@ -28,6 +28,8 @@ int32_t MenuMoveAnimator::init(AnimatorHandlerProxyInterface *interface,
   _animContent.create(animFBODimensions);
   _animContent.activateAlphaModulation();
   _animContent.setClearColor(Colors::FULL_TRANSPARENT);
+  _currAnimOpacity = OptionMenuDimensions::CLOSED_MENU_OPACITY;
+  _animContent.setOpacity(_currAnimOpacity);
   return EXIT_SUCCESS;
 }
 
@@ -37,11 +39,11 @@ void MenuMoveAnimator::startAnim(const OptionAnimStatus type) {
   _animStepsLeft = MAX_ANIM_STEPS;
 
   if (OptionAnimStatus::START_OPEN_ANIM == _currAnimStatus) {
-    _offsetSign = 1;
+    _updateSign = 1;
     _animContent.setX(
         OptionMenuDimensions::MENU_X + OptionMenuDimensions::MENU_OFFSET_X);
   } else if (OptionAnimStatus::START_CLOSE_ANIM == _currAnimStatus) {
-    _offsetSign = -1;
+    _updateSign = -1;
     _animContent.setX(OptionMenuDimensions::MENU_X);
   }
   startTimer(20, _moveTimerId, TimerType::PULSE);
@@ -81,8 +83,7 @@ void MenuMoveAnimator::onTimeout(const int32_t timerId) {
 void MenuMoveAnimator::processAnim() {
   --_animStepsLeft;
   if (0 != _animStepsLeft) {
-    const int32_t offsetX = ANIM_MOVE_STEP * _offsetSign;
-    _animContent.moveLeft(offsetX);
+    updateAnimInternals();
   } else {
     if (OptionAnimStatus::START_OPEN_ANIM == _currAnimStatus) {
       _animatorHandlerInterface->onAnimFinished(AnimType::MENU_OPEN_MOVE_ANIM);
@@ -93,5 +94,13 @@ void MenuMoveAnimator::processAnim() {
     _currAnimStatus = OptionAnimStatus::UNKNOWN;
     stopTimer(_moveTimerId);
   }
+}
+
+void MenuMoveAnimator::updateAnimInternals() {
+  const int32_t offsetX = ANIM_MOVE_STEP * _updateSign;
+  _animContent.moveLeft(offsetX);
+
+  _currAnimOpacity += (ANIM_OPACITY_STEP * _updateSign);
+  _animContent.setOpacity(_currAnimOpacity);
 }
 

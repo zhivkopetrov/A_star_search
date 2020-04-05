@@ -45,7 +45,7 @@ private:
   virtual void onTimeout(const int32_t timerId) override final;
 
   enum InternalDefines {
-    WIN_PHRASES_COUNT = 3
+    WIN_PHRASES_COUNT = 4
   };
 
   Image _batman;

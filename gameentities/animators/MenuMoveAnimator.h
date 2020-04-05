@@ -41,9 +41,12 @@ private:
 
   void processAnim();
 
+  void updateAnimInternals();
+
   enum InternalDefines {
     ANIM_MOVE_STEP = 10,
-    MAX_ANIM_STEPS = OptionMenuDimensions::MENU_OFFSET_X / ANIM_MOVE_STEP
+    MAX_ANIM_STEPS = OptionMenuDimensions::MENU_OFFSET_X / ANIM_MOVE_STEP,
+    ANIM_OPACITY_STEP = 5
   };
 
   FBO _animContent;
@@ -54,7 +57,9 @@ private:
 
   int32_t _animStepsLeft;
 
-  int32_t _offsetSign;
+  int32_t _updateSign;
+
+  int32_t _currAnimOpacity;
 
   OptionAnimStatus _currAnimStatus;
 
