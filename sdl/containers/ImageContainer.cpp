@@ -20,16 +20,14 @@ ImageContainer::ImageContainer() {
 
 int32_t ImageContainer::init(const int32_t windowWidth,
                              const int32_t windowHeight) {
-  int32_t err = EXIT_SUCCESS;
-
   populateTextureFrameRects(windowWidth, windowHeight);
 
   if (EXIT_SUCCESS != loadTextures()) {
     LOGERR("Error, loadTextures() failed");
-    err = EXIT_FAILURE;
+    return EXIT_FAILURE;
   }
 
-  return err;
+  return EXIT_SUCCESS;
 }
 
 void ImageContainer::deinit() {

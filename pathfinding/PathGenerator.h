@@ -7,6 +7,7 @@
 #include <set>
 #include <vector>
 #include <any>
+#include <memory>
 
 //Other libraries headers
 
@@ -39,10 +40,9 @@ private:
 
   bool detectCollision(const Point &position) const;
 
-  Node* findNodeOnList(const std::set<Node*> &nodes,
-                       const Point &position) const;
-
-  void releaseNodes(std::set<Node*> &nodes) const;
+  std::shared_ptr<Node> findNodeOnList(
+      const std::set<std::shared_ptr<Node>> &nodes,
+      const Point &position) const;
 
   HeuristicFunction _heuristic;
   std::vector<Point> _moveDirections;

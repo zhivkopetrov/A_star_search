@@ -23,7 +23,6 @@ AnimatorHandler::AnimatorHandler()
 
 int32_t AnimatorHandler::init(GameProxyInterface *gameInterface,
                               GridContainerProxyInterface *gridInterface) {
-  int32_t err = EXIT_SUCCESS;
   _gameInterface = gameInterface;
   const int32_t monitorWidth = gDrawMgr->getMonitorWidth();
   const int32_t monitorHeight = gDrawMgr->getMonitorHeight();
@@ -36,38 +35,32 @@ int32_t AnimatorHandler::init(GameProxyInterface *gameInterface,
           Textures::BATMAN_BIG, Textures::WIN_DIALOG, Textures::LOSE_DIALOG,
           Timers::SPEECH_WAIT_TIMER_ID)) {
     LOGERR("Error, _generalTextAnimator.init() failed");
-    err = EXIT_FAILURE;
+    return EXIT_FAILURE;
   }
 
-  if (EXIT_SUCCESS == err) {
-    if (EXIT_SUCCESS != _pathAnimator.init(this, gridInterface,
-            Textures::BATMAN_SMALL, Timers::PATH_TIMER_ID)) {
-      LOGERR("Error, _pathAnimator.init() failed");
-      err = EXIT_FAILURE;
-    }
+  if (EXIT_SUCCESS != _pathAnimator.init(this, gridInterface,
+          Textures::BATMAN_SMALL, Timers::PATH_TIMER_ID)) {
+    LOGERR("Error, _pathAnimator.init() failed");
+    return EXIT_FAILURE;
   }
 
-  if (EXIT_SUCCESS == err) {
-    if (EXIT_SUCCESS != _scaleAnimator.init(this, BIG_BATMAN_START_POS,
-            Textures::BATMAN_BIG, Timers::SCALE_TIMER_ID)) {
-      LOGERR("Error, _pathAnimator.init() failed");
-      err = EXIT_FAILURE;
-    }
+  if (EXIT_SUCCESS != _scaleAnimator.init(this, BIG_BATMAN_START_POS,
+          Textures::BATMAN_BIG, Timers::SCALE_TIMER_ID)) {
+    LOGERR("Error, _pathAnimator.init() failed");
+    return EXIT_FAILURE;
   }
 
-  if (EXIT_SUCCESS == err) {
-    const Rectangle animFBORect { OptionMenuDimensions::MENU_X,
-        OptionMenuDimensions::MENU_Y, OptionMenuDimensions::MENU_WIDTH,
-        OptionMenuDimensions::MENU_HEIGHT };
+  const Rectangle animFBORect { OptionMenuDimensions::MENU_X,
+      OptionMenuDimensions::MENU_Y, OptionMenuDimensions::MENU_WIDTH,
+      OptionMenuDimensions::MENU_HEIGHT };
 
-    if (EXIT_SUCCESS != _menuMoveAnimator.init(this, animFBORect,
-            Timers::MENU_MOVE_ANIM_TIMER_ID)) {
-      LOGERR("Error, _menuMoveAnimator.init() failed");
-      err = EXIT_FAILURE;
-    }
+  if (EXIT_SUCCESS != _menuMoveAnimator.init(this, animFBORect,
+          Timers::MENU_MOVE_ANIM_TIMER_ID)) {
+    LOGERR("Error, _menuMoveAnimator.init() failed");
+    return EXIT_FAILURE;
   }
 
-  return err;
+  return EXIT_SUCCESS;
 }
 
 void AnimatorHandler::draw() {

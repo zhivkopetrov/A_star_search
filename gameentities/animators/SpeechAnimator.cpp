@@ -35,8 +35,8 @@ int32_t SpeechAnimator::init(
   _batman.create(batmanRsrcId);
   _batman.setPosition(startBatmanPos);
 
-  constexpr int32_t SPEECH_BUBBLE_OFFSET_X = BatmanDimensions::BIG_BATMAN_WIDTH
-      + 50;
+  constexpr int32_t SPEECH_BUBBLE_OFFSET_X =
+      BatmanDimensions::BIG_BATMAN_WIDTH + 50;
   constexpr int32_t SPEECH_BUBBLE_OFFSET_Y = -150;
   _speechBubble.create(winSpeechBubbleRsrcId);
   _speechBubble.setPosition(startBatmanPos.x + SPEECH_BUBBLE_OFFSET_X,

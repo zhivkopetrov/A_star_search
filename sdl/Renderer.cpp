@@ -23,45 +23,35 @@ Renderer::Renderer(SDL_Window *window)
 }
 
 int32_t Renderer::init() {
-  int32_t err = EXIT_SUCCESS;
   const auto initialSize = 250;
   _widgets.resize(initialSize);
 
-  if (EXIT_SUCCESS == err) {
-    /** Set texture filtering to linear
-     *                      (used for image scaling /pixel interpolation/ )
-     * */
-    if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1")) {
-      LOGERR(
-          "Warning: Linear texture filtering not enabled! "
-          "SDL_SetHint() failed. SDL Error: %s", SDL_GetError());
-      err = EXIT_FAILURE;
-    }
+  /** Set texture filtering to linear
+   *                      (used for image scaling /pixel interpolation/ )
+   * */
+  if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1")) {
+    LOGERR("Warning: Linear texture filtering not enabled! "
+           "SDL_SetHint() failed. SDL Error: %s", SDL_GetError());
+    return EXIT_FAILURE;
   }
 
-  if (EXIT_SUCCESS == err) {
-    //Create renderer for window
-    _sdlRenderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED);
+  //Create renderer for window
+  _sdlRenderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED);
 
-    if (nullptr == _sdlRenderer) {
-      LOGERR("Renderer could not be created! SDL Error: %s", SDL_GetError());
+  if (nullptr == _sdlRenderer) {
+    LOGERR("Renderer could not be created! SDL Error: %s", SDL_GetError());
+    return EXIT_FAILURE;
+  }
 
-      err = EXIT_FAILURE;
-    } else {
-      //Initialize renderer color to blue
-      if (EXIT_SUCCESS != SDL_SetRenderDrawColor(_sdlRenderer, 0, 0, 255,
+  //Initialize renderer color to blue
+  if (EXIT_SUCCESS != SDL_SetRenderDrawColor(_sdlRenderer, 0, 0, 255,
       SDL_ALPHA_OPAQUE)) {
-        LOGERR("Error in, SDL_SetRenderDrawColor(), SDL Error: %s",
-            SDL_GetError());
-
-        err = EXIT_FAILURE;
-      } else {
-        Texture::setRenderer(_sdlRenderer);
-      }
-    }
+    LOGERR("Error in, SDL_SetRenderDrawColor(), SDL Error: %s", SDL_GetError());
+    return EXIT_FAILURE;
   }
 
-  return err;
+  Texture::setRenderer(_sdlRenderer);
+  return EXIT_SUCCESS;
 }
 
 void Renderer::deinit() {

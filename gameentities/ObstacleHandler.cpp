@@ -23,7 +23,6 @@ ObstacleHandler::ObstacleHandler()
 int32_t ObstacleHandler::init(GridContainerProxyInterface *gridInterface,
                               const std::string &levelsFolder,
                               const int32_t levelsCount) {
-  int32_t err = EXIT_SUCCESS;
   _gridInterface = gridInterface;
   _maxLevels = levelsCount;
 
@@ -31,21 +30,17 @@ int32_t ObstacleHandler::init(GridContainerProxyInterface *gridInterface,
   for (int32_t i = 0; i < levelsCount; ++i) {
     if (EXIT_SUCCESS != loadLevelFromDisk(levelsFolder, i)) {
       LOGERR("Error, loadLevel() failed for level id: %d", i);
-      err = EXIT_FAILURE;
-      break;
+      return EXIT_FAILURE;
     }
   }
 
-  if (EXIT_SUCCESS == err) {
-    _gridInterface->placePredefinedObstacles(
-        _levelsObstacles[_currLoadedLevelId]);
-    // load the actual obstacles
-    for (const auto & elem : _levelsObstacles[_currLoadedLevelId]) {
-      _predefinedObstacles.push_back(elem.pos);
-    }
+  _gridInterface->placePredefinedObstacles(_levelsObstacles[_currLoadedLevelId]);
+  // load the actual obstacles
+  for (const auto & elem : _levelsObstacles[_currLoadedLevelId]) {
+    _predefinedObstacles.push_back(elem.pos);
   }
 
-  return err;
+  return EXIT_SUCCESS;
 }
 
 void ObstacleHandler::changeLevel(const std::any &value) {

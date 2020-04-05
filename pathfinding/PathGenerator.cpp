@@ -19,8 +19,9 @@ PathGenerator::PathGenerator()
 
 }
 
-int32_t PathGenerator::init(const int32_t mazeWidth, const int32_t mazeHeight,
-                    ObstacleHandlerProxyInterface *obstacleHandlerInterface) {
+int32_t PathGenerator::init(
+    const int32_t mazeWidth, const int32_t mazeHeight,
+    ObstacleHandlerProxyInterface *obstacleHandlerInterface) {
   _mazeWidth = mazeWidth;
   _mazeHeight = mazeHeight;
   _obstacleHandlerInterface = obstacleHandlerInterface;
@@ -41,21 +42,21 @@ int32_t PathGenerator::init(const int32_t mazeWidth, const int32_t mazeHeight,
 }
 
 std::vector<Point> PathGenerator::findPath(const Point &source,
-                                   const Point &target) const {
+                                           const Point &target) const {
   std::vector<Point> path;
   if (detectCollision(source) || detectCollision(target)) {
     LOGERR("Error, source or target are out of bounds");
     return path;
   }
 
-  Node *current = nullptr;
-  std::set<Node*> openSet;
-  std::set<Node*> closedSet;
-  openSet.insert(new Node(source));
+  std::shared_ptr<Node> current;
+  std::set<std::shared_ptr<Node>> openSet;
+  std::set<std::shared_ptr<Node>> closedSet;
+  openSet.insert(std::make_shared<Node>(source));
 
   while (!openSet.empty()) {
     current = *openSet.begin();
-    for (auto node : openSet) {
+    for (const auto &node : openSet) {
       //update the score of the node if it's lower
       if (node->getScore() <= current->getScore()) {
         current = node;
@@ -73,8 +74,8 @@ std::vector<Point> PathGenerator::findPath(const Point &source,
     //iterate over the allowed directions
     for (uint32_t i = 0; i < _allowedDirectionsCount; ++i) {
       Point newCoordinates(current->position + _moveDirections[i]);
-      if (detectCollision(newCoordinates) || findNodeOnList(closedSet,
-              newCoordinates)) {
+      if (detectCollision(newCoordinates) ||
+          findNodeOnList(closedSet, newCoordinates)) {
         //if node is already visited or is out of bound -> skip it
         continue;
       }
@@ -83,27 +84,25 @@ std::vector<Point> PathGenerator::findPath(const Point &source,
           + ( (i < NON_DIAGONAL_MOVEMENTS) ?
               Movement::NON_DIAGONAL_DISTANCE : Movement::DIAGONAL_DISTANCE);
 
-      Node *successor = findNodeOnList(openSet, newCoordinates);
+      std::shared_ptr<Node> successor = findNodeOnList(openSet, newCoordinates);
       if (successor == nullptr) {
-        successor = new Node(newCoordinates, current);
+        successor = std::make_shared<Node>(newCoordinates, current.get());
         successor->G = totalCost;
         successor->H = _heuristic(successor->position, target);
         openSet.insert(successor);
       } else if (totalCost < successor->G) {
-        successor->parent = current;
+        successor->parent = current.get();
         successor->G = totalCost;
       }
     }
   }
 
+  Node *pathNode = current.get();
   //build the path
-  while (current != nullptr) {
-    path.emplace_back(current->position);
-    current = current->parent;
+  while (pathNode != nullptr) {
+    path.emplace_back(pathNode->position);
+    pathNode = pathNode->parent;
   }
-
-  releaseNodes(openSet);
-  releaseNodes(closedSet);
 
   return path;
 }
@@ -129,9 +128,9 @@ void PathGenerator::setHeuristic(const bool isDiagonalMovementAllowed) {
       (isDiagonalMovementAllowed) ? DIAGONAL_MOVEMENTS : NON_DIAGONAL_MOVEMENTS;
 }
 
-Node* PathGenerator::findNodeOnList(const std::set<Node*> &nodes,
-                            const Point &position) const {
-  for (auto node : nodes) {
+std::shared_ptr<Node> PathGenerator::findNodeOnList(
+    const std::set<std::shared_ptr<Node>> &nodes, const Point &position) const {
+  for (const auto &node : nodes) {
     if (node->position == position) {
       return node;
     }
@@ -139,16 +138,8 @@ Node* PathGenerator::findNodeOnList(const std::set<Node*> &nodes,
   return nullptr;
 }
 
-void PathGenerator::releaseNodes(std::set<Node*> &nodes) const {
-  for (auto it = nodes.begin(); it != nodes.end();) {
-    delete *it;
-    it = nodes.erase(it);
-  }
-}
-
 bool PathGenerator::detectCollision(const Point &position) const {
-  if (position.x < 0 || position.x >= _mazeWidth
-      || position.y < 0
+  if (position.x < 0 || position.x >= _mazeWidth || position.y < 0
       || position.y >= _mazeHeight
       || _obstacleHandlerInterface->isIntersectingObstacle(position)) {
     return true;

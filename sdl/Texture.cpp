@@ -101,37 +101,32 @@ int32_t Texture::loadTextureFromSurface(SDL_Surface *&surface,
 int32_t Texture::createEmptyTexture(const int32_t  width,
                                     const int32_t  height,
                                     SDL_Texture *& outTexture) {
-    int32_t err = EXIT_SUCCESS;
+  if(nullptr != outTexture) {
+      LOGERR("Warning, outTexture is not empty. Will not create Empty "
+             "Surface. Memory leak prevented.");
+      return EXIT_FAILURE;
+  }
 
-    if(nullptr != outTexture) {
-        LOGERR("Warning, outTexture is not empty. Will not create Empty "
-               "Surface. Memory leak prevented.");
-        err = EXIT_FAILURE;
-    }
+  /** NOTE: This method will probably be used by Hardware Accelerated
+   *        FBO's, whose Texture's are going to be temporary
+   *        targets for the Hardware Accelerated Renderer.
+   *        In order for this to work, the SDL_Texture must be created
+   *        with access specifier: SDL_TEXTUREACCESS_TARGET.
+   *
+   * NOTE2: For empty surface format - 32 bit depth format [RGBA] is used
+   * */
+  outTexture = SDL_CreateTexture(_renderer,                //hardware renderer
+                                 SDL_PIXELFORMAT_RGBA8888, //format
+                                 SDL_TEXTUREACCESS_TARGET, //access
+                                 width,                    //texture width
+                                 height);                  //texture height
 
-    if(EXIT_SUCCESS == err) {
-        /** NOTE: This method will probably be used by Hardware Accelerated
-         *        FBO's, whose Texture's are going to be temporary
-         *        targets for the Hardware Accelerated Renderer.
-         *        In order for this to work, the SDL_Texture must be created
-         *        with access specifier: SDL_TEXTUREACCESS_TARGET.
-         *
-         * NOTE2: For empty surface format - 32 bit depth format [RGBA] is used
-         * */
-        outTexture =
-                SDL_CreateTexture(_renderer,                //hardware renderer
-                                  SDL_PIXELFORMAT_RGBA8888, //format
-                                  SDL_TEXTUREACCESS_TARGET, //access
-                                  width,                    //texture width
-                                  height);                  //texture height
+  if(nullptr == outTexture) {
+    LOGERR("SDL_CreateTexture() failed: %s", SDL_GetError());
+    return EXIT_FAILURE;
+  }
 
-        if(nullptr == outTexture) {
-            LOGERR("SDL_CreateTexture() failed: %s", SDL_GetError());
-            err = EXIT_FAILURE;
-        }
-    }
-
-    return err;
+  return EXIT_SUCCESS;
 }
 
 int32_t Texture::clearCurrentRendererTarget(const Color & clearColor)

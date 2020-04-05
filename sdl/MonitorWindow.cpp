@@ -29,8 +29,6 @@ MonitorWindow::~MonitorWindow() {
 }
 
 int32_t MonitorWindow::init(const int32_t displayMode) {
-  int32_t err = EXIT_SUCCESS;
-
   int32_t initWindowX = 0;
   int32_t initWindowY = 0;
 
@@ -50,14 +48,13 @@ int32_t MonitorWindow::init(const int32_t displayMode) {
 
   if (nullptr == _window) {
     LOGERR("Window could not be created! SDL Error: %s", SDL_GetError());
-
-    err = EXIT_FAILURE;
-  } else {
-    //obtain real window coordinates after creation
-    SDL_GetWindowPosition(_window, &_windowRect.x, &_windowRect.y);
+    return EXIT_FAILURE;
   }
 
-  return err;
+  //obtain real window coordinates after creation
+  SDL_GetWindowPosition(_window, &_windowRect.x, &_windowRect.y);
+
+  return EXIT_SUCCESS;
 }
 
 void MonitorWindow::deinit() {

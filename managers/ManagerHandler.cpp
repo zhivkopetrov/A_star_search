@@ -15,52 +15,40 @@
 #include "utils/Log.h"
 
 int32_t ManagerHandler::init(const ManagerHandlerCfg &cfg) {
-  int32_t err = EXIT_SUCCESS;
-
   //gDrawMgr should be initialized first, because it contains the renderer
   //Other managers may want to load graphical resources
   gDrawMgr = new DrawMgr(cfg.displayMode, cfg.monitorWidth, cfg.monitorHeight);
   if (!gDrawMgr) {
     LOGERR("Error! Bad alloc for DrawMgr class -> Terminating...");
-
-    err = EXIT_FAILURE;
+    return EXIT_FAILURE;
   }
 
   gRsrcMgr = new RsrcMgr(cfg.monitorWidth, cfg.monitorHeight);
   if (!gRsrcMgr) {
     LOGERR("Error! Bad alloc for RsrcMgr class -> Terminating...");
-
-    err = EXIT_FAILURE;
+    return EXIT_FAILURE;
   }
 
-  if (EXIT_SUCCESS == err) {
-    gTimerMgr = new TimerMgr;
-    if (!gTimerMgr) {
-      LOGERR("Error! Bad alloc for TimerMgr class -> Terminating...");
+  gTimerMgr = new TimerMgr;
+  if (!gTimerMgr) {
+    LOGERR("Error! Bad alloc for TimerMgr class -> Terminating...");
+    return EXIT_FAILURE;
+  }
 
-      err = EXIT_FAILURE;
+  //put global managers into container so they can be easily iterated
+  //and used polymorphically
+  _managers[Managers::DRAW_MGR_IDX] = gDrawMgr;
+  _managers[Managers::RSRC_MGR_IDX] = gRsrcMgr;
+  _managers[Managers::TIMER_MGR_IDX] = gTimerMgr;
+
+  for (int32_t i = 0; i < Managers::TOTAL_MGRS_COUNT; ++i) {
+    if (EXIT_SUCCESS != _managers[i]->init()) {
+      LOGERR("Error in %s init() -> Terminating...", _managers[i]->getName());
+      return EXIT_FAILURE;
     }
   }
 
-  if (EXIT_SUCCESS == err) {
-    //put global managers into container so they can be easily iterated
-    //and used polymorphically
-    _managers[Managers::DRAW_MGR_IDX] = gDrawMgr;
-    _managers[Managers::RSRC_MGR_IDX] = gRsrcMgr;
-    _managers[Managers::TIMER_MGR_IDX] = gTimerMgr;
-  }
-
-  if (EXIT_SUCCESS == err) {
-    for (int32_t i = 0; i < Managers::TOTAL_MGRS_COUNT; ++i) {
-      if (EXIT_SUCCESS != _managers[i]->init()) {
-        LOGERR("Error in %s init() -> Terminating...", _managers[i]->getName());
-        err = EXIT_FAILURE;
-        break;
-      }
-    }
-  }
-
-  return err;
+  return EXIT_SUCCESS;
 }
 
 void ManagerHandler::deinit() {

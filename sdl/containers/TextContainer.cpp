@@ -20,14 +20,12 @@ TextContainer::TextContainer()
 }
 
 int32_t TextContainer::init() {
-  int32_t err = EXIT_SUCCESS;
-
   if (EXIT_SUCCESS != loadFonts()) {
     LOGERR("Error, loadFonts() failed");
-    err = EXIT_FAILURE;
+    return EXIT_FAILURE;
   }
 
-  return err;
+  return EXIT_SUCCESS;
 }
 
 void TextContainer::deinit() {

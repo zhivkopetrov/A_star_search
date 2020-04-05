@@ -16,8 +16,6 @@
 #include "utils/Log.h"
 
 int32_t Engine::init() {
-  int32_t err = EXIT_SUCCESS;
-
   //initialise monitor to FullHD
   constexpr int32_t MONITOR_WIDTH = 1920;
   constexpr int32_t MONITOR_HEIGHT = 1080;
@@ -28,38 +26,30 @@ int32_t Engine::init() {
 
   if (EXIT_SUCCESS != _managerHandler.init(cfg)) {
     LOGERR("Error in _managerHandler.init()");
-    err = EXIT_FAILURE;
+    return EXIT_FAILURE;
   }
 
-  if (EXIT_SUCCESS == err) {
-    if (EXIT_SUCCESS != _game.init()) {
-      LOGERR("Error, _game.init() failed");
-      err = EXIT_FAILURE;
-    }
+  if (EXIT_SUCCESS != _game.init()) {
+    LOGERR("Error, _game.init() failed");
+    return EXIT_FAILURE;
   }
 
-  if (EXIT_SUCCESS == err) {
-    if (EXIT_SUCCESS != _debugConsole.init()) {
-      LOGERR("Error in _debugConsole.init()");
-      err = EXIT_FAILURE;
-    }
+  if (EXIT_SUCCESS != _debugConsole.init()) {
+    LOGERR("Error in _debugConsole.init()");
+    return EXIT_FAILURE;
   }
 
-  if (EXIT_SUCCESS == err) {
-    if (EXIT_SUCCESS != _inputEvent.init()) {
-      LOGERR("Error in _inputEvent.init()");
-      err = EXIT_FAILURE;
-    }
+  if (EXIT_SUCCESS != _inputEvent.init()) {
+    LOGERR("Error in _inputEvent.init()");
+    return EXIT_FAILURE;
   }
 
-  if (EXIT_SUCCESS == err) {
-    constexpr auto maxFrameRate = 60;
-    _debugConsole.setMaxFrameRate(maxFrameRate);
-    gDrawMgr->setMaxFrameRate(maxFrameRate);
-    gTimerMgr->onInitEnd();
-  }
+  constexpr auto maxFrameRate = 60;
+  _debugConsole.setMaxFrameRate(maxFrameRate);
+  gDrawMgr->setMaxFrameRate(maxFrameRate);
+  gTimerMgr->onInitEnd();
 
-  return err;
+  return EXIT_SUCCESS;
 }
 
 void Engine::deinit() {

@@ -15,47 +15,37 @@
 #include "utils/Log.h"
 
 int32_t Game::init() {
-  int32_t err = EXIT_SUCCESS;
-
   if (EXIT_SUCCESS != _gridContainer.init(this, Textures::VERTICAL_LINE,
           Textures::HORIZONTAL_LINE, Textures::START_NODE, Textures::END_NODE,
           Textures::A_STAR_PATH, Textures::WALL, Textures::OBSTACLES)) {
     LOGERR("Error in _gridLineContainer.init()");
 
-    err = EXIT_FAILURE;
+    return EXIT_FAILURE;
   }
 
-  if (EXIT_SUCCESS == err) {
-    if (EXIT_SUCCESS != _obstacleHandler.init(&_gridContainer, "../levels/",
-            Grid::OBSTACLE_LEVELS)) {
-      LOGERR("Error, _obstacleHandler.init() failed");
-      err = EXIT_FAILURE;
-    }
+  if (EXIT_SUCCESS != _obstacleHandler.init(&_gridContainer, "../levels/",
+          Grid::OBSTACLE_LEVELS)) {
+    LOGERR("Error, _obstacleHandler.init() failed");
+    return EXIT_FAILURE;
   }
 
-  if (EXIT_SUCCESS == err) {
-    if (EXIT_SUCCESS != _pathGenerator.init(Grid::GRID_WIDTH, Grid::GRID_HEIGHT,
-            &_obstacleHandler)) {
-      LOGERR("Error, _pathGenerator.init() failed");
-      err = EXIT_FAILURE;
-    }
+  if (EXIT_SUCCESS != _pathGenerator.init(Grid::GRID_WIDTH, Grid::GRID_HEIGHT,
+          &_obstacleHandler)) {
+    LOGERR("Error, _pathGenerator.init() failed");
+    return EXIT_FAILURE;
   }
 
-  if (EXIT_SUCCESS == err) {
-    if (EXIT_SUCCESS != _animHandler.init(this, &_gridContainer)) {
-      LOGERR("Error, _animHandler.init() failed");
-      err = EXIT_FAILURE;
-    }
+  if (EXIT_SUCCESS != _animHandler.init(this, &_gridContainer)) {
+    LOGERR("Error, _animHandler.init() failed");
+    return EXIT_FAILURE;
   }
 
-  if (EXIT_SUCCESS == err) {
-    if (EXIT_SUCCESS != _optionSelector.init(this)) {
-      LOGERR("Error, _optionSelector.init() failed");
-      err = EXIT_FAILURE;
-    }
+  if (EXIT_SUCCESS != _optionSelector.init(this)) {
+    LOGERR("Error, _optionSelector.init() failed");
+    return EXIT_FAILURE;
   }
 
-  return err;
+  return EXIT_SUCCESS;
 }
 
 void Game::deinit() {
@@ -115,8 +105,8 @@ void Game::onNodeChanged(const NodeType nodeType, const Point &nodePos) {
     break;
 
   default:
-    LOGERR("Error, received unknown NodeType: %hhu", getEnumClassValue(nodeType))
-    ;
+    LOGERR("Error, received unknown NodeType: %hhu",
+        getEnumClassValue(nodeType));
     break;
   }
 }
@@ -145,7 +135,7 @@ void Game::onAnimFinished(const AnimType animType) {
     _optionSelector.onMoveAnimFinished(OptionAnimStatus::END_CLOSE_ANIM);
   } else {
     LOGERR("Error, should not receive AnimType: %hhu here",
-        getEnumClassValue(animType)) ;
+        getEnumClassValue(animType));
   }
 }
 
@@ -161,8 +151,7 @@ void Game::onOptionChanged(const Option option, const std::any &value) {
     break;
 
   default:
-    LOGERR("Error, received unknown Option: %hhu", getEnumClassValue(option))
-    ;
+    LOGERR("Error, received unknown Option: %hhu", getEnumClassValue(option));
     break;
   }
 }

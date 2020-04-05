@@ -19,35 +19,29 @@ DrawMgr::DrawMgr(const int32_t displayMode, const int32_t monitorWidth,
 }
 
 int32_t DrawMgr::init() {
-  int32_t err = EXIT_SUCCESS;
-
   _window = new MonitorWindow(_MONITOR_WIDTH, _MONITOR_HEIGHT);
-
   if (nullptr == _window) {
     LOGERR("Error, bad alloc for MonitorWindow");
-    err = EXIT_FAILURE;
-  } else {
-    if (EXIT_SUCCESS != _window->init(_displayMode)) {
-      LOGERR("Error, _window->init() failed");
-      err = EXIT_FAILURE;
-    }
+    return EXIT_FAILURE;
   }
 
-  if (err == EXIT_SUCCESS) {
-    _renderer = new Renderer(_window->getWindow());
-
-    if (nullptr == _renderer) {
-      LOGERR("Error, bad alloc for Renderer");
-      err = EXIT_FAILURE;
-    } else {
-      if (EXIT_SUCCESS != _renderer->init()) {
-        LOGERR("Error, _renderer->init() failed");
-        err = EXIT_FAILURE;
-      }
-    }
+  if (EXIT_SUCCESS != _window->init(_displayMode)) {
+    LOGERR("Error, _window->init() failed");
+    return EXIT_FAILURE;
   }
 
-  return err;
+  _renderer = new Renderer(_window->getWindow());
+  if (nullptr == _renderer) {
+    LOGERR("Error, bad alloc for Renderer");
+    return EXIT_FAILURE;
+  }
+
+  if (EXIT_SUCCESS != _renderer->init()) {
+    LOGERR("Error, _renderer->init() failed");
+    return EXIT_FAILURE;
+  }
+
+  return EXIT_SUCCESS;
 }
 
 void DrawMgr::deinit() {
