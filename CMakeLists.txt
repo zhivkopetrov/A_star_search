@@ -1,5 +1,3 @@
-#author Zhivko Petrov
-
 cmake_minimum_required(VERSION 3.5.1)
 
 project(batman_search)
@@ -28,22 +26,22 @@ find_package(${SDL_MIXER_PKG_NAME} REQUIRED)
 set(_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})          
                     
 #file(GLOB...) allows for wildcard additions:
-file(GLOB _SOURCES ${_BASE_DIR}/*.cpp
-                  ${_BASE_DIR}/utils/*.cpp
-                  ${_BASE_DIR}/utils/input/*.cpp
-                  ${_BASE_DIR}/utils/time/*.cpp
-                  ${_BASE_DIR}/utils/drawing/*.cpp
-                  ${_BASE_DIR}/sdl/*.cpp
-                  ${_BASE_DIR}/sdl/containers/*.cpp
-                  ${_BASE_DIR}/managers/*.cpp
-                  ${_BASE_DIR}/gameentities/*.cpp
-                  ${_BASE_DIR}/gameentities/animators/*.cpp
-                  ${_BASE_DIR}/gameentities/optionsmenu/*.cpp
-                  ${_BASE_DIR}/pathfinding/*.cpp
-                  ${_BASE_DIR}/common/*.cpp)
-                   
-                   
-#generate project binary
+file(GLOB _SOURCES 
+        ${_BASE_DIR}/*.cpp
+        ${_BASE_DIR}/utils/*.cpp
+        ${_BASE_DIR}/utils/input/*.cpp
+        ${_BASE_DIR}/utils/time/*.cpp
+        ${_BASE_DIR}/utils/drawing/*.cpp
+        ${_BASE_DIR}/sdl/*.cpp
+        ${_BASE_DIR}/sdl/containers/*.cpp
+        ${_BASE_DIR}/managers/*.cpp
+        ${_BASE_DIR}/gameentities/*.cpp
+        ${_BASE_DIR}/gameentities/animators/*.cpp
+        ${_BASE_DIR}/gameentities/optionsmenu/*.cpp
+        ${_BASE_DIR}/pathfinding/*.cpp
+        ${_BASE_DIR}/common/*.cpp
+)
+
 add_executable(${PROJECT_NAME}
                ${_SOURCES})
 
