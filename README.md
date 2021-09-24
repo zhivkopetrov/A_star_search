@@ -8,7 +8,7 @@ The project uses:
 
 - Linux OS;
 - Compiler that supports c++17 standard
-- SDL2 external library for graphics;
+- SDL2 external library for graphics & keyboard/mouse inputs;
 - cmake for build tool;
 
 In order to run the project you need to have the listed libraries installed:
@@ -21,7 +21,7 @@ cmake;
 1) To auto-generate na GNU makefile step inside the build directory
 and run "cmake .." in the terminal; The cmake should generate a GNU makefile.
 2) After generation is complete run "make";
-3) When compilation has completed run the binary with "./game";
+3) When compilation has completed run the binary with "./batman_search";
 
 TODOs:
- - Try to change the AStar algorithm with the one with std::priority_queue<>
+ - Improve the AStar algorithm with the use of std::priority_queue<>
