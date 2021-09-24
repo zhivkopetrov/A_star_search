@@ -29,7 +29,7 @@ int32_t Heuristic::diagonal(const Point &source, const Point &target) {
 
 int32_t Heuristic::euclidean(const Point &source, const Point &target) {
   const Point delta = getDelta(source, target);
-  return (Movement::NON_DIAGONAL_DISTANCE *
-      sqrt( (delta.x * delta.x) + (delta.y * delta.y)));
+  return static_cast<int32_t>((Movement::NON_DIAGONAL_DISTANCE *
+      sqrt( (delta.x * delta.x) + (delta.y * delta.y))));
 }
 
