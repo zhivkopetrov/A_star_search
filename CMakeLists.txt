@@ -28,24 +28,24 @@ find_package(${SDL_MIXER_PKG_NAME} REQUIRED)
 set(_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})          
                     
 #file(GLOB...) allows for wildcard additions:
-file(GLOB SOURCES "${_BASE_DIR}/*.cpp"
-                  "${_BASE_DIR}/utils/*.cpp"
-                  "${_BASE_DIR}/utils/input/*.cpp"
-                  "${_BASE_DIR}/utils/time/*.cpp"
-                  "${_BASE_DIR}/utils/drawing/*.cpp"
-                  "${_BASE_DIR}/sdl/*.cpp"
-                  "${_BASE_DIR}/sdl/containers/*.cpp"
-                  "${_BASE_DIR}/managers/*.cpp"
-                  "${_BASE_DIR}/gameentities/*.cpp"
-                  "${_BASE_DIR}/gameentities/animators/*.cpp"
-                  "${_BASE_DIR}/gameentities/optionsmenu/*.cpp"
-                  "${_BASE_DIR}/pathfinding/*.cpp"
-                  "${_BASE_DIR}/common/*.cpp")
+file(GLOB _SOURCES ${_BASE_DIR}/*.cpp
+                  ${_BASE_DIR}/utils/*.cpp
+                  ${_BASE_DIR}/utils/input/*.cpp
+                  ${_BASE_DIR}/utils/time/*.cpp
+                  ${_BASE_DIR}/utils/drawing/*.cpp
+                  ${_BASE_DIR}/sdl/*.cpp
+                  ${_BASE_DIR}/sdl/containers/*.cpp
+                  ${_BASE_DIR}/managers/*.cpp
+                  ${_BASE_DIR}/gameentities/*.cpp
+                  ${_BASE_DIR}/gameentities/animators/*.cpp
+                  ${_BASE_DIR}/gameentities/optionsmenu/*.cpp
+                  ${_BASE_DIR}/pathfinding/*.cpp
+                  ${_BASE_DIR}/common/*.cpp)
                    
                    
 #generate project binary
 add_executable(${PROJECT_NAME}
-               ${SOURCES})
+               ${_SOURCES})
 
 set_target_cpp_standard(${PROJECT_NAME} 17)
 enable_target_warnings(${PROJECT_NAME})
