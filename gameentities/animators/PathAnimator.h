@@ -38,7 +38,7 @@ public:
   }
 
 private:
-  virtual void onTimeout(const int32_t timerId) override final;
+  void onTimeout(const int32_t timerId) final;
 
   void processAnim();
 

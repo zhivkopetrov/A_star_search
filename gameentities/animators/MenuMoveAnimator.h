@@ -20,7 +20,6 @@ class AnimatorHandlerProxyInterface;
 class MenuMoveAnimator : public TimerClient {
 public:
   MenuMoveAnimator();
-  virtual ~MenuMoveAnimator() = default;
 
   int32_t init(AnimatorHandlerProxyInterface *interface,
                const Rectangle &animFBODimensions,
@@ -37,7 +36,7 @@ public:
   }
 
 private:
-  virtual void onTimeout(const int32_t timerId) override final;
+  void onTimeout(const int32_t timerId) final;
 
   void processAnim();
 

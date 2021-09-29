@@ -47,7 +47,7 @@ private:
     TOTAL_ANIM_STEPS = 100
   };
 
-  virtual void onTimeout(const int32_t timerId) override final;
+  void onTimeout(const int32_t timerId) final;
 
   void processAnim();
 
