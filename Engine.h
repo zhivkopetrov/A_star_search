@@ -38,6 +38,8 @@ private:
 
   void handleEvent();
 
+  void limitFPS(uint32_t elapspedTime);
+
   ManagerHandler _managerHandler;
 
   Game _game;

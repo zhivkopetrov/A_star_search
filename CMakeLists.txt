@@ -9,11 +9,9 @@ set(CMAKE_MODULE_PATH
 if(UNIX)
     set(SDL_IMAGE_PKG_NAME SDL2_image)
     set(SDL_TTF_PKG_NAME SDL2_ttf)
-    set(SDL_MIXER_PKG_NAME SDL2_mixer)
 elseif(WIN32)
     set(SDL_IMAGE_PKG_NAME SDL2_IMAGE)
     set(SDL_TTF_PKG_NAME SDL2_TTF)
-    set(SDL_MIXER_PKG_NAME SDL2_MIXER)
 else()
     message("Error: Unsupported OS")
 endif()
@@ -21,7 +19,6 @@ endif()
 find_package(SDL2 REQUIRED)
 find_package(${SDL_IMAGE_PKG_NAME} REQUIRED)
 find_package(${SDL_TTF_PKG_NAME} REQUIRED)
-find_package(${SDL_MIXER_PKG_NAME} REQUIRED)
         
 set(_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})          
                     
@@ -55,7 +52,6 @@ target_include_directories(
             ${SDL2_INCLUDE_DIR}
             ${SDL2_IMAGE_INCLUDE_DIR}
             ${SDL2_TTF_INCLUDE_DIR}
-            ${SDL2_MIXER_INCLUDE_DIR}
 )
 
 target_link_libraries(
@@ -64,6 +60,5 @@ target_link_libraries(
             ${SDL2_LIBRARY}       # -lSDL2 flag
             ${SDL2_IMAGE_LIBRARY} # -lSDL2_image flag
             ${SDL2_TTF_LIBRARY}   # -lSDL2_ttf flag
-            ${SDL2_MIXER_LIBRARY} # -lSDL2_mixer flag  
 )
          

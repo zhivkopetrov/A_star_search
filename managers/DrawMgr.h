@@ -32,8 +32,6 @@ public:
                    const int32_t monitorWidth,
                    const int32_t monitorHeight);
 
-  virtual ~DrawMgr() = default;
-
   //forbid the default constructor
   DrawMgr() = delete;
 
@@ -52,23 +50,23 @@ public:
    *
    *  @return int32_t - error code
    * */
-  virtual int32_t init() override;
+  int32_t init() override;
 
   /** @brief used to deinitialize the current manager.
    * */
-  virtual void deinit() override;
+  void deinit() override;
 
   /** @brief used to process the current manager (poll him on every
    *         engine cycle so the managers can do any internal updates, if
    *                                                     such are needed).
    * */
-  virtual void process() override;
+  void process() override;
 
   /** @brief returns the name of the current manager
    *
    *  @return const char * - current manager name
    * */
-  virtual const char* getName() override;
+  const char* getName() override;
 
   //================== END MgrBase related functions =====================
 

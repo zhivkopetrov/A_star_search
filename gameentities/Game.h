@@ -22,9 +22,6 @@ class InputEvent;
 
 class Game: private GameProxyInterface {
 public:
-  Game() = default;
-  virtual ~Game() = default;
-
   int32_t init();
 
   void deinit();
@@ -36,16 +33,13 @@ public:
 private:
   void evaluateAStar();
 
-  virtual void onNodeChanged(const NodeType nodeType, const Point &nodePosY)
-      override final;
+  void onNodeChanged(const NodeType nodeType, const Point &nodePosY) final;
 
-  virtual void onAnimFinished(const AnimType animType) override final;
+  void onAnimFinished(const AnimType animType) override final;
 
-  virtual void onOptionChanged(const Option option, const std::any &value)
-      override final;
+  void onOptionChanged(const Option option, const std::any &value) final;
 
-  virtual void onOptionAnimStatusChange(const OptionAnimStatus type)
-      override final;
+  void onOptionAnimStatusChange(const OptionAnimStatus type) final;
 
   PathGenerator _pathGenerator;
 

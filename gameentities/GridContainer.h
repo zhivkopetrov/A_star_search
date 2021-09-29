@@ -53,8 +53,6 @@ class GridContainer: public GridContainerProxyInterface {
 public:
   GridContainer();
 
-  virtual ~GridContainer() = default;
-
   int32_t init(const GridContainerCfg &cfg);
 
   void draw();
@@ -65,7 +63,7 @@ public:
 
   bool isReadyToEvaluate();
 
-  virtual Point getNodeCoordinates(const Point &nodePos) const override final;
+  Point getNodeCoordinates(const Point &nodePos) const final;
 
   inline Point getStartNodePos() const {
     return _startNodePos;
@@ -76,12 +74,11 @@ public:
   }
 
 private:
-  virtual void addPathNode(const Point &nodePos) override final;
+  void addPathNode(const Point &nodePos) final;
 
-  virtual void placePredefinedObstacles(const std::vector<Obstacle> &obstacles)
-      override final;
-  virtual void removePredefinedObstacles(const std::vector<Obstacle> &obstacles)
-      override final;
+  void placePredefinedObstacles(const std::vector<Obstacle> &obstacles) final;
+
+  void removePredefinedObstacles(const std::vector<Obstacle> &obstacles) final;
 
   void addCollision(const Point &nodePos);
 

@@ -60,7 +60,7 @@ void Engine::deinit() {
 
 void Engine::mainLoop() {
   Time fpsTime;
-  uint32_t fpsDelay = 0;
+  uint32_t elapsedTime = 0;
 
   while (true) {
     //begin measure the new frame elapsed time
@@ -70,20 +70,13 @@ void Engine::mainLoop() {
       break;
     }
 
-    fpsDelay = static_cast<uint32_t>(fpsTime.getElapsed().toMicroseconds());
+    elapsedTime = static_cast<uint32_t>(fpsTime.getElapsed().toMicroseconds());
 
     if (_debugConsole.isActive()) {
-      _debugConsole.update(fpsDelay);
+      _debugConsole.update(elapsedTime);
     }
 
-    const uint32_t MAX_MICROSECONDS_PER_FRAME = MICROSECOND
-        / gDrawMgr->getMaxFrameRate();
-    MAX_MICROSECONDS_PER_FRAME < fpsDelay ?
-        fpsDelay = 0 : fpsDelay = MAX_MICROSECONDS_PER_FRAME - fpsDelay;
-
-    //Sleep the logic thread if max FPS is reached.
-    //No need to struggle the CPU.
-    std::this_thread::sleep_for(std::chrono::microseconds(fpsDelay));
+    limitFPS(elapsedTime);
   }
 }
 
@@ -118,5 +111,17 @@ void Engine::drawFrame() {
 void Engine::handleEvent() {
   _debugConsole.handleEvent(_inputEvent);
   _game.handleEvent(_inputEvent);
+}
+
+void Engine::limitFPS(uint32_t elapspedTime) {
+  const uint32_t MAX_MICROSECONDS_PER_FRAME = MICROSECOND
+      / gDrawMgr->getMaxFrameRate();
+
+  const uint32_t delay = ((MAX_MICROSECONDS_PER_FRAME < elapspedTime) ?
+      0 : MAX_MICROSECONDS_PER_FRAME - elapspedTime);
+
+  //Sleep the logic thread if max FPS is reached.
+  //No need to struggle the CPU.
+  std::this_thread::sleep_for(std::chrono::microseconds(delay));
 }
 

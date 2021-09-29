@@ -7,8 +7,8 @@
 #include <cstdlib>
 
 //Other libraries headers
-#include <SDL2/SDL_render.h>
-#include <SDL2/SDL_hints.h>
+#include <SDL_render.h>
+#include <SDL_hints.h>
 
 //Own components headers
 #include "Texture.h"

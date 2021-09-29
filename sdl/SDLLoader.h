@@ -14,9 +14,7 @@
 
 class SDLLoader {
 public:
-  //forbid the default constructor and destructor
   SDLLoader() = delete;
-  virtual ~SDLLoader() = delete;
 
   /** @brief used to initialise external SDL sub-systems
    *

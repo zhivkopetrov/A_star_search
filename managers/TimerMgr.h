@@ -22,7 +22,6 @@ class TimerClient;
 class TimerMgr: public MgrBase {
 public:
   TimerMgr() = default;
-  virtual ~TimerMgr() = default;
 
   //forbid the copy and move constructors
   TimerMgr(const TimerMgr &other) = delete;
@@ -37,23 +36,23 @@ public:
    *
    *  @return int32_t - error code
    * */
-  virtual int32_t init() override;
+  int32_t init() override;
 
   /** @brief used to deinitialize the current manager.
    * */
-  virtual void deinit() override;
+  void deinit() override;
 
   /** @brief used to process the current manager (poll him on every
    *         engine cycle so the managers can do any internal updates, if
    *                                                     such are needed).
    * */
-  virtual void process() override;
+  void process() override;
 
   /** @brief returns the name of the current manager
    *
    *  @return const char * - current manager name
    * */
-  virtual const char* getName() override;
+  const char* getName() override;
 
   /** @brief starts timer with provided arguments
    *    this functions does not return error code for performance reasons

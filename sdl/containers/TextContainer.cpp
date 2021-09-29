@@ -7,7 +7,7 @@
 #include <cstdlib>
 
 //Other libraries headers
-#include <SDL2/SDL_ttf.h>
+#include <SDL_ttf.h>
 
 //Own components headers
 #include "common/CommonDefines.h"
