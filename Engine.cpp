@@ -2,11 +2,11 @@
 #include "Engine.h"
 
 //C system headers
-#include <unistd.h>
 
 //C++ system headers
 #include <cstdlib>
 #include <string>
+#include <thread>
 
 //Other libraries headers
 
@@ -83,7 +83,7 @@ void Engine::mainLoop() {
 
     //Sleep the logic thread if max FPS is reached.
     //No need to struggle the CPU.
-    usleep(fpsDelay);
+    std::this_thread::sleep_for(std::chrono::microseconds(fpsDelay));
   }
 }
 
