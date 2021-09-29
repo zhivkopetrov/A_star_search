@@ -1,4 +1,5 @@
 //C system headers
+
 //C++ system headers
 #include <cstdint>
 #include <cstdlib>
@@ -11,31 +12,35 @@
 #include "Engine.h"
 #include "utils/Log.h"
 
-int32_t main(const int32_t , char *[]) {
-  int32_t err = EXIT_SUCCESS;
+static int32_t runApplication() {
   Engine engine;
 
-  if (EXIT_SUCCESS != SDLLoader::init()) {
-    LOGERR("Error in SDLLoader::init() -> Terminating ...");
-
-    err = EXIT_FAILURE;
+  if (EXIT_SUCCESS != engine.init()) {
+    LOGERR("engine.init() failed");
+    return EXIT_FAILURE;
   }
 
-  if (EXIT_SUCCESS == err) {
-    if (EXIT_SUCCESS != engine.init()) {
-      LOGERR("engine.init() failed");
-
-      err = EXIT_FAILURE;
-    } else {
-      engine.start();
-    }
-  }
+  engine.start();
 
   engine.deinit();
+
+  return EXIT_SUCCESS;
+}
+
+int32_t main() {
+  if (EXIT_SUCCESS != SDLLoader::init()) {
+    LOGERR("Error in SDLLoader::init() -> Terminating ...");
+    return EXIT_FAILURE;
+  }
+
+  if (EXIT_SUCCESS != runApplication()) {
+    LOGERR("runApplication() failed");
+    return EXIT_FAILURE;
+  }
 
   //close SDL libraries
   SDLLoader::deinit();
 
-  return err;
+  return EXIT_SUCCESS;
 }
 
