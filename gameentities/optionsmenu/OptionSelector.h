@@ -26,7 +26,6 @@ class InputEvent;
 class OptionSelector : public OptionSelecterProxyInterface {
 public:
   OptionSelector();
-  virtual ~OptionSelector() = default;
 
   int32_t init(GameProxyInterface *gameInterface);
 
@@ -44,8 +43,7 @@ public:
   void setTextLevelId(const int32_t levelId);
 
 private:
-  virtual void onMenuButtonClicked(const MenuButtonType buttonType)
-    override final;
+  void onMenuButtonClicked(const MenuButtonType buttonType) final;
 
   void activateMenu();
   void deactivateMenu();

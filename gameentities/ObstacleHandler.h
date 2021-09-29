@@ -20,7 +20,6 @@
 class ObstacleHandler: public ObstacleHandlerProxyInterface {
 public:
   ObstacleHandler();
-  virtual ~ObstacleHandler() = default;
 
   int32_t init(GridContainerProxyInterface *gridInterface,
                const std::string &levelsFolderPath, const int32_t levelsCount);
@@ -42,8 +41,7 @@ public:
   void removeObstacle(const Point &nodePos);
 
 private:
-  virtual bool isIntersectingObstacle(const Point &nodePos) const
-      override final;
+  bool isIntersectingObstacle(const Point &nodePos) const final;
 
   int32_t loadLevelFromDisk(const std::string &levelsFolderPath,
                             const int32_t levelId);

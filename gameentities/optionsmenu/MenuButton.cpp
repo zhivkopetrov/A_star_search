@@ -11,11 +11,6 @@
 //Own components headers
 #include "sdl/InputEvent.h"
 
-MenuButton::MenuButton()
-    : _menuInterface(nullptr), _buttonType(MenuButtonType::UNKNOWN) {
-
-}
-
 int32_t MenuButton::init(const MenuButtonCfg &cfg) {
   _menuInterface = cfg.interface;
   _buttonType = cfg.buttonType;

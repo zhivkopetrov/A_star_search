@@ -39,14 +39,15 @@ void DebugConsole::handleEvent(const InputEvent &e) {
 }
 
 //update fps text once in a while to get a stable(not constantly changing) image
-void DebugConsole::update(const uint32_t elapsedTime) {
+void DebugConsole::update(const int64_t elapsedTime) {
   --_updateCounter;
   if (0 < _updateCounter) {
     return;
   }
   _updateCounter = UPDATE_SKIPS;
 
-  uint32_t frames = MICROSECOND / elapsedTime;
+  constexpr auto microsecondsInASeconds = 1000000;
+  int64_t frames = microsecondsInASeconds / elapsedTime;
   if (frames > _maxFrames) {
     frames = _maxFrames;
   }

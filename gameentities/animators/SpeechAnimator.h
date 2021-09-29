@@ -25,7 +25,6 @@ enum class SpeecAnimType {
 class SpeechAnimator : public TimerClient {
 public:
   SpeechAnimator();
-  virtual ~SpeechAnimator() = default;
 
   int32_t init(AnimatorHandlerProxyInterface * animatorHandlerInterface,
                const Point &startBatmanPos, const int32_t batmanRsrcId,

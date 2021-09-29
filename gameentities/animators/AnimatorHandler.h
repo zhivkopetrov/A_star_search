@@ -34,7 +34,6 @@ class GridContainerProxyInterface;
 class AnimatorHandler: public AnimatorHandlerProxyInterface {
 public:
   AnimatorHandler();
-  virtual ~AnimatorHandler() = default;
 
   int32_t init(GameProxyInterface *gameInterface,
                GridContainerProxyInterface *gridInterface);

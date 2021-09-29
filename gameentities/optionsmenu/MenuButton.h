@@ -25,8 +25,6 @@ struct MenuButtonCfg {
 
   }
 
-  MenuButtonCfg() = delete;
-
   OptionSelecterProxyInterface *interface;
   const Point startPos;
   const int32_t buttonRsrcId;
@@ -35,21 +33,18 @@ struct MenuButtonCfg {
 
 class MenuButton: public ButtonBase {
 public:
-  MenuButton();
-  virtual ~MenuButton() = default;
-
   int32_t init(const MenuButtonCfg &cfg);
 
-  virtual void handleEvent(const InputEvent &e) override final;
+  void handleEvent(const InputEvent &e) final;
 
-  virtual void lockInput() override final;
+  void lockInput() final;
 
-  virtual void unlockInput() override final;
+  void unlockInput() final;
 
 private:
-  OptionSelecterProxyInterface *_menuInterface;
+  OptionSelecterProxyInterface *_menuInterface = nullptr;
 
-  MenuButtonType _buttonType;
+  MenuButtonType _buttonType = MenuButtonType::UNKNOWN;
 };
 
 #endif /* GAMEENTITIES_OPTIONSMENU_MENUBUTTON_H_ */

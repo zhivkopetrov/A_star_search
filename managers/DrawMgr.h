@@ -156,17 +156,17 @@ public:
    *         is reached, the thread that executes the drawing is put
    *                                                             to sleep
    *
-   *  @param const uint32_t - max frame cap
+   *  @param const int64_t - max frame cap
    * */
-  inline void setMaxFrameRate(const uint32_t maxFrames) {
+  inline void setMaxFrameRate(const int64_t maxFrames) {
     _maxFrames = maxFrames;
   }
 
   /** @brief used to acquire the _maxFrames rate, which was set
    *
-   *  @return uint32_t - max frames
+   *  @return int64_t - max frames
    * */
-  inline uint32_t getMaxFrameRate() const {
+  inline int64_t getMaxFrameRate() const {
     return _maxFrames;
   }
 
@@ -194,7 +194,7 @@ private:
   int32_t _displayMode;
 
   //Hold maximum frame rate cap
-  uint32_t _maxFrames;
+  int64_t _maxFrames;
 };
 
 extern DrawMgr *gDrawMgr;

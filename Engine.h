@@ -18,9 +18,6 @@
 
 class Engine {
 public:
-  Engine() = default;
-  ~Engine() = default;
-
   int32_t init();
 
   void deinit();
@@ -38,7 +35,7 @@ private:
 
   void handleEvent();
 
-  void limitFPS(uint32_t elapspedTime);
+  void limitFPS(const int64_t elapspedTime);
 
   ManagerHandler _managerHandler;
 

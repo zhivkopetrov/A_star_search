@@ -17,7 +17,6 @@ class InputEvent;
 class DebugConsole {
 public:
   DebugConsole();
-  virtual ~DebugConsole() = default;
 
   int32_t init();
 
@@ -25,7 +24,7 @@ public:
    * */
   void handleEvent(const InputEvent &e);
 
-  void update(const uint32_t elapsedTime);
+  void update(const int64_t elapsedTime);
 
   void draw();
 
@@ -40,7 +39,7 @@ public:
 private:
   Text _fpsText;
 
-  uint32_t _maxFrames;
+  int64_t _maxFrames;
 
   int32_t _updateCounter;
 

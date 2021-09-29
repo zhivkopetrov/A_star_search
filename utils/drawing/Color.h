@@ -49,8 +49,6 @@ public:
   //forbid default constructor
   Color() = delete;
 
-  virtual ~Color() = default;
-
   inline bool operator==(const Color &other) const {
     return rgba.r == other.rgba.r && rgba.g == other.rgba.g
            && rgba.b == other.rgba.b && rgba.a == other.rgba.a;
