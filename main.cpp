@@ -2,8 +2,6 @@
 
 //C++ system headers
 #include <cstdint>
-#include <cstdlib>
-#include <cstring>
 
 //Other libraries headers
 #include "sdl/SDLLoader.h"

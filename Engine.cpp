@@ -5,7 +5,6 @@
 
 //C++ system headers
 #include <cstdlib>
-#include <string>
 #include <thread>
 
 //Other libraries headers

@@ -60,5 +60,6 @@ target_link_libraries(
             ${SDL2_LIBRARY}       # -lSDL2 flag
             ${SDL2_IMAGE_LIBRARY} # -lSDL2_image flag
             ${SDL2_TTF_LIBRARY}   # -lSDL2_ttf flag
+            m                     # -libm flag
 )
          
