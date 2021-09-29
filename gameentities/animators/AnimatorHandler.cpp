@@ -122,8 +122,7 @@ void AnimatorHandler::perform(const AnimEvent event, const std::any &args) {
 
   default:
     LOGERR("Error, received unknown AnimEvent type: %d",
-        getEnumClassValue(event))
-    ;
+        getEnumClassValue(event));
     break;
   }
 }
@@ -144,7 +143,7 @@ void AnimatorHandler::performSetScaleAnimTarget(const ScaleAnimTargetType type,
 
 void AnimatorHandler::performLoadAnimPath(const std::any &args) {
   try {
-    auto &path = * (std::any_cast<std::vector<Point>*>(args));
+    auto &path = *(std::any_cast<std::vector<Point>*>(args));
     _pathAnimator.loadPath(path);
   } catch (const std::bad_any_cast &e) {
     LOGERR("any_cast throwed: %s", e.what());
@@ -153,8 +152,8 @@ void AnimatorHandler::performLoadAnimPath(const std::any &args) {
 
 void AnimatorHandler::performUpdateMenuMoveAnimContent(const std::any &args) {
   try {
-    const auto &widgets = * (std::any_cast<const std::vector<const Widget*>*>(
-        args));
+    const auto &widgets =
+        *(std::any_cast<const std::vector<const Widget*>*>(args));
     _menuMoveAnimator.updateAnimContent(widgets);
   } catch (const std::bad_any_cast &e) {
     LOGERR("any_cast throwed: %s", e.what());

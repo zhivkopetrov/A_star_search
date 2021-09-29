@@ -104,11 +104,13 @@ void Game::onNodeChanged(const NodeType nodeType, const Point &nodePos) {
     break;
 
   case NodeType::START_CHANGE:
+    _obstacleHandler.removeObstacle(nodePos);
     _animHandler.perform(AnimEvent::SET_SCALE_AMIM_START_TARGET,
         _gridContainer.getNodeCoordinates(nodePos));
     break;
 
   case NodeType::END_CHANGE:
+    _obstacleHandler.removeObstacle(nodePos);
     _animHandler.perform(AnimEvent::SET_SCALE_AMIM_END_TARGET,
         _gridContainer.getNodeCoordinates(nodePos));
     break;
@@ -128,7 +130,7 @@ void Game::evaluateAStar() {
   const Point endNode = _gridContainer.getEndNodePos();
   std::vector<Point> path = _pathGenerator.findPath(startNode, endNode);
 
-  if (path.front() != endNode) {
+  if (path.empty() || (path.front() != endNode)) {
     _animHandler.perform(AnimEvent::START_NO_PATH_ANIM);
   } else {
     _animHandler.perform(AnimEvent::LOAD_ANIM_PATH, &path);
@@ -139,6 +141,7 @@ void Game::evaluateAStar() {
 void Game::onAnimFinished(const AnimType animType) {
   if (AnimType::SPEECH_ANIM == animType) {
     _gridContainer.clearGrid();
+    _obstacleHandler.clearAddedObstacles();
   } else if (AnimType::MENU_OPEN_MOVE_ANIM == animType) {
     _optionSelector.onMoveAnimFinished(OptionAnimStatus::END_OPEN_ANIM);
   } else if (AnimType::MENU_CLOSE_MOVE_ANIM == animType) {
