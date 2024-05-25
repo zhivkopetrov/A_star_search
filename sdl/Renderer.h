@@ -5,6 +5,7 @@
 
 //C++ system headers
 #include <cstdint>
+#include <cstddef>
 #include <vector>
 
 //Other libraries headers

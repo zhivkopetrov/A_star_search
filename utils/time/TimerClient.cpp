@@ -2,6 +2,7 @@
 #include "TimerClient.h"
 
 //C system headers
+#include <cstdlib>
 
 //C++ system headers
 
