@@ -3,8 +3,6 @@ cmake_minimum_required(VERSION 3.5.1)
 project(batman_search)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake_helpers/helpers.cmake)
-set(CMAKE_MODULE_PATH 
-    ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake_helpers/find_modules)
   
 if(UNIX)
     set(SDL_IMAGE_PKG_NAME SDL2_image)
@@ -42,7 +40,7 @@ file(GLOB _SOURCES
 add_executable(${PROJECT_NAME}
                ${_SOURCES})
 
-set_target_cpp_standard(${PROJECT_NAME} 17)
+set_target_cpp_standard(${PROJECT_NAME} 23)
 enable_target_warnings(${PROJECT_NAME})
 
 target_include_directories(

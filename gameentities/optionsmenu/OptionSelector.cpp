@@ -128,7 +128,7 @@ void OptionSelector::setOption(const Option option, const std::any &value) {
 
 std::vector<const Widget*> OptionSelector::getWidgetsState() const {
   std::vector<const Widget*> widgets;
-  widgets.reserve(BUTTONS_COUNT + TEXTS_COUNT);
+  widgets.reserve(BUTTONS_COUNT + static_cast<int32_t>(TEXTS_COUNT));
   widgets.push_back(&_menuImg);
   for (auto &button : _buttons) {
     if (button.isVisible()) {
